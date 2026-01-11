@@ -1,0 +1,750 @@
+#!/usr/bin/env python3
+"""
+OSM to Ultima Map Converter
+
+Converts OpenStreetMap data to Ultima VII/VIII game maps.
+Downloads a bounded region from OSM and generates game-compatible map files.
+
+Usage:
+    python osm2ultima.py --bbox "min_lon,min_lat,max_lon,max_lat" --output map_name
+    python osm2ultima.py --place "London, UK" --radius 500 --output london_map
+"""
+
+import argparse
+import json
+import math
+import os
+import random
+import struct
+import sys
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Tuple
+import requests
+
+from osm_shape_mapping import (
+    CoordinateTransformer,
+    get_terrain_shape,
+    get_object_shapes,
+    get_npc_for_building,
+    TERRAIN_SHAPES,
+    OBJECT_SHAPES,
+    OSM_HIGHWAY_TO_TERRAIN,
+)
+
+
+# =============================================================================
+# DATA STRUCTURES
+# =============================================================================
+
+@dataclass
+class UltimaObject:
+    """Represents an object to be placed in the Ultima map."""
+    shape: int
+    frame: int = 0
+    x: int = 0  # tile x
+    y: int = 0  # tile y
+    lift: int = 0  # height/z level
+    quality: int = 0
+    flags: int = 0
+    
+    def to_ireg_bytes(self) -> bytes:
+        """Convert to IREG format bytes."""
+        # Simplified IREG format (10 bytes)
+        chunk_x = self.x // 16
+        chunk_y = self.y // 16
+        local_x = self.x % 16
+        local_y = self.y % 16
+        
+        buf = bytearray(10)
+        buf[0] = 10  # length
+        buf[1] = ((chunk_x % 16) << 4) | local_x
+        buf[2] = ((chunk_y % 16) << 4) | local_y
+        buf[3] = self.shape & 0xff
+        buf[4] = ((self.shape >> 8) & 3) | (self.frame << 2)
+        buf[5] = (self.lift & 0x0f)  # nibble swap
+        buf[6] = self.quality & 0xff
+        buf[7] = 0  # temporary flag
+        buf[8] = 0  # filler
+        buf[9] = 0  # filler
+        
+        return bytes(buf)
+
+
+@dataclass
+class UltimaChunk:
+    """Represents a 16x16 tile chunk."""
+    terrain: List[List[int]] = field(default_factory=lambda: [[4] * 16 for _ in range(16)])  # default grass
+    objects: List[UltimaObject] = field(default_factory=list)
+
+
+@dataclass
+class UltimaMap:
+    """Represents the full Ultima map."""
+    width_chunks: int = 16
+    height_chunks: int = 16
+    chunks: Dict[Tuple[int, int], UltimaChunk] = field(default_factory=dict)
+    
+    def get_chunk(self, cx: int, cy: int) -> UltimaChunk:
+        """Get or create a chunk at the given coordinates."""
+        if (cx, cy) not in self.chunks:
+            self.chunks[(cx, cy)] = UltimaChunk()
+        return self.chunks[(cx, cy)]
+    
+    def set_terrain(self, tile_x: int, tile_y: int, shape: int):
+        """Set terrain at a specific tile."""
+        cx, cy = tile_x // 16, tile_y // 16
+        lx, ly = tile_x % 16, tile_y % 16
+        chunk = self.get_chunk(cx, cy)
+        chunk.terrain[ly][lx] = shape
+    
+    def add_object(self, obj: UltimaObject):
+        """Add an object to the appropriate chunk."""
+        cx, cy = obj.x // 16, obj.y // 16
+        chunk = self.get_chunk(cx, cy)
+        chunk.objects.append(obj)
+
+
+# =============================================================================
+# OSM DATA FETCHING
+# =============================================================================
+
+class OSMFetcher:
+    """Fetches data from OpenStreetMap via Overpass API."""
+    
+    OVERPASS_URL = "https://overpass.kumi.systems/api/interpreter"
+    NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
+    
+    def __init__(self):
+        self.session = requests.Session()
+        self.session.headers.update({
+            "User-Agent": "OSM2Ultima/1.0 (https://github.com/c9py/ultimain)"
+        })
+    
+    def geocode_place(self, place_name: str) -> Tuple[float, float]:
+        """Get coordinates for a place name."""
+        params = {
+            "q": place_name,
+            "format": "json",
+            "limit": 1
+        }
+        response = self.session.get(self.NOMINATIM_URL, params=params)
+        response.raise_for_status()
+        results = response.json()
+        
+        if not results:
+            raise ValueError(f"Could not find place: {place_name}")
+        
+        return float(results[0]["lon"]), float(results[0]["lat"])
+    
+    def bbox_from_center(self, lon: float, lat: float, radius_m: float) -> Tuple[float, float, float, float]:
+        """Calculate bounding box from center point and radius in meters."""
+        # Approximate degrees per meter at this latitude
+        lat_deg_per_m = 1 / 111320
+        lon_deg_per_m = 1 / (111320 * math.cos(math.radians(lat)))
+        
+        delta_lat = radius_m * lat_deg_per_m
+        delta_lon = radius_m * lon_deg_per_m
+        
+        return (
+            lon - delta_lon,  # min_lon
+            lat - delta_lat,  # min_lat
+            lon + delta_lon,  # max_lon
+            lat + delta_lat   # max_lat
+        )
+    
+    def fetch_osm_data(self, bbox: Tuple[float, float, float, float]) -> dict:
+        """
+        Fetch OSM data for a bounding box.
+        Returns GeoJSON-like structure.
+        """
+        min_lon, min_lat, max_lon, max_lat = bbox
+        
+        # Overpass query for all relevant features
+        query = f"""
+        [out:json][timeout:60];
+        (
+          // Buildings
+          way["building"]({min_lat},{min_lon},{max_lat},{max_lon});
+          relation["building"]({min_lat},{min_lon},{max_lat},{max_lon});
+          
+          // Roads and paths
+          way["highway"]({min_lat},{min_lon},{max_lat},{max_lon});
+          
+          // Natural features
+          node["natural"]({min_lat},{min_lon},{max_lat},{max_lon});
+          way["natural"]({min_lat},{min_lon},{max_lat},{max_lon});
+          
+          // Landuse
+          way["landuse"]({min_lat},{min_lon},{max_lat},{max_lon});
+          relation["landuse"]({min_lat},{min_lon},{max_lat},{max_lon});
+          
+          // Waterways
+          way["waterway"]({min_lat},{min_lon},{max_lat},{max_lon});
+          
+          // Amenities
+          node["amenity"]({min_lat},{min_lon},{max_lat},{max_lon});
+          way["amenity"]({min_lat},{min_lon},{max_lat},{max_lon});
+          
+          // Barriers (fences, walls)
+          way["barrier"]({min_lat},{min_lon},{max_lat},{max_lon});
+          
+          // Man-made structures
+          node["man_made"]({min_lat},{min_lon},{max_lat},{max_lon});
+          way["man_made"]({min_lat},{min_lon},{max_lat},{max_lon});
+        );
+        out body;
+        >;
+        out skel qt;
+        """
+        
+        print(f"Fetching OSM data for bbox: {bbox}")
+        response = self.session.post(self.OVERPASS_URL, data={"data": query})
+        response.raise_for_status()
+        
+        return response.json()
+
+
+# =============================================================================
+# MAP GENERATOR
+# =============================================================================
+
+class MapGenerator:
+    """Generates Ultima map from OSM data."""
+    
+    def __init__(self, bbox: Tuple[float, float, float, float], map_size: Tuple[int, int] = (16, 16)):
+        """
+        Initialize generator.
+        
+        bbox: (min_lon, min_lat, max_lon, max_lat)
+        map_size: (width_chunks, height_chunks)
+        """
+        self.bbox = bbox
+        self.map_size = map_size
+        self.transformer = CoordinateTransformer(bbox, map_size)
+        self.ultima_map = UltimaMap(width_chunks=map_size[0], height_chunks=map_size[1])
+        
+        # Node cache for resolving way coordinates
+        self.nodes: Dict[int, Tuple[float, float]] = {}
+    
+    def process_osm_data(self, osm_data: dict):
+        """Process OSM data and populate the Ultima map."""
+        elements = osm_data.get("elements", [])
+        
+        # First pass: cache all nodes
+        for element in elements:
+            if element["type"] == "node":
+                self.nodes[element["id"]] = (element["lon"], element["lat"])
+        
+        # Second pass: process ways and relations
+        for element in elements:
+            if element["type"] == "way":
+                self._process_way(element)
+            elif element["type"] == "node" and "tags" in element:
+                self._process_node(element)
+        
+        # Fill in default terrain for empty areas
+        self._fill_default_terrain()
+        
+        print(f"Processed {len(elements)} OSM elements")
+        print(f"Generated {len(self.ultima_map.chunks)} chunks")
+    
+    def _process_node(self, node: dict):
+        """Process a single OSM node (point feature)."""
+        tags = node.get("tags", {})
+        lon, lat = node["lon"], node["lat"]
+        tile_x, tile_y = self.transformer.osm_to_ultima(lon, lat)
+        
+        # Get object shapes for this node
+        shapes = get_object_shapes(tags)
+        
+        if shapes:
+            # Place the main object
+            main_shapes = shapes.get("main", [])
+            if main_shapes:
+                shape = random.choice(main_shapes)
+                obj = UltimaObject(
+                    shape=shape,
+                    frame=0,
+                    x=tile_x,
+                    y=tile_y,
+                    lift=0
+                )
+                self.ultima_map.add_object(obj)
+    
+    def _process_way(self, way: dict):
+        """Process a single OSM way (line or polygon)."""
+        tags = way.get("tags", {})
+        nodes = way.get("nodes", [])
+        
+        if not nodes:
+            return
+        
+        # Get coordinates for all nodes in the way
+        coords = []
+        for node_id in nodes:
+            if node_id in self.nodes:
+                coords.append(self.nodes[node_id])
+        
+        if not coords:
+            return
+        
+        # Check if it's a closed way (polygon)
+        is_polygon = len(nodes) > 2 and nodes[0] == nodes[-1]
+        
+        # Process based on tags
+        if "highway" in tags:
+            self._process_highway(tags, coords)
+        elif "building" in tags:
+            self._process_building(tags, coords)
+        elif "landuse" in tags or "natural" in tags:
+            self._process_area(tags, coords, is_polygon)
+        elif "waterway" in tags:
+            self._process_waterway(tags, coords)
+        elif "barrier" in tags:
+            self._process_barrier(tags, coords)
+    
+    def _process_highway(self, tags: dict, coords: List[Tuple[float, float]]):
+        """Process a road/path."""
+        highway_type = tags.get("highway", "residential")
+        terrain_type = OSM_HIGHWAY_TO_TERRAIN.get(highway_type, "cobblestone")
+        terrain_shapes = TERRAIN_SHAPES.get(terrain_type, TERRAIN_SHAPES["cobblestone"])
+        
+        # Draw the road as a line of terrain tiles
+        for i in range(len(coords) - 1):
+            self._draw_line_terrain(coords[i], coords[i + 1], terrain_shapes, width=2)
+    
+    def _process_building(self, tags: dict, coords: List[Tuple[float, float]]):
+        """Process a building polygon."""
+        if len(coords) < 3:
+            return
+        
+        # Get building center
+        center_lon = sum(c[0] for c in coords) / len(coords)
+        center_lat = sum(c[1] for c in coords) / len(coords)
+        center_tile = self.transformer.osm_to_ultima(center_lon, center_lat)
+        
+        # Calculate approximate building size in tiles
+        min_x = min(self.transformer.osm_to_ultima(c[0], c[1])[0] for c in coords)
+        max_x = max(self.transformer.osm_to_ultima(c[0], c[1])[0] for c in coords)
+        min_y = min(self.transformer.osm_to_ultima(c[0], c[1])[1] for c in coords)
+        max_y = max(self.transformer.osm_to_ultima(c[0], c[1])[1] for c in coords)
+        
+        width = max(1, max_x - min_x)
+        height = max(1, max_y - min_y)
+        
+        # Get building components
+        building_type = tags.get("building", "house")
+        shapes = get_object_shapes(tags)
+        
+        # Place floor
+        floor_shapes = TERRAIN_SHAPES.get("floor", [189])
+        for x in range(min_x, max_x + 1):
+            for y in range(min_y, max_y + 1):
+                self.ultima_map.set_terrain(x, y, random.choice(floor_shapes))
+        
+        # Place walls around perimeter
+        wall_shapes = shapes.get("walls", OBJECT_SHAPES.get("wall", [151]))
+        for x in range(min_x, max_x + 1):
+            # Top wall
+            obj = UltimaObject(shape=random.choice(wall_shapes), x=x, y=min_y, lift=0)
+            self.ultima_map.add_object(obj)
+            # Bottom wall
+            obj = UltimaObject(shape=random.choice(wall_shapes), x=x, y=max_y, lift=0)
+            self.ultima_map.add_object(obj)
+        
+        for y in range(min_y + 1, max_y):
+            # Left wall
+            obj = UltimaObject(shape=random.choice(wall_shapes), x=min_x, y=y, lift=0)
+            self.ultima_map.add_object(obj)
+            # Right wall
+            obj = UltimaObject(shape=random.choice(wall_shapes), x=max_x, y=y, lift=0)
+            self.ultima_map.add_object(obj)
+        
+        # Place door
+        door_shapes = shapes.get("door", OBJECT_SHAPES.get("door", [270]))
+        door_x = (min_x + max_x) // 2
+        obj = UltimaObject(shape=random.choice(door_shapes), x=door_x, y=max_y, lift=0)
+        self.ultima_map.add_object(obj)
+        
+        # Place roof (on lift level 1)
+        roof_shapes = shapes.get("roof", OBJECT_SHAPES.get("roof_slate", [164]))
+        for x in range(min_x, max_x + 1):
+            for y in range(min_y, max_y + 1):
+                obj = UltimaObject(shape=random.choice(roof_shapes), x=x, y=y, lift=4)
+                self.ultima_map.add_object(obj)
+        
+        # Optionally add NPCs
+        if random.random() < 0.3:  # 30% chance of NPC
+            npc_shapes = get_npc_for_building(building_type)
+            if npc_shapes:
+                npc = UltimaObject(
+                    shape=random.choice(npc_shapes),
+                    x=center_tile[0],
+                    y=center_tile[1],
+                    lift=0
+                )
+                self.ultima_map.add_object(npc)
+    
+    def _process_area(self, tags: dict, coords: List[Tuple[float, float]], is_polygon: bool):
+        """Process a landuse or natural area."""
+        terrain_shapes = get_terrain_shape(tags)
+        
+        if is_polygon and len(coords) >= 3:
+            # Fill polygon with terrain
+            self._fill_polygon_terrain(coords, terrain_shapes)
+        else:
+            # Draw as line
+            for i in range(len(coords) - 1):
+                self._draw_line_terrain(coords[i], coords[i + 1], terrain_shapes, width=1)
+        
+        # Add natural objects (trees, rocks, etc.)
+        shapes = get_object_shapes(tags)
+        if shapes and "main" in shapes:
+            # Scatter objects in the area
+            for coord in coords[::3]:  # Every 3rd coordinate
+                tile = self.transformer.osm_to_ultima(coord[0], coord[1])
+                obj = UltimaObject(
+                    shape=random.choice(shapes["main"]),
+                    x=tile[0],
+                    y=tile[1],
+                    lift=0
+                )
+                self.ultima_map.add_object(obj)
+    
+    def _process_waterway(self, tags: dict, coords: List[Tuple[float, float]]):
+        """Process a waterway (river, stream, etc.)."""
+        water_shapes = TERRAIN_SHAPES.get("water", [8])
+        
+        # Draw water as a line
+        for i in range(len(coords) - 1):
+            self._draw_line_terrain(coords[i], coords[i + 1], water_shapes, width=3)
+    
+    def _process_barrier(self, tags: dict, coords: List[Tuple[float, float]]):
+        """Process a barrier (fence, wall, etc.)."""
+        shapes = get_object_shapes(tags)
+        
+        if shapes and "main" in shapes:
+            barrier_shapes = shapes["main"]
+            
+            # Place barrier objects along the line
+            for i in range(len(coords) - 1):
+                start = self.transformer.osm_to_ultima(coords[i][0], coords[i][1])
+                end = self.transformer.osm_to_ultima(coords[i + 1][0], coords[i + 1][1])
+                
+                # Interpolate points
+                dist = max(abs(end[0] - start[0]), abs(end[1] - start[1]))
+                if dist == 0:
+                    continue
+                
+                for j in range(dist + 1):
+                    t = j / dist
+                    x = int(start[0] + t * (end[0] - start[0]))
+                    y = int(start[1] + t * (end[1] - start[1]))
+                    
+                    obj = UltimaObject(
+                        shape=random.choice(barrier_shapes),
+                        x=x,
+                        y=y,
+                        lift=0
+                    )
+                    self.ultima_map.add_object(obj)
+    
+    def _draw_line_terrain(self, start: Tuple[float, float], end: Tuple[float, float], 
+                           shapes: List[int], width: int = 1):
+        """Draw a line of terrain tiles."""
+        start_tile = self.transformer.osm_to_ultima(start[0], start[1])
+        end_tile = self.transformer.osm_to_ultima(end[0], end[1])
+        
+        # Bresenham-like line drawing
+        dx = abs(end_tile[0] - start_tile[0])
+        dy = abs(end_tile[1] - start_tile[1])
+        dist = max(dx, dy)
+        
+        if dist == 0:
+            self.ultima_map.set_terrain(start_tile[0], start_tile[1], random.choice(shapes))
+            return
+        
+        for i in range(dist + 1):
+            t = i / dist
+            x = int(start_tile[0] + t * (end_tile[0] - start_tile[0]))
+            y = int(start_tile[1] + t * (end_tile[1] - start_tile[1]))
+            
+            # Draw with width
+            for wx in range(-width // 2, width // 2 + 1):
+                for wy in range(-width // 2, width // 2 + 1):
+                    tx, ty = x + wx, y + wy
+                    if 0 <= tx < self.map_size[0] * 16 and 0 <= ty < self.map_size[1] * 16:
+                        self.ultima_map.set_terrain(tx, ty, random.choice(shapes))
+    
+    def _fill_polygon_terrain(self, coords: List[Tuple[float, float]], shapes: List[int]):
+        """Fill a polygon with terrain tiles using scanline algorithm."""
+        # Convert to tile coordinates
+        tile_coords = [self.transformer.osm_to_ultima(c[0], c[1]) for c in coords]
+        
+        if not tile_coords:
+            return
+        
+        # Get bounding box
+        min_x = min(c[0] for c in tile_coords)
+        max_x = max(c[0] for c in tile_coords)
+        min_y = min(c[1] for c in tile_coords)
+        max_y = max(c[1] for c in tile_coords)
+        
+        # Simple scanline fill
+        for y in range(min_y, max_y + 1):
+            for x in range(min_x, max_x + 1):
+                if self._point_in_polygon(x, y, tile_coords):
+                    self.ultima_map.set_terrain(x, y, random.choice(shapes))
+    
+    def _point_in_polygon(self, x: int, y: int, polygon: List[Tuple[int, int]]) -> bool:
+        """Check if a point is inside a polygon using ray casting."""
+        n = len(polygon)
+        inside = False
+        
+        j = n - 1
+        for i in range(n):
+            xi, yi = polygon[i]
+            xj, yj = polygon[j]
+            
+            if ((yi > y) != (yj > y)) and (x < (xj - xi) * (y - yi) / (yj - yi) + xi):
+                inside = not inside
+            
+            j = i
+        
+        return inside
+    
+    def _fill_default_terrain(self):
+        """Fill empty areas with default grass terrain."""
+        grass_shapes = TERRAIN_SHAPES["grass"]
+        
+        for cy in range(self.map_size[1]):
+            for cx in range(self.map_size[0]):
+                chunk = self.ultima_map.get_chunk(cx, cy)
+                for ly in range(16):
+                    for lx in range(16):
+                        if chunk.terrain[ly][lx] == 4:  # default grass
+                            chunk.terrain[ly][lx] = random.choice(grass_shapes)
+
+
+# =============================================================================
+# MAP EXPORTER
+# =============================================================================
+
+class MapExporter:
+    """Exports Ultima map to various formats."""
+    
+    def __init__(self, ultima_map: UltimaMap):
+        self.ultima_map = ultima_map
+    
+    def export_geojson(self, output_path: str):
+        """Export map as GeoJSON for visualization."""
+        features = []
+        
+        # Export terrain as points
+        for (cx, cy), chunk in self.ultima_map.chunks.items():
+            for ly in range(16):
+                for lx in range(16):
+                    tile_x = cx * 16 + lx
+                    tile_y = cy * 16 + ly
+                    shape = chunk.terrain[ly][lx]
+                    
+                    feature = {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [tile_x, tile_y]
+                        },
+                        "properties": {
+                            "type": "terrain",
+                            "shape": shape,
+                            "chunk": [cx, cy],
+                            "local": [lx, ly]
+                        }
+                    }
+                    features.append(feature)
+            
+            # Export objects
+            for obj in chunk.objects:
+                feature = {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [obj.x, obj.y, obj.lift]
+                    },
+                    "properties": {
+                        "type": "object",
+                        "shape": obj.shape,
+                        "frame": obj.frame,
+                        "quality": obj.quality,
+                        "lift": obj.lift
+                    }
+                }
+                features.append(feature)
+        
+        geojson = {
+            "type": "FeatureCollection",
+            "features": features,
+            "ultima_metadata": {
+                "map_size_chunks": [self.ultima_map.width_chunks, self.ultima_map.height_chunks],
+                "map_size_tiles": [self.ultima_map.width_chunks * 16, self.ultima_map.height_chunks * 16],
+                "total_chunks": len(self.ultima_map.chunks),
+                "total_objects": sum(len(c.objects) for c in self.ultima_map.chunks.values())
+            }
+        }
+        
+        with open(output_path, "w") as f:
+            json.dump(geojson, f, indent=2)
+        
+        print(f"Exported GeoJSON to {output_path}")
+    
+    def export_ireg(self, output_dir: str):
+        """Export map objects in IREG format (Ultima VII format)."""
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # Group objects by superchunk (16x16 chunks)
+        for (cx, cy), chunk in self.ultima_map.chunks.items():
+            if not chunk.objects:
+                continue
+            
+            # Calculate superchunk
+            scx = cx // 16
+            scy = cy // 16
+            sc_index = scy * 12 + scx
+            
+            filename = os.path.join(output_dir, f"u7ireg{sc_index:02x}")
+            
+            with open(filename, "ab") as f:  # append mode
+                for obj in chunk.objects:
+                    f.write(obj.to_ireg_bytes())
+        
+        print(f"Exported IREG files to {output_dir}")
+    
+    def export_terrain_map(self, output_path: str):
+        """Export terrain as a simple text map for visualization."""
+        terrain_chars = {
+            "grass": ".",
+            "water": "~",
+            "cobblestone": "#",
+            "dirt": ",",
+            "sand": ":",
+            "swamp": "%",
+            "floor": "_",
+        }
+        
+        # Reverse lookup: shape -> char
+        shape_to_char = {}
+        for terrain_type, shapes in TERRAIN_SHAPES.items():
+            char = terrain_chars.get(terrain_type, "?")
+            for shape in shapes:
+                shape_to_char[shape] = char
+        
+        lines = []
+        for cy in range(self.ultima_map.height_chunks):
+            for ly in range(16):
+                line = ""
+                for cx in range(self.ultima_map.width_chunks):
+                    chunk = self.ultima_map.get_chunk(cx, cy)
+                    for lx in range(16):
+                        shape = chunk.terrain[ly][lx]
+                        line += shape_to_char.get(shape, "?")
+                lines.append(line)
+        
+        with open(output_path, "w") as f:
+            f.write("\n".join(lines))
+        
+        print(f"Exported terrain map to {output_path}")
+    
+    def export_summary(self, output_path: str):
+        """Export a summary of the generated map."""
+        total_objects = sum(len(c.objects) for c in self.ultima_map.chunks.values())
+        
+        # Count shapes
+        shape_counts = {}
+        for chunk in self.ultima_map.chunks.values():
+            for obj in chunk.objects:
+                shape_counts[obj.shape] = shape_counts.get(obj.shape, 0) + 1
+        
+        summary = {
+            "map_size": {
+                "chunks": [self.ultima_map.width_chunks, self.ultima_map.height_chunks],
+                "tiles": [self.ultima_map.width_chunks * 16, self.ultima_map.height_chunks * 16]
+            },
+            "statistics": {
+                "total_chunks": len(self.ultima_map.chunks),
+                "total_objects": total_objects,
+                "unique_shapes": len(shape_counts)
+            },
+            "shape_counts": dict(sorted(shape_counts.items(), key=lambda x: -x[1])[:20])
+        }
+        
+        with open(output_path, "w") as f:
+            json.dump(summary, f, indent=2)
+        
+        print(f"Exported summary to {output_path}")
+
+
+# =============================================================================
+# MAIN
+# =============================================================================
+
+def main():
+    parser = argparse.ArgumentParser(description="Convert OpenStreetMap data to Ultima VII maps")
+    
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--bbox", type=str, help="Bounding box: min_lon,min_lat,max_lon,max_lat")
+    group.add_argument("--place", type=str, help="Place name to geocode")
+    
+    parser.add_argument("--radius", type=float, default=500, help="Radius in meters (for --place)")
+    parser.add_argument("--output", type=str, required=True, help="Output directory name")
+    parser.add_argument("--size", type=str, default="16,16", help="Map size in chunks (width,height)")
+    parser.add_argument("--format", type=str, default="all", 
+                        choices=["all", "geojson", "ireg", "text"],
+                        help="Output format")
+    
+    args = parser.parse_args()
+    
+    # Parse map size
+    map_size = tuple(map(int, args.size.split(",")))
+    
+    # Get bounding box
+    fetcher = OSMFetcher()
+    
+    if args.bbox:
+        bbox = tuple(map(float, args.bbox.split(",")))
+    else:
+        lon, lat = fetcher.geocode_place(args.place)
+        print(f"Found {args.place} at ({lon}, {lat})")
+        bbox = fetcher.bbox_from_center(lon, lat, args.radius)
+    
+    print(f"Bounding box: {bbox}")
+    
+    # Fetch OSM data
+    osm_data = fetcher.fetch_osm_data(bbox)
+    
+    # Generate map
+    generator = MapGenerator(bbox, map_size)
+    generator.process_osm_data(osm_data)
+    
+    # Create output directory
+    output_dir = os.path.join(os.getcwd(), args.output)
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Export
+    exporter = MapExporter(generator.ultima_map)
+    
+    if args.format in ["all", "geojson"]:
+        exporter.export_geojson(os.path.join(output_dir, "map.geojson"))
+    
+    if args.format in ["all", "ireg"]:
+        exporter.export_ireg(os.path.join(output_dir, "ireg"))
+    
+    if args.format in ["all", "text"]:
+        exporter.export_terrain_map(os.path.join(output_dir, "terrain.txt"))
+    
+    exporter.export_summary(os.path.join(output_dir, "summary.json"))
+    
+    print(f"\nMap generation complete! Output in: {output_dir}")
+
+
+if __name__ == "__main__":
+    main()
