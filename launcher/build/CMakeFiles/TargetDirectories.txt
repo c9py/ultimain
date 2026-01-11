@@ -1,0 +1,7 @@
+/home/ubuntu/ultima-integration/launcher/build/CMakeFiles/ultima-launcher.dir
+/home/ubuntu/ultima-integration/launcher/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/ultima-integration/launcher/build/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/ultima-integration/launcher/build/CMakeFiles/list_install_components.dir
+/home/ubuntu/ultima-integration/launcher/build/CMakeFiles/install.dir
+/home/ubuntu/ultima-integration/launcher/build/CMakeFiles/install/local.dir
+/home/ubuntu/ultima-integration/launcher/build/CMakeFiles/install/strip.dir

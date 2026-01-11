@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultima Engines - Web Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid #e94560;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            color: #e94560;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 40px 0;
+        }
+        
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(233, 69, 96, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: #e94560;
+            box-shadow: 0 10px 40px rgba(233, 69, 96, 0.2);
+        }
+        
+        .game-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .game-card.disabled:hover {
+            transform: none;
+            border-color: rgba(233, 69, 96, 0.3);
+            box-shadow: none;
+        }
+        
+        .game-title {
+            font-size: 1.5rem;
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+        
+        .game-engine {
+            font-size: 0.9rem;
+            color: #4ecca3;
+            margin-bottom: 15px;
+        }
+        
+        .game-description {
+            color: #b0b0b0;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .game-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .status-indicator.available {
+            background: #4ecca3;
+            box-shadow: 0 0 10px #4ecca3;
+        }
+        
+        .status-indicator.unavailable {
+            background: #e94560;
+        }
+        
+        .play-button {
+            background: linear-gradient(135deg, #e94560, #c73659);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .play-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.4);
+        }
+        
+        .play-button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        #game-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 1000;
+        }
+        
+        #game-container canvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(233, 69, 96, 0.8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 999;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #333;
+            border-top-color: #e94560;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #e94560;
+        }
+        
+        .tech-info {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+        
+        .tech-info h3 {
+            color: #4ecca3;
+            margin-bottom: 20px;
+        }
+        
+        .tech-badges {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            background: rgba(78, 204, 163, 0.1);
+            border: 1px solid #4ecca3;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        footer a {
+            color: #e94560;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ultima Engines</h1>
+            <p class="subtitle">Play classic Ultima games directly in your browser</p>
+        </header>
+        
+        <div class="games-grid">
+            <div class="game-card" data-game="u7bg">
+                <h2 class="game-title">Ultima VII: The Black Gate</h2>
+                <p class="game-engine">Engine: Exult</p>
+                <p class="game-description">
+                    Return to Britannia as the Avatar to investigate a series of ritual murders 
+                    and uncover a sinister plot that threatens the very fabric of reality.
+                </p>
+                <div class="game-status">
+                    <span class="status-indicator available"></span>
+                    <span>Requires game data files</span>
+                </div>
+                <button class="play-button" onclick="launchGame('u7bg')">Launch Game</button>
+            </div>
+            
+            <div class="game-card" data-game="u7si">
+                <h2 class="game-title">Ultima VII Part Two: Serpent Isle</h2>
+                <p class="game-engine">Engine: Exult</p>
+                <p class="game-description">
+                    Continue the Avatar's journey to the mysterious Serpent Isle, where ancient 
+                    forces threaten to tear the world apart.
+                </p>
+                <div class="game-status">
+                    <span class="status-indicator available"></span>
+                    <span>Requires game data files</span>
+                </div>
+                <button class="play-button" onclick="launchGame('u7si')">Launch Game</button>
+            </div>
+            
+            <div class="game-card" data-game="u8">
+                <h2 class="game-title">Ultima VIII: Pagan</h2>
+                <p class="game-engine">Engine: ScummVM (Pentagram)</p>
+                <p class="game-description">
+                    Banished to the dark world of Pagan by the Guardian, the Avatar must master 
+                    the elemental Titans' magic to find a way home.
+                </p>
+                <div class="game-status">
+                    <span class="status-indicator available"></span>
+                    <span>Requires game data files</span>
+                </div>
+                <button class="play-button" onclick="launchGame('u8')">Launch Game</button>
+            </div>
+            
+            <div class="game-card" data-game="u4">
+                <h2 class="game-title">Ultima IV: Quest of the Avatar</h2>
+                <p class="game-engine">Engine: CheerpX DOS</p>
+                <p class="game-description">
+                    The classic that started it all. Embark on a spiritual journey to become 
+                    the Avatar and master the Eight Virtues.
+                </p>
+                <div class="game-status">
+                    <span class="status-indicator available"></span>
+                    <span>Free to play (abandonware)</span>
+                </div>
+                <button class="play-button" onclick="launchGame('u4')">Play Now</button>
+            </div>
+        </div>
+        
+        <div class="tech-info">
+            <h3>Powered By</h3>
+            <div class="tech-badges">
+                <span class="badge">CheerpX WebAssembly VM</span>
+                <span class="badge">SDL3</span>
+                <span class="badge">Exult Engine</span>
+                <span class="badge">ScummVM</span>
+                <span class="badge">FreeDOS</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="loading-overlay" id="loading">
+        <div class="spinner"></div>
+        <p class="loading-text">Loading game engine...</p>
+    </div>
+    
+    <div id="game-container">
+        <button class="close-button" onclick="closeGame()">Exit Game</button>
+        <canvas id="game-canvas"></canvas>
+    </div>
+    
+    <footer>
+        <p>
+            Ultima Engines Integration Project | 
+            <a href="https://github.com/leaningtech/cheerpx-games-runner">CheerpX Games Runner</a> |
+            <a href="https://exult.info">Exult</a> |
+            <a href="https://scummvm.org">ScummVM</a>
+        </p>
+        <p style="margin-top: 10px;">
+            Ultima is a trademark of ORIGIN Systems, Inc. This project is not affiliated with EA or ORIGIN.
+        </p>
+    </footer>
+    
+    <script>
+        // CheerpX integration for DOS games
+        let cheerpxInstance = null;
+        
+        async function initCheerpX() {
+            // Load CheerpX runtime
+            const script = document.createElement('script');
+            script.src = 'https://cxrtnc.leaningtech.com/1.0.6/cx.js';
+            document.head.appendChild(script);
+            
+            return new Promise((resolve, reject) => {
+                script.onload = resolve;
+                script.onerror = reject;
+            });
+        }
+        
+        async function launchGame(gameId) {
+            const loading = document.getElementById('loading');
+            const container = document.getElementById('game-container');
+            
+            loading.classList.add('active');
+            
+            try {
+                switch(gameId) {
+                    case 'u4':
+                        await launchDOSGame('ultima4');
+                        break;
+                    case 'u7bg':
+                    case 'u7si':
+                        alert('Exult web version requires game data files.\n\nPlease use the desktop launcher or provide your own game files.');
+                        loading.classList.remove('active');
+                        return;
+                    case 'u8':
+                        alert('ScummVM web version requires game data files.\n\nPlease use the desktop launcher or provide your own game files.');
+                        loading.classList.remove('active');
+                        return;
+                    default:
+                        throw new Error('Unknown game: ' + gameId);
+                }
+                
+                container.style.display = 'block';
+            } catch (error) {
+                console.error('Failed to launch game:', error);
+                alert('Failed to launch game: ' + error.message);
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+        
+        async function launchDOSGame(gameName) {
+            // Initialize CheerpX if not already done
+            if (!cheerpxInstance) {
+                await initCheerpX();
+                
+                // Wait for CheerpX to be available
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            const canvas = document.getElementById('game-canvas');
+            
+            // This would integrate with CheerpX Games Runner
+            // For now, show a placeholder message
+            console.log('Launching DOS game:', gameName);
+            
+            // The actual CheerpX integration would look like:
+            // cheerpxInstance = await CheerpX.Linux.create({
+            //     mounts: [
+            //         { type: 'ext2', path: '/games/' + gameName, url: gameName + '.ext2' }
+            //     ]
+            // });
+            // await cheerpxInstance.run('/games/' + gameName + '/game.exe', []);
+        }
+        
+        function closeGame() {
+            const container = document.getElementById('game-container');
+            container.style.display = 'none';
+            
+            if (cheerpxInstance) {
+                // Clean up CheerpX instance
+                cheerpxInstance = null;
+            }
+        }
+        
+        // Handle escape key to close game
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeGame();
+            }
+        });
+    </script>
+</body>
+</html>

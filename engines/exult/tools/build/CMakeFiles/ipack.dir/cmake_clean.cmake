@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/conf/Configuration.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/conf/Configuration.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/conf/XMLEntity.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/conf/XMLEntity.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/Flat.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/Flat.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/Flex.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/Flex.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/IFF.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/IFF.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/Table.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/Table.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/U7file.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/U7file.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/U7fileman.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/U7fileman.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/U7obj.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/U7obj.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/crc.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/crc.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/listfiles.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/listfiles.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/utils.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/utils.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/zip/unzip.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/zip/unzip.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/zip/zip.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/files/zip/zip.cc.o.d"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/istring.cc.o"
+  "CMakeFiles/ipack.dir/home/ubuntu/ultima-integration/engines/exult/istring.cc.o.d"
+  "CMakeFiles/ipack.dir/ipack.cc.o"
+  "CMakeFiles/ipack.dir/ipack.cc.o.d"
+  "ipack"
+  "ipack.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/ipack.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

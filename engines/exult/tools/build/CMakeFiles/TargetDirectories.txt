@@ -1,0 +1,5 @@
+/home/ubuntu/ultima-integration/engines/exult/tools/build/CMakeFiles/expack.dir
+/home/ubuntu/ultima-integration/engines/exult/tools/build/CMakeFiles/ipack.dir
+/home/ubuntu/ultima-integration/engines/exult/tools/build/CMakeFiles/textpack.dir
+/home/ubuntu/ultima-integration/engines/exult/tools/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/ultima-integration/engines/exult/tools/build/CMakeFiles/rebuild_cache.dir

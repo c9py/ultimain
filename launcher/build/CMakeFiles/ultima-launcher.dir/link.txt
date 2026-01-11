@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/ultima-launcher.dir/main.cpp.o -o ultima-launcher  -lSDL3 

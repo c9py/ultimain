@@ -1,0 +1,7 @@
+/home/ubuntu/ultima-integration/build/CMakeFiles/ultima_shared.dir
+/home/ubuntu/ultima-integration/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/ultima-integration/build/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/ultima-integration/build/CMakeFiles/list_install_components.dir
+/home/ubuntu/ultima-integration/build/CMakeFiles/install.dir
+/home/ubuntu/ultima-integration/build/CMakeFiles/install/local.dir
+/home/ubuntu/ultima-integration/build/CMakeFiles/install/strip.dir

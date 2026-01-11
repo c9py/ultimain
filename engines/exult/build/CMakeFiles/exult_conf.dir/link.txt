@@ -1,0 +1,2 @@
+/usr/bin/ar qc libexult_conf.a CMakeFiles/exult_conf.dir/conf/Configuration.cc.o CMakeFiles/exult_conf.dir/conf/XMLEntity.cc.o CMakeFiles/exult_conf.dir/conf/xmain.cc.o
+/usr/bin/ranlib libexult_conf.a

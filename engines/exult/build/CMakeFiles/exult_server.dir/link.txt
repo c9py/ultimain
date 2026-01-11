@@ -1,0 +1,2 @@
+/usr/bin/ar qc libexult_server.a CMakeFiles/exult_server.dir/server/objserial.cc.o CMakeFiles/exult_server.dir/server/servemsg.cc.o CMakeFiles/exult_server.dir/server/server.cc.o CMakeFiles/exult_server.dir/server/servewin32.cc.o
+/usr/bin/ranlib libexult_server.a

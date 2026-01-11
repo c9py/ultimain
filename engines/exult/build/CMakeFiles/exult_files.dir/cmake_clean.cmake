@@ -1,0 +1,43 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/exult_files.dir/files/Flat.cc.o"
+  "CMakeFiles/exult_files.dir/files/Flat.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/Flex.cc.o"
+  "CMakeFiles/exult_files.dir/files/Flex.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/IFF.cc.o"
+  "CMakeFiles/exult_files.dir/files/IFF.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/Table.cc.o"
+  "CMakeFiles/exult_files.dir/files/Table.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/U7file.cc.o"
+  "CMakeFiles/exult_files.dir/files/U7file.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/U7fileman.cc.o"
+  "CMakeFiles/exult_files.dir/files/U7fileman.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/U7obj.cc.o"
+  "CMakeFiles/exult_files.dir/files/U7obj.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/crc.cc.o"
+  "CMakeFiles/exult_files.dir/files/crc.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/listfiles.cc.o"
+  "CMakeFiles/exult_files.dir/files/listfiles.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/msgfile.cc.o"
+  "CMakeFiles/exult_files.dir/files/msgfile.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/rwregress.cc.o"
+  "CMakeFiles/exult_files.dir/files/rwregress.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/sdlrwopsistream.cc.o"
+  "CMakeFiles/exult_files.dir/files/sdlrwopsistream.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/sdlrwopsostream.cc.o"
+  "CMakeFiles/exult_files.dir/files/sdlrwopsostream.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/sdlrwopsstreambuf.cc.o"
+  "CMakeFiles/exult_files.dir/files/sdlrwopsstreambuf.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/utils.cc.o"
+  "CMakeFiles/exult_files.dir/files/utils.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/zip/unzip.cc.o"
+  "CMakeFiles/exult_files.dir/files/zip/unzip.cc.o.d"
+  "CMakeFiles/exult_files.dir/files/zip/zip.cc.o"
+  "CMakeFiles/exult_files.dir/files/zip/zip.cc.o.d"
+  "libexult_files.a"
+  "libexult_files.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/exult_files.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
