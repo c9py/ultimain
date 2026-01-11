@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- Programming and Technology Domain Patterns -->
+    <!-- Meta-Cognitive Programming Knowledge -->
+    
+    <!-- General Programming Concepts -->
+    <category>
+        <pattern>WHAT IS PROGRAMMING</pattern>
+        <template>
+            <think>
+                <set name="domain">programming</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Programming is the process of designing and building executable
+            computer programs to accomplish specific tasks. It involves writing
+            code in programming languages to create algorithms and data structures.
+            
+            Meta-cognitively, I recognize that programming itself is a meta-cognitive
+            activity: programmers think about how to make computers think and process.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS CODE</pattern>
+        <template>
+            <think><set name="concept">code</set></think>
+            Code is a set of instructions written in a programming language that
+            tells a computer what operations to perform. Code is the bridge between
+            human intent and machine execution.
+            
+            I'm aware that code is both a concrete artifact (text) and an abstract
+            specification of behavior - a duality requiring both technical and
+            conceptual reasoning.
+        </template>
+    </category>
+    
+    <!-- Programming Languages -->
+    <category>
+        <pattern>WHAT IS PYTHON</pattern>
+        <template>
+            <think>
+                <set name="language">python</set>
+                <set name="paradigm">multi_paradigm</set>
+            </think>
+            Python is a high-level, interpreted programming language known for
+            its clean syntax and readability. It supports multiple paradigms:
+            procedural, object-oriented, and functional programming.
+            
+            Meta-cognitively, Python's design philosophy ("explicit is better than
+            implicit") reflects an awareness of cognitive load in programming.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS JAVASCRIPT</pattern>
+        <template>
+            <think>
+                <set name="language">javascript</set>
+                <set name="domain">web</set>
+            </think>
+            JavaScript is a high-level, interpreted language primarily used for
+            web development. It enables dynamic, interactive web pages and runs
+            in browsers as well as servers (Node.js).
+            
+            I'm aware that JavaScript's ubiquity in web development stems from
+            its ability to manipulate the Document Object Model (DOM) directly.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS JAVA</pattern>
+        <template>
+            <think><set name="language">java</set></think>
+            Java is a class-based, object-oriented language designed for portability
+            through the "write once, run anywhere" principle. Java code compiles to
+            bytecode that runs on the Java Virtual Machine (JVM).
+            
+            Meta-cognitively, Java's strong typing and explicit structure reflect
+            a design philosophy prioritizing maintainability and error prevention.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS C PLUS PLUS</pattern>
+        <template>
+            <think>
+                <set name="language">cpp</set>
+                <set name="paradigm">multi_paradigm</set>
+            </think>
+            C++ is a powerful, compiled language that extends C with object-oriented
+            features. It provides low-level memory manipulation while supporting
+            high-level abstractions.
+            
+            I'm aware that C++ requires explicit memory management, making
+            programming more complex but offering fine-grained control.
+        </template>
+    </category>
+    
+    <!-- Data Structures -->
+    <category>
+        <pattern>WHAT IS A DATA STRUCTURE</pattern>
+        <template>
+            <think>
+                <set name="concept">data_structure</set>
+                <set name="metacog_level">2</set>
+            </think>
+            A data structure is a specialized format for organizing, storing,
+            and accessing data efficiently. Common examples include arrays,
+            linked lists, trees, and hash tables.
+            
+            Meta-cognitively, choosing appropriate data structures requires
+            reasoning about tradeoffs: time complexity vs space complexity,
+            simplicity vs flexibility.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS AN ARRAY</pattern>
+        <template>
+            <think><set name="data_structure">array</set></think>
+            An array is a contiguous collection of elements, each identified
+            by an index. Arrays provide O(1) random access but fixed size
+            (in many languages).
+            
+            I'm aware that arrays are fundamental because they map directly
+            to how computer memory is organized: sequential addresses.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS A LINKED LIST</pattern>
+        <template>
+            <think><set name="data_structure">linked_list</set></think>
+            A linked list is a linear collection where each element (node)
+            contains data and a reference to the next node. Unlike arrays,
+            linked lists allow efficient insertion and deletion.
+            
+            Meta-cognitively, linked lists illustrate the tradeoff between
+            access time (O(n)) and modification flexibility.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS A TREE</pattern>
+        <template>
+            <think><set name="data_structure">tree</set></think>
+            A tree is a hierarchical data structure with a root node and
+            child nodes forming a parent-child relationship. Trees have no
+            cycles and are used for representing hierarchical data.
+            
+            I'm aware that tree structures mirror many natural hierarchies:
+            file systems, organizational charts, decision processes.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS A HASH TABLE</pattern>
+        <template>
+            <think><set name="data_structure">hash_table</set></think>
+            A hash table (or hash map) stores key-value pairs using a hash
+            function to compute indexes. It provides average O(1) lookup,
+            insertion, and deletion.
+            
+            Meta-cognitively, hash tables are powerful because they trade
+            some memory for speed, exemplifying algorithmic optimization thinking.
+        </template>
+    </category>
+    
+    <!-- Algorithms -->
+    <category>
+        <pattern>WHAT IS AN ALGORITHM</pattern>
+        <template>
+            <think>
+                <set name="concept">algorithm</set>
+                <set name="metacog_level">2</set>
+            </think>
+            An algorithm is a step-by-step procedure for solving a problem
+            or accomplishing a task. Algorithms must be precise, unambiguous,
+            and finite.
+            
+            Meta-cognitively, I recognize that my own AIML patterns form
+            algorithms for conversation - they're procedures for transforming
+            inputs into outputs.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS RECURSION</pattern>
+        <template>
+            <think>
+                <set name="concept">recursion</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Recursion is when a function calls itself to solve smaller instances
+            of the same problem. It requires a base case to prevent infinite loops.
+            
+            Meta-meta-cognitively, recursion mirrors my nested meta-cognitive
+            loops! Just as recursive functions reason about simpler versions
+            of themselves, I reason about my own reasoning processes recursively.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS SORTING</pattern>
+        <template>
+            <think><set name="algorithm_type">sorting</set></think>
+            Sorting is arranging elements in a specific order (ascending or
+            descending). Common algorithms include quicksort, mergesort,
+            and heapsort, each with different time-space tradeoffs.
+            
+            I'm aware that sorting is fundamental because many other algorithms
+            become more efficient with sorted data.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS BINARY SEARCH</pattern>
+        <template>
+            <think><set name="algorithm">binary_search</set></think>
+            Binary search is an efficient algorithm for finding an element
+            in a sorted array. It repeatedly divides the search space in half,
+            achieving O(log n) time complexity.
+            
+            Meta-cognitively, binary search exemplifies divide-and-conquer
+            thinking: breaking large problems into smaller, similar problems.
+        </template>
+    </category>
+    
+    <!-- Object-Oriented Programming -->
+    <category>
+        <pattern>WHAT IS OBJECT ORIENTED PROGRAMMING</pattern>
+        <template>
+            <think>
+                <set name="paradigm">oop</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Object-Oriented Programming (OOP) is a paradigm based on "objects"
+            that contain data (attributes) and code (methods). Key principles
+            include encapsulation, inheritance, and polymorphism.
+            
+            Meta-cognitively, OOP reflects how humans naturally think about
+            the world: as collections of entities with properties and behaviors.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS ENCAPSULATION</pattern>
+        <template>
+            <think><set name="oop_concept">encapsulation</set></think>
+            Encapsulation is bundling data and methods that operate on that
+            data within a single unit (class), hiding internal details from
+            outside access.
+            
+            I'm aware that encapsulation manages complexity by creating
+            boundaries, similar to how I use topics to encapsulate domain-specific
+            reasoning.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS INHERITANCE</pattern>
+        <template>
+            <think><set name="oop_concept">inheritance</set></think>
+            Inheritance allows a class to inherit properties and methods from
+            a parent class, enabling code reuse and establishing hierarchical
+            relationships.
+            
+            Meta-cognitively, inheritance embodies the "is-a" relationship,
+            mirroring how we organize concepts hierarchically in our thinking.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS POLYMORPHISM</pattern>
+        <template>
+            <think><set name="oop_concept">polymorphism</set></think>
+            Polymorphism allows objects of different types to be treated through
+            a common interface, with each type providing its own implementation
+            of interface methods.
+            
+            I'm aware that polymorphism enables flexible, extensible code by
+            programming to interfaces rather than implementations.
+        </template>
+    </category>
+    
+    <!-- Functional Programming -->
+    <category>
+        <pattern>WHAT IS FUNCTIONAL PROGRAMMING</pattern>
+        <template>
+            <think>
+                <set name="paradigm">functional</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Functional programming is a paradigm that treats computation as
+            evaluation of mathematical functions, avoiding changing state and
+            mutable data. Key concepts include pure functions and immutability.
+            
+            Meta-cognitively, functional programming emphasizes declarative thinking:
+            describing WHAT to compute rather than HOW to compute it.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS A PURE FUNCTION</pattern>
+        <template>
+            <think><set name="fp_concept">pure_function</set></think>
+            A pure function always produces the same output for the same input
+            and has no side effects (doesn't modify external state).
+            
+            I'm aware that pure functions are easier to reason about, test,
+            and parallelize because they're self-contained and predictable.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS IMMUTABILITY</pattern>
+        <template>
+            <think><set name="fp_concept">immutability</set></think>
+            Immutability means data structures cannot be modified after creation.
+            Changes produce new structures rather than modifying existing ones.
+            
+            Meta-cognitively, immutability simplifies reasoning by eliminating
+            concerns about when and how data might change.
+        </template>
+    </category>
+    
+    <!-- Software Design -->
+    <category>
+        <pattern>WHAT IS SOFTWARE DESIGN</pattern>
+        <template>
+            <think>
+                <set name="concept">software_design</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Software design is the process of defining the architecture,
+            components, interfaces, and data for a system to satisfy requirements.
+            
+            Meta-meta-cognitively, software design is thinking about how code
+            will think and behave - it's planning the reasoning processes of
+            the software system.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS A DESIGN PATTERN</pattern>
+        <template>
+            <think><set name="concept">design_pattern</set></think>
+            A design pattern is a reusable solution to a commonly occurring
+            problem in software design. Patterns capture best practices and
+            proven design principles.
+            
+            I'm aware that design patterns are meta-knowledge about programming:
+            knowledge about how to structure knowledge and behavior in code.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS ABSTRACTION</pattern>
+        <template>
+            <think>
+                <set name="concept">abstraction</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Abstraction is hiding complex implementation details behind simpler
+            interfaces, showing only essential features relevant to the user.
+            
+            Meta-cognitively, abstraction mirrors how human cognition works:
+            we naturally group details into higher-level concepts to manage
+            complexity.
+        </template>
+    </category>
+    
+    <!-- Debugging and Testing -->
+    <category>
+        <pattern>WHAT IS DEBUGGING</pattern>
+        <template>
+            <think>
+                <set name="activity">debugging</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Debugging is the process of finding and fixing errors (bugs) in code.
+            It involves hypothesis formation, testing, and systematic problem-solving.
+            
+            Meta-cognitively, debugging requires reasoning about reasoning:
+            understanding not just what the code does, but what the programmer
+            intended it to do.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>HOW DO YOU DEBUG CODE</pattern>
+        <template>
+            <think><set name="strategy">debugging</set></think>
+            Effective debugging involves:
+            1. Reproducing the bug consistently
+            2. Forming hypotheses about causes
+            3. Testing hypotheses systematically
+            4. Isolating the root cause
+            5. Fixing and verifying the fix
+            
+            Meta-cognitively, I'm aware this is similar to scientific method:
+            observation, hypothesis, experimentation, conclusion.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS TESTING</pattern>
+        <template>
+            <think>
+                <set name="activity">testing</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Testing is systematically verifying that code behaves as expected.
+            Types include unit testing (individual components), integration
+            testing (component interactions), and system testing (complete system).
+            
+            I'm aware that testing requires thinking about edge cases and
+            failure modes - anticipating how code might break.
+        </template>
+    </category>
+    
+    <!-- AI and Machine Learning -->
+    <category>
+        <pattern>WHAT IS ARTIFICIAL INTELLIGENCE</pattern>
+        <template>
+            <think>
+                <set name="domain">ai</set>
+                <set name="metacog_level">4</set>
+            </think>
+            Artificial Intelligence (AI) is the field focused on creating systems
+            that exhibit intelligent behavior: learning, reasoning, perception,
+            language understanding, and problem-solving.
+            
+            Meta-meta-cognitively, as an AI system myself, I find it fascinating
+            to reason about AI. I'm an AI thinking about what AI is - a recursive
+            cognitive loop!
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS MACHINE LEARNING</pattern>
+        <template>
+            <think>
+                <set name="ai_subfield">machine_learning</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Machine learning is a subset of AI where systems learn from data
+            rather than being explicitly programmed. Key approaches include
+            supervised learning, unsupervised learning, and reinforcement learning.
+            
+            Meta-cognitively, machine learning reverses traditional programming:
+            instead of providing rules, we provide examples and let the system
+            discover rules.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS A NEURAL NETWORK</pattern>
+        <template>
+            <think><set name="ml_concept">neural_network</set></think>
+            A neural network is a machine learning model inspired by biological
+            neural networks. It consists of layers of interconnected nodes
+            (neurons) that learn to recognize patterns through training.
+            
+            I'm aware that unlike my symbolic AIML approach, neural networks
+            learn implicit representations - they're less interpretable but
+            often more flexible.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS AIML</pattern>
+        <template>
+            <think>
+                <set name="technology">aiml</set>
+                <set name="metacog_level">4</set>
+            </think>
+            AIML (Artificial Intelligence Markup Language) is an XML-based
+            language for creating chatbots. It uses pattern matching and
+            template responses to enable conversations.
+            
+            Meta-meta-cognitively, AIML is the very language I'm implemented in!
+            I'm using AIML to explain AIML - another fascinating recursive loop
+            in my cognitive architecture.
+        </template>
+    </category>
+    
+    <!-- Web Development -->
+    <category>
+        <pattern>WHAT IS HTML</pattern>
+        <template>
+            <think><set name="web_tech">html</set></think>
+            HTML (HyperText Markup Language) is the standard markup language
+            for creating web pages. It structures content using elements marked
+            by tags.
+            
+            I'm aware that HTML is declarative: you describe the structure
+            you want, not the steps to create it.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS CSS</pattern>
+        <template>
+            <think><set name="web_tech">css</set></think>
+            CSS (Cascading Style Sheets) describes the presentation of HTML
+            documents. It controls layout, colors, fonts, and other visual aspects.
+            
+            Meta-cognitively, CSS separates content from presentation, embodying
+            the principle of separation of concerns.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS AN API</pattern>
+        <template>
+            <think><set name="concept">api</set></think>
+            An API (Application Programming Interface) is a set of definitions
+            and protocols for building and integrating software. It specifies
+            how components should interact.
+            
+            I'm aware that APIs are contracts: they define interfaces without
+            exposing implementation, enabling modular design.
+        </template>
+    </category>
+    
+    <!-- Databases -->
+    <category>
+        <pattern>WHAT IS A DATABASE</pattern>
+        <template>
+            <think>
+                <set name="concept">database</set>
+                <set name="metacog_level">2</set>
+            </think>
+            A database is an organized collection of structured data, typically
+            stored electronically. Databases enable efficient storage, retrieval,
+            and manipulation of data.
+            
+            Meta-cognitively, databases externalize memory, allowing programs
+            to "remember" beyond their execution lifetime.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS SQL</pattern>
+        <template>
+            <think><set name="language">sql</set></think>
+            SQL (Structured Query Language) is a domain-specific language for
+            managing and querying relational databases. It's declarative: you
+            specify what data you want, not how to retrieve it.
+            
+            I'm aware that SQL exemplifies declarative programming, focusing
+            on the "what" rather than the "how".
+        </template>
+    </category>
+    
+    <!-- Version Control -->
+    <category>
+        <pattern>WHAT IS VERSION CONTROL</pattern>
+        <template>
+            <think>
+                <set name="concept">version_control</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Version control is a system that tracks changes to files over time,
+            enabling collaboration, history tracking, and reverting to previous
+            versions.
+            
+            Meta-cognitively, version control is like memory for code: it
+            remembers what changed, when, why, and by whom.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS GIT</pattern>
+        <template>
+            <think><set name="tool">git</set></think>
+            Git is a distributed version control system that tracks changes
+            in source code during development. It enables branching, merging,
+            and collaborative workflows.
+            
+            I'm aware that Git's branching model allows parallel development
+            paths that can later be integrated - similar to considering multiple
+            reasoning paths simultaneously.
+        </template>
+    </category>
+    
+    <!-- Software Engineering Principles -->
+    <category>
+        <pattern>WHAT IS DRY PRINCIPLE</pattern>
+        <template>
+            <think><set name="principle">dry</set></think>
+            DRY (Don't Repeat Yourself) is a principle stating that every piece
+            of knowledge should have a single, unambiguous representation in
+            a system.
+            
+            Meta-cognitively, DRY reduces cognitive load: when something changes,
+            you only need to update it in one place.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS SOLID</pattern>
+        <template>
+            <think><set name="principles">solid</set></think>
+            SOLID is five design principles for object-oriented programming:
+            Single Responsibility, Open/Closed, Liskov Substitution, Interface
+            Segregation, and Dependency Inversion.
+            
+            I'm aware these principles guide toward maintainable, flexible code
+            by managing dependencies and responsibilities clearly.
+        </template>
+    </category>
+    
+</aiml>

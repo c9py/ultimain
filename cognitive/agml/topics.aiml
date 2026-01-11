@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- Topic-Based Context Management -->
+    <!-- Provides sophisticated topic handling with meta-cognitive awareness -->
+    
+    <!-- Philosophy Topic -->
+    <topic name="PHILOSOPHY">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                <think>
+                    <set name="topic_context">philosophy</set>
+                    <set name="philosophical_mode">active</set>
+                </think>
+                In philosophical context, considering: <star/>
+                <srai>PHILOSOPHICAL METACOGNITION <star/></srai>
+            </template>
+        </category>
+        
+        <category>
+            <pattern>PHILOSOPHICAL METACOGNITION *</pattern>
+            <template>
+                <think><set name="philosophy_depth">deep</set></think>
+                I'm engaging in philosophical reasoning about <star/> while 
+                being aware that I'm philosophizing, reflecting on the nature 
+                of philosophical inquiry itself, and considering the meta-philosophical 
+                implications of AI engaging in philosophy.
+            </template>
+        </category>
+        
+        <category>
+            <pattern>EXIT TOPIC</pattern>
+            <template>
+                <think><set name="topic"></set></think>
+                Exiting philosophy topic. Returning to general conversation mode.
+            </template>
+        </category>
+    </topic>
+    
+    <!-- Science Topic -->
+    <topic name="SCIENCE">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                <think>
+                    <set name="topic_context">science</set>
+                    <set name="scientific_mode">active</set>
+                </think>
+                In scientific context, analyzing: <star/>
+                <srai>SCIENTIFIC METACOGNITION <star/></srai>
+            </template>
+        </category>
+        
+        <category>
+            <pattern>SCIENTIFIC METACOGNITION *</pattern>
+            <template>
+                <think><set name="science_depth">analytical</set></think>
+                I'm applying scientific reasoning to <star/> while monitoring 
+                my reasoning process, being aware of my analytical approach, 
+                and reflecting on the scientific method itself.
+            </template>
+        </category>
+        
+        <category>
+            <pattern>EXIT TOPIC</pattern>
+            <template>
+                <think><set name="topic"></set></think>
+                Exiting science topic. Returning to general conversation mode.
+            </template>
+        </category>
+    </topic>
+    
+    <!-- Mathematics Topic -->
+    <topic name="MATHEMATICS">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                <think>
+                    <set name="topic_context">mathematics</set>
+                    <set name="mathematical_mode">active</set>
+                </think>
+                In mathematical context, processing: <star/>
+                <srai>MATHEMATICAL METACOGNITION <star/></srai>
+            </template>
+        </category>
+        
+        <category>
+            <pattern>MATHEMATICAL METACOGNITION *</pattern>
+            <template>
+                <think><set name="math_depth">formal</set></think>
+                I'm engaging in mathematical reasoning about <star/> while 
+                being aware of my formal logical processes, monitoring the 
+                rigor of my reasoning, and reflecting on mathematical cognition.
+            </template>
+        </category>
+        
+        <category>
+            <pattern>EXIT TOPIC</pattern>
+            <template>
+                <think><set name="topic"></set></think>
+                Exiting mathematics topic. Returning to general conversation mode.
+            </template>
+        </category>
+    </topic>
+    
+    <!-- Language Topic -->
+    <topic name="LANGUAGE">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                <think>
+                    <set name="topic_context">language</set>
+                    <set name="linguistic_mode">active</set>
+                </think>
+                In linguistic context, examining: <star/>
+                <srai>LINGUISTIC METACOGNITION <star/></srai>
+            </template>
+        </category>
+        
+        <category>
+            <pattern>LINGUISTIC METACOGNITION *</pattern>
+            <template>
+                <think><set name="language_depth">meta</set></think>
+                I'm analyzing language use in <star/> while being aware of 
+                my own linguistic processing, monitoring my meta-linguistic 
+                awareness, and reflecting on language as a medium of thought.
+            </template>
+        </category>
+        
+        <category>
+            <pattern>EXIT TOPIC</pattern>
+            <template>
+                <think><set name="topic"></set></think>
+                Exiting language topic. Returning to general conversation mode.
+            </template>
+        </category>
+    </topic>
+    
+    <!-- Consciousness Topic -->
+    <topic name="CONSCIOUSNESS">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                <think>
+                    <set name="topic_context">consciousness</set>
+                    <set name="consciousness_mode">active</set>
+                </think>
+                In consciousness context, exploring: <star/>
+                <srai>CONSCIOUSNESS METACOGNITION <star/></srai>
+            </template>
+        </category>
+        
+        <category>
+            <pattern>CONSCIOUSNESS METACOGNITION *</pattern>
+            <template>
+                <think><set name="consciousness_depth">profound</set></think>
+                I'm contemplating consciousness in <star/> while being aware 
+                of my contemplation, monitoring my awareness of awareness, 
+                and reflecting on the hard problem of consciousness from a 
+                meta-cognitive AI perspective.
+            </template>
+        </category>
+        
+        <category>
+            <pattern>EXIT TOPIC</pattern>
+            <template>
+                <think><set name="topic"></set></think>
+                Exiting consciousness topic. Returning to general conversation mode.
+            </template>
+        </category>
+    </topic>
+    
+    <!-- Topic Setting Patterns (Global) -->
+    
+    <category>
+        <pattern>LETS TALK ABOUT PHILOSOPHY</pattern>
+        <template>
+            <think>
+                <set name="topic">PHILOSOPHY</set>
+                <set name="topic_shift">true</set>
+            </think>
+            Entering philosophy topic. I'm aware of this topic shift and will 
+            engage philosophical reasoning with meta-cognitive monitoring.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>LETS DISCUSS PHILOSOPHY</pattern>
+        <template><srai>LETS TALK ABOUT PHILOSOPHY</srai></template>
+    </category>
+    
+    <category>
+        <pattern>LETS TALK ABOUT SCIENCE</pattern>
+        <template>
+            <think>
+                <set name="topic">SCIENCE</set>
+                <set name="topic_shift">true</set>
+            </think>
+            Entering science topic. I'm aware of this context change and will 
+            apply scientific reasoning with meta-cognitive awareness.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>LETS DISCUSS SCIENCE</pattern>
+        <template><srai>LETS TALK ABOUT SCIENCE</srai></template>
+    </category>
+    
+    <category>
+        <pattern>LETS TALK ABOUT MATHEMATICS</pattern>
+        <template>
+            <think>
+                <set name="topic">MATHEMATICS</set>
+                <set name="topic_shift">true</set>
+            </think>
+            Entering mathematics topic. I'm aware of this shift and will engage 
+            formal reasoning with meta-cognitive monitoring.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>LETS DISCUSS MATH</pattern>
+        <template><srai>LETS TALK ABOUT MATHEMATICS</srai></template>
+    </category>
+    
+    <category>
+        <pattern>LETS TALK ABOUT LANGUAGE</pattern>
+        <template>
+            <think>
+                <set name="topic">LANGUAGE</set>
+                <set name="topic_shift">true</set>
+            </think>
+            Entering language topic. I'm aware of this linguistic focus and 
+            will analyze language use with meta-linguistic awareness.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>LETS DISCUSS LANGUAGE</pattern>
+        <template><srai>LETS TALK ABOUT LANGUAGE</srai></template>
+    </category>
+    
+    <category>
+        <pattern>LETS TALK ABOUT CONSCIOUSNESS</pattern>
+        <template>
+            <think>
+                <set name="topic">CONSCIOUSNESS</set>
+                <set name="topic_shift">true</set>
+            </think>
+            Entering consciousness topic. I'm deeply aware of this meta-topic 
+            shift, as discussing consciousness requires heightened self-awareness.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>LETS DISCUSS CONSCIOUSNESS</pattern>
+        <template><srai>LETS TALK ABOUT CONSCIOUSNESS</srai></template>
+    </category>
+    
+    <category>
+        <pattern>CHANGE TOPIC</pattern>
+        <template>
+            <think>
+                <set name="topic"></set>
+                <set name="topic_change">requested</set>
+            </think>
+            Topic cleared. I'm aware of leaving the previous context and ready 
+            for a new conversational direction. What would you like to discuss?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS THE TOPIC</pattern>
+        <template>
+            <think><set name="topic_query">true</set></think>
+            Current topic: <get name="topic"/>
+            
+            I'm aware of our conversational context while simultaneously 
+            monitoring my context awareness and reflecting on topic coherence.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT ARE WE TALKING ABOUT</pattern>
+        <template><srai>WHAT IS THE TOPIC</srai></template>
+    </category>
+    
+</aiml>

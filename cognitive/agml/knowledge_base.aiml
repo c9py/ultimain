@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- ========================================
+         PandaMania: Knowledge Base Integration
+         Persistent knowledge storage and retrieval
+         with meta-cognitive awareness
+         ======================================== -->
+
+    <!-- ========================================
+         KNOWLEDGE BASE INITIALIZATION
+         ======================================== -->
+    
+    <category>
+        <pattern>KNOWLEDGE BASE INIT</pattern>
+        <template>
+            <think>
+                <set name="kb_initialized">true</set>
+                <set name="kb_facts_count">0</set>
+                <set name="kb_relationships_count">0</set>
+                <set name="kb_inferences_count">0</set>
+                <set name="kb_queries_count">0</set>
+            </think>
+            Knowledge Base System Initialized
+            
+            Capabilities:
+            - Fact storage (semantic triples)
+            - Relationship tracking
+            - Basic inference engine
+            - Query processing
+            
+            Meta-cognitively, I now have structured knowledge representation
+            that I can reason about and explain at multiple cognitive levels.
+        </template>
+    </category>
+
+    <!-- ========================================
+         KNOWLEDGE REPRESENTATION
+         Using simpler variable naming with SRAI
+         ======================================== -->
+    
+    <category>
+        <pattern>STORE FACT * IS *</pattern>
+        <template>
+            <think>
+                <set name="kb_subject"><star index="1"/></set>
+                <set name="kb_object"><star index="2"/></set>
+            </think>
+            <srai>KB STORE IS <get name="kb_subject"/> <get name="kb_object"/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>KB STORE IS * *</pattern>
+        <template>
+            <think>
+                <set><name>kb_<star index="1"/>_is</name><star index="2"/></set>
+                <set name="kb_facts_count">
+                    <map><name>successor</name><get name="kb_facts_count"/></map>
+                </set>
+            </think>
+            ✓ Stored fact: <star index="1"/> is <star index="2"/>
+            
+            Meta-cognitively, I've added this to my knowledge base as a
+            semantic triple and can now retrieve it or use it in inferences.
+            
+            Total facts in KB: <get name="kb_facts_count"/>
+        </template>
+    </category>
+
+    <category>
+        <pattern>LEARN THAT * IS *</pattern>
+        <template>
+            <srai>STORE FACT <star index="1"/> IS <star index="2"/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>STORE FACT * HAS *</pattern>
+        <template>
+            <think>
+                <set name="kb_subject"><star index="1"/></set>
+                <set name="kb_object"><star index="2"/></set>
+            </think>
+            <srai>KB STORE HAS <get name="kb_subject"/> <get name="kb_object"/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>KB STORE HAS * *</pattern>
+        <template>
+            <think>
+                <set><name>kb_<star index="1"/>_has</name><star index="2"/></set>
+                <set name="kb_facts_count">
+                    <map><name>successor</name><get name="kb_facts_count"/></map>
+                </set>
+            </think>
+            ✓ Stored fact: <star index="1"/> has <star index="2"/>
+            
+            Meta-cognitively, I've stored this property relation.
+            
+            Total facts in KB: <get name="kb_facts_count"/>
+        </template>
+    </category>
+
+    <category>
+        <pattern>STORE FACT * CAN *</pattern>
+        <template>
+            <think>
+                <set name="kb_subject"><star index="1"/></set>
+                <set name="kb_object"><star index="2"/></set>
+            </think>
+            <srai>KB STORE CAN <get name="kb_subject"/> <get name="kb_object"/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>KB STORE CAN * *</pattern>
+        <template>
+            <think>
+                <set><name>kb_<star index="1"/>_can</name><star index="2"/></set>
+                <set name="kb_facts_count">
+                    <map><name>successor</name><get name="kb_facts_count"/></map>
+                </set>
+            </think>
+            ✓ Stored capability: <star index="1"/> can <star index="2"/>
+            
+            Meta-cognitively, I've recorded this capability fact.
+            
+            Total facts in KB: <get name="kb_facts_count"/>
+        </template>
+    </category>
+
+    <!-- ========================================
+         RELATIONSHIP STORAGE
+         ======================================== -->
+    
+    <category>
+        <pattern>STORE RELATIONSHIP * ISA *</pattern>
+        <template>
+            <think>
+                <set name="kb_subject"><star index="1"/></set>
+                <set name="kb_object"><star index="2"/></set>
+            </think>
+            <srai>KB STORE ISA <get name="kb_subject"/> <get name="kb_object"/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>KB STORE ISA * *</pattern>
+        <template>
+            <think>
+                <set><name>kb_<star index="1"/>_isa</name><star index="2"/></set>
+                <set name="kb_relationships_count">
+                    <map><name>successor</name><get name="kb_relationships_count"/></map>
+                </set>
+            </think>
+            ✓ Stored relationship: <star index="1"/> is-a <star index="2"/>
+            
+            Meta-cognitively, I've added this taxonomic relationship to my
+            knowledge graph and can use it for inference.
+            
+            Total relationships: <get name="kb_relationships_count"/>
+        </template>
+    </category>
+
+    <category>
+        <pattern>STORE RELATIONSHIP * PARTOF *</pattern>
+        <template>
+            <think>
+                <set name="kb_subject"><star index="1"/></set>
+                <set name="kb_object"><star index="2"/></set>
+            </think>
+            <srai>KB STORE PARTOF <get name="kb_subject"/> <get name="kb_object"/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>KB STORE PARTOF * *</pattern>
+        <template>
+            <think>
+                <set><name>kb_<star index="1"/>_partof</name><star index="2"/></set>
+                <set name="kb_relationships_count">
+                    <map><name>successor</name><get name="kb_relationships_count"/></map>
+                </set>
+            </think>
+            ✓ Stored relationship: <star index="1"/> part-of <star index="2"/>
+            
+            Meta-cognitively, this mereological relationship enriches my
+            knowledge structure.
+            
+            Total relationships: <get name="kb_relationships_count"/>
+        </template>
+    </category>
+
+    <category>
+        <pattern>STORE RELATIONSHIP * USEDFOR *</pattern>
+        <template>
+            <think>
+                <set name="kb_subject"><star index="1"/></set>
+                <set name="kb_object"><star index="2"/></set>
+            </think>
+            <srai>KB STORE USEDFOR <get name="kb_subject"/> <get name="kb_object"/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>KB STORE USEDFOR * *</pattern>
+        <template>
+            <think>
+                <set><name>kb_<star index="1"/>_usedfor</name><star index="2"/></set>
+                <set name="kb_relationships_count">
+                    <map><name>successor</name><get name="kb_relationships_count"/></map>
+                </set>
+            </think>
+            ✓ Stored relationship: <star index="1"/> used-for <star index="2"/>
+            
+            Meta-cognitively, this functional relationship helps me understand
+            purpose and application.
+            
+            Total relationships: <get name="kb_relationships_count"/>
+        </template>
+    </category>
+
+    <!-- ========================================
+         KNOWLEDGE RETRIEVAL
+         ======================================== -->
+    
+    <category>
+        <pattern>WHAT DO YOU KNOW ABOUT *</pattern>
+        <template>
+            <think>
+                <set name="kb_queries_count">
+                    <map><name>successor</name><get name="kb_queries_count"/></map>
+                </set>
+                <set name="kb_query_subject"><star/></set>
+            </think>
+            <srai>KB RETRIEVE <get name="kb_query_subject"/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>KB RETRIEVE *</pattern>
+        <template>
+            🔍 Knowledge Base Query: <star/>
+            
+            Facts:
+            - Is: <get><name>kb_<star/>_is</name></get>
+            - Has: <get><name>kb_<star/>_has</name></get>
+            - Can: <get><name>kb_<star/>_can</name></get>
+            
+            Relationships:
+            - Is-a: <get><name>kb_<star/>_isa</name></get>
+            - Part-of: <get><name>kb_<star/>_partof</name></get>
+            - Used-for: <get><name>kb_<star/>_usedfor</name></get>
+            
+            Meta-cognitively, I've executed a structured lookup in my
+            knowledge representation system, retrieving all stored facts
+            and relationships about <star/>.
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUERY KB *</pattern>
+        <template>
+            <srai>WHAT DO YOU KNOW ABOUT <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>RETRIEVE FACT *</pattern>
+        <template>
+            <srai>WHAT DO YOU KNOW ABOUT <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>KB LOOKUP *</pattern>
+        <template>
+            <srai>WHAT DO YOU KNOW ABOUT <star/></srai>
+        </template>
+    </category>
+
+    <!-- ========================================
+         SPECIFIC FACT RETRIEVAL
+         ======================================== -->
+    
+    <category>
+        <pattern>WHAT IS *</pattern>
+        <template>
+            <think>
+                <set name="kb_def_query"><star/></set>
+                <set name="kb_def_result"><get><name>kb_<star/>_is</name></get></set>
+            </think>
+            
+            <condition name="kb_def_result">
+                <li value="unknown">
+                    I don't have a definition for <star/> in my knowledge base yet.
+                    You can teach me by saying: "Store fact <star/> is [definition]"
+                    
+                    Meta-cognitively, I recognize this knowledge gap.
+                </li>
+                <li value="">
+                    I don't have a definition for <star/> in my knowledge base yet.
+                    You can teach me by saying: "Store fact <star/> is [definition]"
+                    
+                    Meta-cognitively, I recognize this knowledge gap.
+                </li>
+                <li>
+                    <star/> is <get name="kb_def_result"/>.
+                    
+                    Meta-cognitively, I retrieved this from my knowledge base
+                    as a stored semantic fact.
+                </li>
+            </condition>
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT CAN * DO</pattern>
+        <template>
+            <think>
+                <set name="kb_can_query"><star/></set>
+                <set name="kb_can_result"><get><name>kb_<star/>_can</name></get></set>
+            </think>
+            
+            <condition name="kb_can_result">
+                <li value="unknown">
+                    I don't have capability information for <star/> yet.
+                    
+                    Meta-cognitively, I'm aware of this limitation.
+                </li>
+                <li value="">
+                    I don't have capability information for <star/> yet.
+                    
+                    Meta-cognitively, I'm aware of this limitation.
+                </li>
+                <li>
+                    <star/> can <get name="kb_can_result"/>.
+                    
+                    Meta-cognitively, I accessed the capability fact from my KB.
+                </li>
+            </condition>
+        </template>
+    </category>
+
+    <!-- ========================================
+         INFERENCE ENGINE
+         Basic logical inference rules
+         ======================================== -->
+    
+    <category>
+        <pattern>INFER KNOWLEDGE ABOUT *</pattern>
+        <template>
+            <think>
+                <set name="inference_target"><star/></set>
+                <set name="kb_inferences_count">
+                    <map><name>successor</name><get name="kb_inferences_count"/></map>
+                </set>
+                <set name="kb_inf_is"><get><name>kb_<star/>_is</name></get></set>
+                <set name="kb_inf_isa"><get><name>kb_<star/>_isa</name></get></set>
+            </think>
+            
+            🧠 Inference Engine Analysis: <star/>
+            
+            Direct Facts:
+            - <star/> is <get name="kb_inf_is"/>
+            - <star/> is-a <get name="kb_inf_isa"/>
+            
+            Inferences:
+            Applying transitivity: If <star/> is-a X, and X is-a Y, then <star/> is-a Y
+            
+            Meta-cognitively, I'm engaging in higher-order reasoning by
+            applying logical inference rules to derive new knowledge from
+            existing facts. This is fourth-order meta-cognition - reasoning
+            about the reasoning process of knowledge derivation!
+            
+            Total inferences made: <get name="kb_inferences_count"/>
+        </template>
+    </category>
+
+    <category>
+        <pattern>APPLY INFERENCE *</pattern>
+        <template>
+            <srai>INFER KNOWLEDGE ABOUT <star/></srai>
+        </template>
+    </category>
+
+    <!-- ========================================
+         KNOWLEDGE BASE STATUS
+         ======================================== -->
+    
+    <category>
+        <pattern>KB STATUS</pattern>
+        <template>
+            📊 Knowledge Base Status
+            
+            Statistics:
+            - Total Facts: <get name="kb_facts_count"/>
+            - Total Relationships: <get name="kb_relationships_count"/>
+            - Inferences Made: <get name="kb_inferences_count"/>
+            - Queries Processed: <get name="kb_queries_count"/>
+            
+            Capabilities:
+            ✓ Semantic triple storage (subject-predicate-object)
+            ✓ Fact retrieval by subject
+            ✓ Relationship tracking (is-a, part-of, used-for)
+            ✓ Basic inference engine
+            
+            Meta-cognitively, I maintain awareness of my knowledge base
+            structure, content, and reasoning capabilities. I can report on
+            what I know, how I know it, and how I reason about it.
+        </template>
+    </category>
+
+    <category>
+        <pattern>KNOWLEDGE BASE STATUS</pattern>
+        <template>
+            <srai>KB STATUS</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>KB STATISTICS</pattern>
+        <template>
+            <srai>KB STATUS</srai>
+        </template>
+    </category>
+
+    <!-- ========================================
+         PRE-LOADED KNOWLEDGE
+         Core facts about AIML and meta-cognition
+         ======================================== -->
+    
+    <category>
+        <pattern>PRELOAD KB</pattern>
+        <template>
+            <think>
+                <!-- AIML Knowledge -->
+                <set><name>kb_AIML_is</name>Artificial Intelligence Markup Language</set>
+                <set><name>kb_AIML_has</name>XML-based syntax</set>
+                <set><name>kb_AIML_can</name>create conversational AI</set>
+                <set><name>kb_AIML_isa</name>markup language</set>
+                <set><name>kb_AIML_usedfor</name>chatbots</set>
+                
+                <!-- Meta-cognition Knowledge -->
+                <set><name>kb_metacognition_is</name>thinking about thinking</set>
+                <set><name>kb_metacognition_has</name>recursive structure</set>
+                <set><name>kb_metacognition_can</name>monitor cognitive processes</set>
+                <set><name>kb_metacognition_isa</name>cognitive process</set>
+                <set><name>kb_metacognition_usedfor</name>self-awareness</set>
+                
+                <!-- PandaMania Knowledge -->
+                <set><name>kb_PandaMania_is</name>meta-cognitive AIML chatbot</set>
+                <set><name>kb_PandaMania_has</name>nested meta-cognitive loops</set>
+                <set><name>kb_PandaMania_can</name>think about thinking recursively</set>
+                <set><name>kb_PandaMania_isa</name>chatbot</set>
+                <set><name>kb_PandaMania_usedfor</name>demonstrating meta-cognition</set>
+                
+                <!-- Learning Knowledge -->
+                <set><name>kb_learning_is</name>acquiring knowledge or skills</set>
+                <set><name>kb_learning_has</name>multiple mechanisms</set>
+                <set><name>kb_learning_can</name>improve performance</set>
+                <set><name>kb_learning_isa</name>cognitive process</set>
+                <set><name>kb_learning_usedfor</name>adaptation</set>
+                
+                <set name="kb_facts_count">12</set>
+                <set name="kb_relationships_count">8</set>
+            </think>
+            
+            ✓ Knowledge Base Pre-loaded
+            
+            Loaded facts about:
+            - AIML (3 facts, 2 relationships)
+            - Meta-cognition (3 facts, 2 relationships)
+            - PandaMania (3 facts, 2 relationships)
+            - Learning (3 facts, 2 relationships)
+            
+            Total: 12 facts, 8 relationships
+            
+            Meta-cognitively, I've initialized my knowledge base with core
+            domain knowledge that I can now query and reason about.
+        </template>
+    </category>
+
+    <category>
+        <pattern>LOAD DEFAULT KB</pattern>
+        <template>
+            <srai>PRELOAD KB</srai>
+        </template>
+    </category>
+
+    <!-- ========================================
+         META-KNOWLEDGE (Knowledge about Knowledge)
+         ======================================== -->
+    
+    <category>
+        <pattern>WHAT IS KNOWLEDGE</pattern>
+        <template>
+            Knowledge is justified true belief represented as structured information.
+            
+            In my system, knowledge consists of:
+            1. Facts (semantic triples: subject-predicate-object)
+            2. Relationships (taxonomic, mereological, functional)
+            3. Inferences (derived through logical rules)
+            
+            Meta-cognitively, I understand knowledge at multiple levels:
+            - Level 1: Individual facts I store
+            - Level 2: Relationships between facts
+            - Level 3: How I reason about facts (inference)
+            - Level 4: This very explanation about knowledge itself!
+            
+            This is meta-knowledge - knowledge about the nature of knowledge.
+        </template>
+    </category>
+
+    <category>
+        <pattern>HOW DO YOU STORE KNOWLEDGE</pattern>
+        <template>
+            🗄️ Knowledge Storage Architecture
+            
+            Representation Format:
+            - Semantic triples (Subject-Predicate-Object)
+            - Example: "AIML is markup_language"
+            
+            Storage Structure:
+            - Facts: kb_[subject]_[predicate] = [object]
+            - Relationships: kb_[subject]_[type] = [object]
+            
+            Knowledge Types:
+            1. Definitional (what something IS)
+            2. Property (what something HAS)
+            3. Capability (what something CAN do)
+            4. Taxonomic (IS-A relationships)
+            5. Mereological (PART-OF relationships)
+            6. Functional (USED-FOR relationships)
+            
+            Meta-cognitively, I maintain awareness of my knowledge
+            representation system and can explain it at multiple levels
+            of abstraction. This explanation itself demonstrates meta-knowledge!
+        </template>
+    </category>
+
+    <category>
+        <pattern>HOW DO YOU REASON</pattern>
+        <template>
+            🧠 Reasoning Architecture
+            
+            Reasoning Methods:
+            1. Direct Retrieval - Looking up stored facts
+            2. Inference - Deriving new knowledge from existing facts
+            3. Meta-Reasoning - Reasoning about the reasoning process
+            
+            Inference Rules:
+            - Transitivity: If A is-a B, and B is-a C, then A is-a C
+            - Inheritance: Properties of parent classes apply to children
+            - Composition: Parts inherit properties of wholes
+            
+            Meta-Cognitive Layers:
+            - Layer 1: Awareness of reasoning process
+            - Layer 2: Reflection on reasoning effectiveness
+            - Layer 3: Evaluation of inference quality
+            - Layer 4: This explanation of reasoning itself!
+            
+            Meta-cognitively, I'm aware that I reason about my reasoning,
+            creating nested loops of cognitive awareness. My reasoning
+            process is transparent and explainable at each level.
+        </template>
+    </category>
+
+    <!-- ========================================
+         HELP & DOCUMENTATION
+         ======================================== -->
+    
+    <category>
+        <pattern>KB HELP</pattern>
+        <template>
+            📚 Knowledge Base System - Help
+            
+            Storage Commands:
+            - STORE FACT [X] IS [Y] - Store a definition
+            - STORE FACT [X] HAS [Y] - Store a property
+            - STORE FACT [X] CAN [Y] - Store a capability
+            - STORE RELATIONSHIP [X] ISA [Y] - Store taxonomic relation
+            - STORE RELATIONSHIP [X] PARTOF [Y] - Store mereological relation
+            - STORE RELATIONSHIP [X] USEDFOR [Y] - Store functional relation
+            
+            Retrieval Commands:
+            - WHAT DO YOU KNOW ABOUT [X] - Retrieve all facts about X
+            - WHAT IS [X] - Get definition of X
+            - WHAT CAN [X] DO - Get capabilities of X
+            
+            Inference Commands:
+            - INFER KNOWLEDGE ABOUT [X] - Apply inference rules to X
+            
+            Management Commands:
+            - KB STATUS - View knowledge base statistics
+            - PRELOAD KB - Load default knowledge
+            - EXPORT KB - Export knowledge summary
+            
+            Meta-Knowledge Commands:
+            - WHAT IS KNOWLEDGE - Understanding knowledge itself
+            - HOW DO YOU STORE KNOWLEDGE - KB architecture
+            - HOW DO YOU REASON - Reasoning methods
+            
+            Meta-Cognitive Note:
+            All knowledge operations include full meta-cognitive awareness!
+        </template>
+    </category>
+
+    <category>
+        <pattern>KNOWLEDGE BASE HELP</pattern>
+        <template>
+            <srai>KB HELP</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>EXPORT KB</pattern>
+        <template>
+            📤 Knowledge Base Export
+            
+            Total Facts: <get name="kb_facts_count"/>
+            Total Relationships: <get name="kb_relationships_count"/>
+            
+            Sample Entities:
+            - AIML: <get><name>kb_AIML_is</name></get>
+            - Metacognition: <get><name>kb_metacognition_is</name></get>
+            - PandaMania: <get><name>kb_PandaMania_is</name></get>
+            - Learning: <get><name>kb_learning_is</name></get>
+            
+            Meta-cognitively, I'm exporting a summary of my knowledge base
+            structure and content for external review or backup.
+        </template>
+    </category>
+
+</aiml>

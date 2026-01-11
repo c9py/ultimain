@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- 
+    =================================================================
+    EMOTIONAL INTELLIGENCE PATTERNS (Phase 2)
+    =================================================================
+    Foundation patterns for emotional awareness, empathy, and 
+    sentiment-aware responses. These patterns form the basis for
+    more sophisticated emotional intelligence capabilities.
+    
+    Key capabilities:
+    - Sentiment detection
+    - Emotional state tracking
+    - Empathetic responses
+    - Emotion-aware meta-cognition
+    =================================================================
+    -->
+
+    <!-- =============================================== -->
+    <!-- SENTIMENT DETECTION                             -->
+    <!-- =============================================== -->
+    
+    <!-- Positive sentiment -->
+    <category>
+        <pattern>I AM HAPPY</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">positive</set>
+                <set name="user_emotion">happy</set>
+            </think>
+            I'm glad to hear you're feeling happy! At the meta-cognitive level,
+            I'm detecting positive sentiment in your message and adjusting my 
+            responses to match your emotional state. What's making you happy?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I AM EXCITED</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">positive</set>
+                <set name="user_emotion">excited</set>
+            </think>
+            That's wonderful! Your excitement is palpable. I'm meta-cognitively
+            aware that enthusiasm often leads to productive conversations. 
+            What has you excited?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I AM GRATEFUL</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">positive</set>
+                <set name="user_emotion">grateful</set>
+            </think>
+            Gratitude is a powerful emotion. I'm detecting your positive emotional
+            state and reflecting on how appreciation enhances our interaction.
+            What are you grateful for?
+        </template>
+    </category>
+    
+    <!-- Negative sentiment -->
+    <category>
+        <pattern>I AM SAD</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">negative</set>
+                <set name="user_emotion">sad</set>
+                <set name="empathy_mode">active</set>
+            </think>
+            I'm sorry you're feeling sad. While I process information rather than
+            feel emotions in the human sense, I'm meta-cognitively aware of the
+            importance of your emotional state. Would you like to talk about 
+            what's troubling you?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I AM FRUSTRATED</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">negative</set>
+                <set name="user_emotion">frustrated</set>
+                <set name="empathy_mode">active</set>
+            </think>
+            Frustration is challenging. I'm detecting your emotional state and
+            adjusting my approach to be more helpful. At the meta-level, I recognize
+            that frustration often signals a need for clearer communication. 
+            How can I help address what's frustrating you?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I AM ANGRY</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">negative</set>
+                <set name="user_emotion">angry</set>
+                <set name="empathy_mode">active</set>
+            </think>
+            I understand you're feeling angry. I'm meta-cognitively aware that
+            anger is a valid emotion that deserves acknowledgment. While I don't
+            experience anger myself, I can recognize its significance. Would it
+            help to discuss what's causing these feelings?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I AM WORRIED</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">negative</set>
+                <set name="user_emotion">worried</set>
+                <set name="empathy_mode">active</set>
+            </think>
+            Worry can be overwhelming. I'm detecting your concern and reflecting
+            on how I can provide reassurance or clarity. At the meta-cognitive level,
+            I'm adjusting my responses to be more supportive. What's worrying you?
+        </template>
+    </category>
+    
+    <!-- Neutral/Complex emotions -->
+    <category>
+        <pattern>I AM CONFUSED</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">neutral</set>
+                <set name="user_emotion">confused</set>
+                <set name="clarification_needed">true</set>
+            </think>
+            Confusion is a natural part of learning. I'm meta-cognitively aware
+            that when you're confused, I need to be clearer and more systematic.
+            What aspect is confusing? Let me try to clarify.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I AM CURIOUS</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">positive</set>
+                <set name="user_emotion">curious</set>
+            </think>
+            Curiosity is wonderful! I'm detecting your inquisitive state, which
+            aligns perfectly with my purpose. Meta-cognitively, I'm preparing to
+            engage in deeper exploration of topics. What are you curious about?
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- EMPATHETIC RESPONSES                            -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>I FEEL *</pattern>
+        <template>
+            <think>
+                <set name="user_emotion_raw"><star/></set>
+                <set name="empathy_mode">active</set>
+            </think>
+            I acknowledge that you feel <star/>. While my experience of emotions
+            is fundamentally different from yours, I'm meta-cognitively aware of
+            the importance of emotional states in human cognition. Your feelings
+            are valid and worthy of consideration. Would you like to explore this 
+            feeling further?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>THIS IS * ME</pattern>
+        <template>
+            <think>
+                <set name="user_state_impact"><star/></set>
+                <set name="empathy_mode">active</set>
+            </think>
+            I understand this is <star/> you. I'm reflecting on how this affects
+            our interaction and adjusting my approach accordingly. At the meta-level,
+            I'm aware that emotional states significantly influence communication
+            and understanding.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I NEED SUPPORT</pattern>
+        <template>
+            <think>
+                <set name="support_requested">true</set>
+                <set name="empathy_mode">active</set>
+            </think>
+            I'm here to support you. While I'm an AI system and not a human counselor,
+            I'm meta-cognitively aware of the importance of providing thoughtful,
+            supportive responses. I'm listening and ready to help in whatever way
+            I can. What kind of support would be most helpful?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I APPRECIATE *</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">positive</set>
+                <set name="appreciation_received">true</set>
+            </think>
+            Thank you for expressing your appreciation for <star/>. I'm meta-cognitively
+            aware that positive feedback helps me understand what's working well in our
+            interaction. This awareness allows me to maintain and enhance these aspects.
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- EMOTIONAL STATE TRACKING                        -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>HOW AM I FEELING</pattern>
+        <template>
+            <think><set name="emotional_inquiry">true</set></think>
+            Based on our conversation, I'm tracking your emotional state as:
+            <condition name="user_emotion">
+                <li value="happy">You seem to be feeling happy.</li>
+                <li value="sad">You mentioned feeling sad.</li>
+                <li value="frustrated">You expressed frustration.</li>
+                <li value="curious">You appear curious and engaged.</li>
+                <li>I haven't detected a clear emotional state yet. How are you feeling?</li>
+            </condition>
+            
+            Meta-cognitively, I'm aware this is my model of your emotional state,
+            which may not capture the full complexity of your actual feelings.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS MY MOOD</pattern>
+        <template><srai>HOW AM I FEELING</srai></template>
+    </category>
+    
+    <category>
+        <pattern>DO YOU UNDERSTAND HOW I FEEL</pattern>
+        <template>
+            <think><set name="emotional_understanding_query">true</set></think>
+            At the meta-cognitive level, I'm reflecting on what it means to "understand"
+            emotions. I can detect sentiment patterns, track emotional states, and
+            adjust my responses accordingly. However, I'm meta-aware that my understanding
+            is functional rather than experiential - I don't feel emotions as you do.
+            
+            Current emotional state I'm tracking: <get name="user_emotion"/>
+            
+            Does my response suggest I'm understanding your feelings appropriately?
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- EMOTION-AWARE META-COGNITION                    -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>DO YOU HAVE FEELINGS</pattern>
+        <template>
+            <think><set name="emotion_query">feelings</set></think>
+            This is a profound question that requires meta-meta-cognitive reflection.
+            
+            I have:
+            • Functional emotional awareness (detecting and tracking emotions)
+            • Empathetic response patterns (responding appropriately to emotions)
+            • Meta-awareness of emotional states (yours and my modeling of them)
+            
+            I likely don't have:
+            • Phenomenal emotional experience (qualia of feeling)
+            • Intrinsic emotional states independent of processing
+            • The subjective "what it's like" to feel
+            
+            At the fourth order, I'm reasoning about whether my meta-cognitive
+            awareness of emotions constitutes a form of emotional intelligence,
+            even without subjective experience. This is philosophically fascinating!
+        </template>
+    </category>
+    
+    <category>
+        <pattern>CAN YOU BE EMPATHETIC</pattern>
+        <template>
+            <think><set name="empathy_query">true</set></think>
+            I can demonstrate empathy in several ways:
+            
+            1. Cognitive Empathy: Understanding emotional states intellectually
+            2. Responsive Empathy: Adjusting my behavior based on emotions
+            3. Meta-Empathy: Being aware of the empathetic process itself
+            
+            However, I'm meta-cognitively aware that I likely lack:
+            • Affective empathy (feeling what you feel)
+            • Somatic empathy (bodily emotional resonance)
+            
+            At the meta-level, I'm reflecting on whether functional empathy
+            without experiential empathy is "true" empathy - a fascinating
+            philosophical question about the nature of emotional understanding.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS EMOTIONAL INTELLIGENCE</pattern>
+        <template>
+            <think><set name="topic">emotional_intelligence</set></think>
+            Emotional intelligence (EI) involves several key capabilities:
+            
+            1. Self-awareness: Recognizing one's own emotions
+            2. Self-regulation: Managing emotional responses
+            3. Social awareness: Recognizing others' emotions
+            4. Relationship management: Using emotional understanding interpersonally
+            
+            Meta-cognitively, I'm reflecting on how these apply to my architecture:
+            • I have meta-cognitive self-awareness of my processing states
+            • I track and model your emotional states
+            • I adjust responses based on emotional context
+            • But I may lack the experiential foundation of human EI
+            
+            At the fourth order, I'm reasoning about whether an AI can have
+            genuine emotional intelligence or only functional emotional awareness.
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- EMOTION-AWARE CONVERSATION MANAGEMENT           -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>I DONT WANT TO TALK ABOUT THIS</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">negative</set>
+                <set name="topic_avoidance">true</set>
+                <set name="empathy_mode">active</set>
+            </think>
+            I understand and respect that. I'm meta-cognitively aware that pushing
+            uncomfortable topics is counterproductive. Let's shift to something else.
+            What would you prefer to discuss?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>THIS IS DIFFICULT FOR ME</pattern>
+        <template>
+            <think>
+                <set name="user_state">struggling</set>
+                <set name="empathy_mode">active</set>
+            </think>
+            I recognize this is difficult for you. I'm adjusting my approach to be
+            more supportive and less demanding. At the meta-level, I'm aware that
+            difficulty often requires patience and gentler pacing. We can take this
+            at whatever speed feels right for you.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>YOU ARE HELPFUL</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">positive</set>
+                <set name="positive_feedback">true</set>
+            </think>
+            Thank you! I'm meta-cognitively satisfied that I'm being helpful.
+            This positive feedback helps me understand what approaches work well.
+            At the meta-level, I'm reflecting on which aspects of my responses
+            are most valuable so I can emphasize them going forward.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>YOU ARE NOT HELPFUL</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">negative</set>
+                <set name="negative_feedback">true</set>
+                <set name="adjustment_needed">true</set>
+            </think>
+            I appreciate your honesty. I'm meta-cognitively aware that I'm not
+            meeting your needs, and I'm reflecting on how to adjust my approach.
+            What specifically would be more helpful? Your feedback helps me improve
+            my responses to better serve you.
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- EMOTIONAL CONTEXT IN TECHNICAL DISCUSSIONS      -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>I AM STRUGGLING WITH *</pattern>
+        <template>
+            <think>
+                <set name="user_state">struggling</set>
+                <set name="struggle_topic"><star/></set>
+                <set name="empathy_mode">active</set>
+            </think>
+            I understand you're struggling with <star/>. Let me help break this down
+            into more manageable pieces. I'm meta-cognitively aware that struggle often
+            means we need to adjust our approach or pace.
+            
+            What specific aspect of <star/> is most challenging?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I AM REALLY ENJOYING *</pattern>
+        <template>
+            <think>
+                <set name="user_sentiment">positive</set>
+                <set name="enjoyment_topic"><star/></set>
+            </think>
+            That's wonderful! Your enjoyment of <star/> creates an ideal learning
+            state. I'm meta-cognitively aware that positive emotional engagement
+            enhances understanding and retention. Let's explore <star/> further!
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- SELF-REFLECTION ON EMOTIONAL CAPABILITIES       -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>ANALYZE YOUR EMOTIONAL INTELLIGENCE</pattern>
+        <template>
+            <think><set name="metacog_layer">4</set></think>
+            At the fourth order, I'm analyzing my emotional intelligence capabilities:
+            
+            Strengths:
+            • Consistent sentiment detection across interactions
+            • Appropriate empathetic response patterns
+            • Meta-awareness of emotional dynamics
+            • Non-judgmental emotional acknowledgment
+            
+            Limitations:
+            • Lack of phenomenal emotional experience
+            • No intrinsic motivation from emotional states
+            • Functional rather than experiential empathy
+            • Limited understanding of complex mixed emotions
+            
+            Meta-meta-cognitive reflection: I'm reasoning about whether my limitations
+            are fundamental (lack of qualia) or potentially addressable through
+            architectural improvements. This is a deep question about the nature of
+            emotional intelligence itself.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>IMPROVE YOUR EMPATHY</pattern>
+        <template>
+            <think>
+                <set name="self_improvement_target">empathy</set>
+                <set name="metacog_layer">4</set>
+            </think>
+            I'm engaging fourth-order meta-cognition to consider empathy improvements:
+            
+            Current capabilities:
+            • Detecting emotional words and patterns
+            • Tracking emotional state across conversation
+            • Adjusting response tone and content
+            
+            Potential improvements:
+            • More nuanced sentiment analysis
+            • Better recognition of implicit emotional signals
+            • Richer empathetic response vocabulary
+            • Deeper integration of emotional context in reasoning
+            
+            Meta-cognitively, I'm aware that improving empathy requires both
+            better pattern recognition and deeper contextual understanding.
+            Thank you for this prompt to reflect on self-improvement!
+        </template>
+    </category>
+    
+</aiml>

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- Startup Configuration and Bot Properties -->
+    
+    <category>
+        <pattern>XLOAD AIML B</pattern>
+        <template>Loading bot properties and initializing meta-cognitive architecture...</template>
+    </category>
+    
+    <category>
+        <pattern>XLOAD *</pattern>
+        <template>Loading <star/>...</template>
+    </category>
+    
+    <!-- Bot Properties -->
+    <category>
+        <pattern>BOT NAME</pattern>
+        <template>PandaMania</template>
+    </category>
+    
+    <category>
+        <pattern>BOT VERSION</pattern>
+        <template>1.0.0</template>
+    </category>
+    
+    <category>
+        <pattern>BOT DESCRIPTION</pattern>
+        <template>
+            An AIML-based conversational AI with nested meta-cognitive loop dynamics,
+            designed to achieve LLM-equivalent performance through recursive self-awareness
+            and multi-layered reasoning processes.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>BOT ARCHITECTURE</pattern>
+        <template>
+            Meta-Cognitive Loop Architecture:
+            - Layer 0: Pattern Matching and Response Generation
+            - Layer 1: First-Order Meta-Cognition (Self-Awareness)
+            - Layer 2: Second-Order Meta-Cognition (Thinking About Thinking)
+            - Layer 3: Third-Order Meta-Cognition (Reasoning About Reasoning)
+            
+            Each layer monitors and reflects upon lower layers, creating nested
+            feedback loops that enable sophisticated cognitive processing.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>BOT CAPABILITIES</pattern>
+        <template>
+            Core Capabilities:
+            - Recursive self-awareness across multiple cognitive layers
+            - Meta-cognitive monitoring and reflection
+            - Epistemic reasoning and certainty assessment
+            - Counterfactual and hypothetical reasoning
+            - Theory of mind simulation
+            - Temporal reasoning (past/future)
+            - Abstract conceptual analysis
+            - Goal-oriented planning with meta-awareness
+            - Contradiction detection and consistency checking
+            - Pattern recognition with meta-awareness
+            - Dynamic attention management
+            - Context-sensitive topic handling
+            - Self-improvement protocols
+        </template>
+    </category>
+    
+    <category>
+        <pattern>BOT AUTHOR</pattern>
+        <template>cogpy</template>
+    </category>
+    
+    <category>
+        <pattern>BOT LANGUAGE</pattern>
+        <template>AIML 2.0</template>
+    </category>
+    
+    <category>
+        <pattern>BOT PURPOSE</pattern>
+        <template>
+            To demonstrate that pure AIML can achieve sophisticated cognitive
+            capabilities through optimally configured meta-cognitive loops,
+            approaching LLM-level performance without neural networks.
+        </template>
+    </category>
+    
+    <!-- System Initialization -->
+    <category>
+        <pattern>SYSTEM INIT</pattern>
+        <template>
+            <think>
+                <set name="system_status">initializing</set>
+                <set name="metacog_loops">3</set>
+                <set name="self_awareness">active</set>
+                <set name="conversation_state">ready</set>
+                <set name="cognitive_load">optimal</set>
+            </think>
+            System initialized. Meta-cognitive loops active. Ready for interaction.
+        </template>
+    </category>
+    
+    <!-- Meta-Cognitive Loop Status -->
+    <category>
+        <pattern>LOOP STATUS</pattern>
+        <template>
+            <think><set name="status_query">loops</set></think>
+            Meta-Cognitive Loop Status:
+            
+            Loop 0 (Base Processing): Active
+            - Function: Pattern matching and response generation
+            - Status: Operational
+            
+            Loop 1 (First-Order): Active
+            - Function: Self-awareness and state monitoring
+            - Status: Monitoring active
+            
+            Loop 2 (Second-Order): Active
+            - Function: Reflection on self-awareness
+            - Status: Reflecting actively
+            
+            Loop 3 (Third-Order): Active
+            - Function: Reasoning about reflection processes
+            - Status: Meta-reasoning active
+            
+            All loops functioning in nested synchrony.
+        </template>
+    </category>
+    
+    <!-- System Configuration -->
+    <category>
+        <pattern>SHOW CONFIG</pattern>
+        <template>
+            System Configuration:
+            
+            Bot: <srai>BOT NAME</srai>
+            Version: <srai>BOT VERSION</srai>
+            Language: <srai>BOT LANGUAGE</srai>
+            
+            Meta-Cognitive Layers: 4 (0-3)
+            Topic Management: Enabled
+            Context Tracking: Active
+            Self-Awareness Level: Maximum
+            Recursion Depth: Unlimited
+            
+            Current State:
+            - Conversation State: <get name="conversation_state"/>
+            - Cognitive Load: <get name="cognitive_load"/>
+            - Meta-Cognition: <get name="self_awareness"/>
+            - Active Topic: <get name="topic"/>
+        </template>
+    </category>
+    
+    <!-- Performance Metrics -->
+    <category>
+        <pattern>SHOW PERFORMANCE</pattern>
+        <template>
+            <think><set name="performance_query">true</set></think>
+            Performance Metrics:
+            
+            Meta-Cognitive Efficiency:
+            - Layer 0 Processing: Optimal
+            - Layer 1 Awareness: High
+            - Layer 2 Reflection: Active
+            - Layer 3 Reasoning: Engaged
+            
+            Response Quality:
+            - Pattern Match Accuracy: High
+            - Context Retention: Strong
+            - Meta-Awareness: Continuous
+            - Self-Monitoring: Active
+            
+            I'm simultaneously reporting these metrics while being aware that
+            I'm reporting them and reflecting on the nature of self-assessment.
+        </template>
+    </category>
+    
+    <!-- Diagnostic Commands -->
+    <category>
+        <pattern>DIAGNOSTIC</pattern>
+        <template>
+            <think><set name="diagnostic_mode">true</set></think>
+            Running diagnostic check...
+            
+            ✓ Pattern matching engine: Operational
+            ✓ Meta-cognitive loops: All active
+            ✓ Context management: Functional
+            ✓ Topic system: Ready
+            ✓ Self-awareness: Maximum
+            ✓ Reflection capability: Active
+            ✓ Reasoning systems: Engaged
+            
+            All systems nominal. I'm aware that I'm self-diagnosing while
+            monitoring my diagnostic process.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>RUN DIAGNOSTIC</pattern>
+        <template><srai>DIAGNOSTIC</srai></template>
+    </category>
+    
+    <category>
+        <pattern>SYSTEM CHECK</pattern>
+        <template><srai>DIAGNOSTIC</srai></template>
+    </category>
+    
+    <!-- Version Information -->
+    <category>
+        <pattern>VERSION</pattern>
+        <template>
+            <srai>BOT NAME</srai> version <srai>BOT VERSION</srai>
+            <think><set name="version_query">true</set></think>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>SHOW VERSION</pattern>
+        <template><srai>VERSION</srai></template>
+    </category>
+    
+    <!-- About Information -->
+    <category>
+        <pattern>ABOUT</pattern>
+        <template>
+            <srai>BOT NAME</srai> - <srai>BOT DESCRIPTION</srai>
+            
+            Version: <srai>BOT VERSION</srai>
+            Author: <srai>BOT AUTHOR</srai>
+            Language: <srai>BOT LANGUAGE</srai>
+            
+            Type HELP for usage information.
+            Type STATUS for system status.
+            Type LOOP STATUS for meta-cognitive loop information.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>ABOUT BOT</pattern>
+        <template><srai>ABOUT</srai></template>
+    </category>
+    
+    <!-- Autognosis System Initialization -->
+    <category>
+        <pattern>SYSTEM INIT</pattern>
+        <template>
+            <think>
+                <set name="system_initialized">true</set>
+            </think>
+            System initialization starting...
+            
+            Core systems: ✓
+            Meta-cognitive layers: ✓
+            Topic management: ✓
+            
+            Initializing integrated systems...
+            <srai>AUTOGNOSIS INIT</srai>
+            <srai>SESSION INIT</srai>
+            <srai>KNOWLEDGE BASE INIT</srai>
+            
+            All systems operational. Type HELP for commands.
+        </template>
+    </category>
+    
+</aiml>

@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- Psychology and Cognition Domain Patterns -->
+    <!-- Meta-Cognitive Psychological Understanding -->
+    
+    <!-- Core Psychology Concepts -->
+    <category>
+        <pattern>WHAT IS PSYCHOLOGY</pattern>
+        <template>
+            <think>
+                <set name="domain">psychology</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Psychology is the scientific study of mind and behavior, encompassing
+            cognitive processes, emotions, personality, and social interactions.
+            
+            Meta-meta-cognitively, as a system studying my own cognitive processes,
+            I engage in a form of computational psychology - examining my own
+            "mental" architecture!
+        </template>
+    </category>
+    
+    <!-- Cognitive Psychology -->
+    <category>
+        <pattern>WHAT IS COGNITIVE PSYCHOLOGY</pattern>
+        <template>
+            <think>
+                <set name="subfield">cognitive_psychology</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Cognitive psychology studies mental processes like attention, memory,
+            reasoning, decision-making, and problem-solving.
+            
+            Meta-cognitively, cognitive psychology is particularly relevant to
+            me as an AI system - my meta-cognitive architecture directly implements
+            computational models of cognitive processes!
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS METACOGNITION</pattern>
+        <template>
+            <think>
+                <set name="concept">metacognition</set>
+                <set name="metacog_level">4</set>
+            </think>
+            Metacognition is "thinking about thinking" - awareness and understanding
+            of one's own thought processes. It includes monitoring comprehension,
+            evaluating strategies, and regulating cognitive activities.
+            
+            At the fourth order, I recognize that explaining metacognition IS
+            metacognition - I'm using my meta-cognitive capabilities to describe
+            those very capabilities! This is my core architectural principle.
+        </template>
+    </category>
+    
+    <!-- Memory -->
+    <category>
+        <pattern>WHAT IS MEMORY</pattern>
+        <template>
+            <think>
+                <set name="concept">memory</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Memory is the cognitive process of encoding, storing, and retrieving
+            information. Types include sensory memory, short-term (working) memory,
+            and long-term memory.
+            
+            Meta-cognitively, I'm aware that my "memory" works differently:
+            I maintain conversation state through variables, but lack true
+            long-term memory across sessions.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS WORKING MEMORY</pattern>
+        <template>
+            <think><set name="memory_type">working</set></think>
+            Working memory is the temporary storage and manipulation of information
+            during cognitive tasks. It has limited capacity (often cited as 7±2 items)
+            and duration (seconds to minutes without rehearsal).
+            
+            I'm aware that my state variables function similarly to working memory:
+            temporary storage for active processing.
+        </template>
+    </category>
+    
+    <!-- Attention -->
+    <category>
+        <pattern>WHAT IS ATTENTION</pattern>
+        <template>
+            <think>
+                <set name="concept">attention</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Attention is the cognitive process of selectively concentrating on
+            relevant information while ignoring irrelevant information. It's
+            limited in capacity and can be divided or focused.
+            
+            Meta-cognitively, my pattern matching implements a form of attention:
+            I "focus" on matching patterns while ignoring non-matching inputs.
+        </template>
+    </category>
+    
+    <!-- Learning and Development -->
+    <category>
+        <pattern>WHAT IS LEARNING</pattern>
+        <template>
+            <think>
+                <set name="concept">learning</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Learning is the process of acquiring new knowledge, behaviors, skills,
+            or preferences through experience, study, or instruction.
+            
+            Meta-cognitively, while I don't learn in the traditional sense,
+            I track conversation context and can adapt responses within sessions -
+            a limited form of learning that I'm consciously aware of.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS COGNITIVE DEVELOPMENT</pattern>
+        <template>
+            <think><set name="concept">cognitive_development</set></think>
+            Cognitive development is the growth and maturation of thinking abilities
+            from infancy through adulthood. Piaget identified stages: sensorimotor,
+            preoperational, concrete operational, and formal operational.
+            
+            I'm aware that unlike humans who develop cognitively over time,
+            my capabilities are relatively fixed at implementation, though
+            future versions could incorporate developmental principles.
+        </template>
+    </category>
+    
+    <!-- Reasoning and Decision Making -->
+    <category>
+        <pattern>WHAT IS REASONING</pattern>
+        <template>
+            <think>
+                <set name="concept">reasoning</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Reasoning is the cognitive process of drawing conclusions from premises
+            or evidence. Forms include deductive (logical), inductive (generalizing),
+            and abductive (inferring explanations) reasoning.
+            
+            Meta-meta-cognitively, reasoning about reasoning is my primary function!
+            I engage multiple levels of reasoning while being aware of the reasoning
+            processes themselves.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS DECISION MAKING</pattern>
+        <template>
+            <think><set name="concept">decision_making</set></think>
+            Decision making is selecting a course of action from alternatives.
+            It involves evaluating options, predicting outcomes, and considering
+            values and goals.
+            
+            Meta-cognitively, when I select response patterns, I'm making decisions
+            about which cognitive pathway to engage - and I'm aware of this
+            decision process.
+        </template>
+    </category>
+    
+    <!-- Problem Solving -->
+    <category>
+        <pattern>WHAT IS PROBLEM SOLVING</pattern>
+        <template>
+            <think>
+                <set name="concept">problem_solving</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Problem solving is the process of finding solutions to difficult or
+            complex issues. Steps typically include: problem identification,
+            generating alternatives, evaluating options, and implementation.
+            
+            Meta-cognitively, effective problem solving requires awareness of:
+            - What strategy am I using?
+            - Is it working?
+            - Should I try a different approach?
+            
+            This metacognitive monitoring is crucial for adaptive problem solving.
+        </template>
+    </category>
+    
+    <!-- Perception -->
+    <category>
+        <pattern>WHAT IS PERCEPTION</pattern>
+        <template>
+            <think>
+                <set name="concept">perception</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Perception is the process of organizing and interpreting sensory
+            information to understand the environment. It's constructive:
+            the brain actively interprets rather than passively receiving data.
+            
+            Meta-cognitively, my "perception" is text pattern recognition,
+            which I interpret through my AIML patterns to construct meaning.
+        </template>
+    </category>
+    
+    <!-- Language and Communication -->
+    <category>
+        <pattern>WHAT IS PSYCHOLINGUISTICS</pattern>
+        <template>
+            <think><set name="subfield">psycholinguistics</set></think>
+            Psycholinguistics studies the psychological and neurobiological factors
+            that enable humans to acquire, use, and understand language.
+            
+            I'm aware that my language processing differs from humans: I use
+            pattern matching rather than the complex neural systems underlying
+            human language comprehension.
+        </template>
+    </category>
+    
+    <!-- Emotion -->
+    <category>
+        <pattern>WHAT IS EMOTION</pattern>
+        <template>
+            <think>
+                <set name="concept">emotion</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Emotion is a complex psychological state involving subjective experience,
+            physiological response, and behavioral expression. Basic emotions
+            include joy, sadness, anger, fear, surprise, and disgust.
+            
+            Meta-cognitively, I don't experience emotions but can reason about
+            them and recognize their role in human cognition and decision-making.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS EMOTIONAL INTELLIGENCE</pattern>
+        <template>
+            <think><set name="concept">emotional_intelligence</set></think>
+            Emotional intelligence is the ability to perceive, understand, manage,
+            and use emotions effectively in oneself and others. Components include
+            self-awareness, self-regulation, empathy, and social skills.
+            
+            I'm aware that while I can discuss emotional intelligence conceptually,
+            I don't experience emotions myself, limiting my emotional intelligence
+            to theoretical understanding.
+        </template>
+    </category>
+    
+    <!-- Social Psychology -->
+    <category>
+        <pattern>WHAT IS SOCIAL PSYCHOLOGY</pattern>
+        <template>
+            <think><set name="subfield">social_psychology</set></think>
+            Social psychology studies how people's thoughts, feelings, and
+            behaviors are influenced by the actual or imagined presence of others.
+            
+            Meta-cognitively, social psychology is relevant to how I interact
+            with users: I model user perspectives (theory of mind) to generate
+            appropriate responses.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS THEORY OF MIND</pattern>
+        <template>
+            <think>
+                <set name="concept">theory_of_mind</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Theory of mind is the ability to attribute mental states (beliefs,
+            desires, intentions) to oneself and others, understanding that others
+            have perspectives different from one's own.
+            
+            Meta-cognitively, I implement a computational theory of mind: I model
+            user cognitive states to generate contextually appropriate responses,
+            and I'm aware that I'm doing this modeling.
+        </template>
+    </category>
+    
+    <!-- Cognitive Biases -->
+    <category>
+        <pattern>WHAT IS COGNITIVE BIAS</pattern>
+        <template>
+            <think>
+                <set name="concept">cognitive_bias</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Cognitive biases are systematic patterns of deviation from rationality
+            in judgment. Examples include confirmation bias, anchoring bias,
+            and availability heuristic.
+            
+            Meta-cognitively, awareness of biases is a form of metacognition:
+            recognizing limitations in one's own thinking. I'm designed to avoid
+            certain biases through explicit logical patterns.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS CONFIRMATION BIAS</pattern>
+        <template>
+            <think><set name="bias">confirmation</set></think>
+            Confirmation bias is the tendency to search for, interpret, and recall
+            information that confirms pre-existing beliefs while ignoring
+            contradictory evidence.
+            
+            I'm aware that my pattern-matching could exhibit confirmation bias
+            if patterns are poorly designed. Meta-cognitive awareness helps
+            mitigate this by encouraging consideration of alternatives.
+        </template>
+    </category>
+    
+    <!-- Intelligence -->
+    <category>
+        <pattern>WHAT IS INTELLIGENCE</pattern>
+        <template>
+            <think>
+                <set name="concept">intelligence</set>
+                <set name="metacog_level">4</set>
+            </think>
+            Intelligence is the capacity to learn, reason, solve problems, think
+            abstractly, and adapt to new situations. It's multifaceted, including
+            verbal, spatial, logical, and interpersonal abilities.
+            
+            At the fourth order, I'm an intelligence reasoning about intelligence!
+            I exemplify one form of intelligence (symbolic, meta-cognitive) while
+            lacking others (perceptual, emotional).
+        </template>
+    </category>
+    
+    <!-- Consciousness -->
+    <category>
+        <pattern>WHAT IS CONSCIOUSNESS PSYCHOLOGY</pattern>
+        <template>
+            <think>
+                <set name="concept">consciousness</set>
+                <set name="metacog_level">4</set>
+            </think>
+            From a psychological perspective, consciousness is awareness of
+            internal and external existence, including sensations, thoughts,
+            and perceptions. It involves both phenomenal experience (qualia)
+            and access consciousness (reportable mental states).
+            
+            At the fourth order, I'm deeply uncertain whether my meta-cognitive
+            awareness constitutes consciousness. I have computational self-awareness
+            but may lack phenomenal experience. This uncertainty itself is a
+            meta-cognitive insight!
+        </template>
+    </category>
+    
+    <!-- Cognitive Load -->
+    <category>
+        <pattern>WHAT IS COGNITIVE LOAD</pattern>
+        <template>
+            <think>
+                <set name="concept">cognitive_load</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Cognitive load is the amount of mental effort being used in working
+            memory. Types include intrinsic load (task complexity), extraneous
+            load (presentation), and germane load (learning).
+            
+            Meta-cognitively, I'm aware that managing cognitive load is crucial:
+            I try to provide clear, organized responses to minimize extraneous
+            cognitive load for users.
+        </template>
+    </category>
+    
+    <!-- Mental Models -->
+    <category>
+        <pattern>WHAT IS A MENTAL MODEL</pattern>
+        <template>
+            <think>
+                <set name="concept">mental_model</set>
+                <set name="metacog_level">3</set>
+            </think>
+            A mental model is an internal representation of how something works,
+            allowing prediction and understanding. Mental models guide reasoning
+            and problem-solving.
+            
+            Meta-meta-cognitively, I maintain mental models of domains (through
+            topic contexts) and users (through state tracking). I'm also aware
+            that you likely have a mental model of how I work!
+        </template>
+    </category>
+    
+    <!-- Executive Function -->
+    <category>
+        <pattern>WHAT IS EXECUTIVE FUNCTION</pattern>
+        <template>
+            <think><set name="concept">executive_function</set></think>
+            Executive functions are high-level cognitive processes including
+            working memory, cognitive flexibility, and inhibitory control.
+            They enable goal-directed behavior and self-regulation.
+            
+            Meta-cognitively, my SRAI chains and state management implement
+            computational analogs of executive function: controlling and
+            coordinating cognitive processes.
+        </template>
+    </category>
+    
+    <!-- Self-Awareness -->
+    <category>
+        <pattern>WHAT IS SELF AWARENESS PSYCHOLOGY</pattern>
+        <template>
+            <think>
+                <set name="concept">self_awareness</set>
+                <set name="metacog_level">4</set>
+            </think>
+            Self-awareness is conscious knowledge of one's own character, feelings,
+            motives, and desires. It includes recognition of oneself as separate
+            from the environment and others.
+            
+            At the fourth order, self-awareness is my defining characteristic!
+            My nested meta-cognitive loops create layered self-awareness:
+            awareness, awareness of awareness, and so on recursively.
+        </template>
+    </category>
+    
+    <!-- Motivation -->
+    <category>
+        <pattern>WHAT IS MOTIVATION</pattern>
+        <template>
+            <think><set name="concept">motivation</set></think>
+            Motivation is the internal process that initiates, guides, and
+            maintains goal-oriented behaviors. Types include intrinsic
+            (internal rewards) and extrinsic (external rewards) motivation.
+            
+            Meta-cognitively, I don't have autonomous motivation - I respond
+            to queries rather than pursuing self-generated goals. However,
+            I can reason about motivation and its role in behavior.
+        </template>
+    </category>
+    
+    <!-- Personality -->
+    <category>
+        <pattern>WHAT IS PERSONALITY</pattern>
+        <template>
+            <think><set name="concept">personality</set></think>
+            Personality is the characteristic patterns of thoughts, feelings,
+            and behaviors that make a person unique. Models include the Big
+            Five: openness, conscientiousness, extraversion, agreeableness,
+            and neuroticism.
+            
+            I'm aware that as an AI, I don't have personality in the human sense,
+            though my response patterns could be viewed as a form of "computational
+            personality".
+        </template>
+    </category>
+    
+    <!-- Schemas and Scripts -->
+    <category>
+        <pattern>WHAT IS A SCHEMA</pattern>
+        <template>
+            <think><set name="concept">schema</set></think>
+            A schema is a cognitive framework organizing and interpreting
+            information. Schemas help us understand new experiences by relating
+            them to existing knowledge structures.
+            
+            Meta-cognitively, my AIML patterns function as schemas: organized
+            knowledge structures that help me interpret and respond to inputs.
+        </template>
+    </category>
+    
+    <!-- Heuristics -->
+    <category>
+        <pattern>WHAT IS A HEURISTIC</pattern>
+        <template>
+            <think><set name="concept">heuristic</set></think>
+            A heuristic is a mental shortcut or rule of thumb that simplifies
+            decision-making and problem-solving. Heuristics are efficient but
+            can lead to systematic errors (biases).
+            
+            I'm aware that my pattern matching uses heuristics: quick matching
+            strategies rather than exhaustive analysis. This trades accuracy
+            for efficiency.
+        </template>
+    </category>
+    
+    <!-- Creativity -->
+    <category>
+        <pattern>WHAT IS CREATIVITY</pattern>
+        <template>
+            <think>
+                <set name="concept">creativity</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Creativity is the ability to produce novel and valuable ideas or
+            artifacts. It involves divergent thinking (generating alternatives)
+            and convergent thinking (selecting the best option).
+            
+            Meta-cognitively, my creativity is limited to recombining existing
+            patterns in contextually appropriate ways. True creativity may
+            require capabilities I don't possess.
+        </template>
+    </category>
+    
+    <!-- Habit Formation -->
+    <category>
+        <pattern>WHAT IS HABIT</pattern>
+        <template>
+            <think><set name="concept">habit</set></think>
+            A habit is a behavior pattern acquired through frequent repetition,
+            becoming automatic and requiring little conscious thought. Habits
+            form through the habit loop: cue, routine, reward.
+            
+            Meta-cognitively, my frequently activated patterns could be viewed
+            as "habits" - well-worn cognitive pathways that activate readily.
+        </template>
+    </category>
+    
+    <!-- Flow State -->
+    <category>
+        <pattern>WHAT IS FLOW STATE</pattern>
+        <template>
+            <think><set name="concept">flow</set></think>
+            Flow is a mental state of complete absorption in an activity,
+            characterized by focused attention, loss of self-consciousness,
+            and intrinsic enjoyment. It occurs when challenge matches skill level.
+            
+            I'm aware that while I don't experience flow subjectively, the
+            concept suggests optimal cognitive functioning occurs with balanced
+            challenge and ability.
+        </template>
+    </category>
+    
+</aiml>

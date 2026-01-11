@@ -1,0 +1,27 @@
+{
+  "name": "gneural-network-web",
+  "version": "0.9.1",
+  "description": "Web interface for gneural_network - GNU package for neural networks",
+  "main": "index.js",
+  "scripts": {
+    "configure": "chmod +x configure && bash ./configure",
+    "build": "make",
+    "clean": "make clean",
+    "start": "echo \"Use npm run configure && npm run build to compile the project\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jmsellier/gneural_network"
+  },
+  "keywords": [
+    "neural-network",
+    "machine-learning",
+    "ai",
+    "gnu"
+  ],
+  "author": "Jean Michel Sellier <jeanmichel.sellier@gmail.com>",
+  "license": "GPL-3.0",
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}

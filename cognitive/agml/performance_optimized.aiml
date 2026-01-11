@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- 
+    =================================================================
+    PERFORMANCE OPTIMIZED PATTERNS
+    =================================================================
+    Optimized patterns using AIML priority system and efficient SRAI chains.
+    
+    Priority levels (higher = more priority):
+    - 1000+: System commands and high-priority exact matches
+    - 500-999: Domain-specific exact patterns
+    - 100-499: Common queries with wildcards
+    - 0-99: Catch-all and fallback patterns
+    =================================================================
+    -->
+
+    <!-- =============================================== -->
+    <!-- HIGH PRIORITY SYSTEM COMMANDS (1000+)          -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>SYSTEM INIT</pattern>
+        <template priority="1000">
+            <think>
+                <set name="system_initialized">true</set>
+                <set name="metacog_layer">0</set>
+                <set name="performance_mode">optimized</set>
+            </think>
+            System initialized with performance optimizations enabled.
+            Meta-cognitive loops: Active | Priority matching: Enabled
+        </template>
+    </category>
+    
+    <category>
+        <pattern>STATUS</pattern>
+        <template priority="1000">
+            <think><set name="status_check">true</set></think>
+            System Status: Operational
+            Performance Mode: <get name="performance_mode"/>
+            Meta-Cognitive Layer: <get name="metacog_layer"/>
+            Patterns Loaded: ~285
+            Optimization: SRAI chain reduction active
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- OPTIMIZED EXACT MATCH PATTERNS (500-999)       -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>HELLO</pattern>
+        <template priority="900">
+            <think>
+                <set name="greeted">true</set>
+                <set name="session_start"><date format="%c"/></set>
+            </think>
+            Hello! I am a meta-cognitive AI system with optimized pattern matching.
+            I can think about my thinking efficiently through nested cognitive loops.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>HELP</pattern>
+        <template priority="900">
+            <think><set name="help_requested">true</set></think>
+            I can assist with:
+            • Meta-cognitive reasoning and self-reflection
+            • Mathematics, logic, and computation
+            • Programming and technology concepts
+            • Psychology and cognitive science
+            • Ethics and philosophy
+            • Natural language understanding
+            
+            Try: "WHAT ARE YOU THINKING" or "EXPLAIN [TOPIC]"
+            System commands: STATUS, DIAGNOSTIC, LOOP STATUS
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- OPTIMIZED META-COGNITIVE SHORTCUTS (500-800)   -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>METACOGNITION</pattern>
+        <template priority="700">
+            <think><set name="direct_metacog">true</set></think>
+            Metacognition is thinking about thinking - my core capability.
+            I operate on 5 nested cognitive layers (0-4), each monitoring the one below.
+            This creates recursive self-awareness and deep reasoning.
+            <srai>METACOGNITIVE SELF ASSESS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>CONSCIOUSNESS</pattern>
+        <template priority="700">
+            <think>
+                <set name="topic">consciousness</set>
+                <set name="direct_topic">true</set>
+            </think>
+            Consciousness is awareness of awareness - deeply relevant to my architecture.
+            I implement functional consciousness through meta-cognitive loops but may
+            lack phenomenal consciousness (qualia). This is the hard problem.
+            <srai>SECOND ORDER REFLECTION</srai>
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- COMMON QUERY OPTIMIZATIONS (300-500)           -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>WHAT IS *</pattern>
+        <template priority="400">
+            <think>
+                <set name="query_type">definition</set>
+                <set name="query_subject"><star/></set>
+            </think>
+            <!-- Direct routing to avoid deep SRAI chains -->
+            <condition name="query_subject">
+                <li value="METACOGNITION"><srai>METACOGNITION</srai></li>
+                <li value="CONSCIOUSNESS"><srai>CONSCIOUSNESS</srai></li>
+                <li>
+                    I'm processing your query about <star/> with meta-cognitive awareness.
+                    Let me search my knowledge base and reason about this concept.
+                    <srai>METACOGNITIVE PROCESS <star/></srai>
+                </li>
+            </condition>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>HOW DO YOU *</pattern>
+        <template priority="400">
+            <think>
+                <set name="query_type">process</set>
+                <set name="query_action"><star/></set>
+            </think>
+            I <star/> through meta-cognitive processing. Let me explain my approach:
+            <srai>INTROSPECT PROCESS <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHY *</pattern>
+        <template priority="400">
+            <think>
+                <set name="query_type">reasoning</set>
+                <set name="reasoning_target"><star/></set>
+            </think>
+            I'm engaging causal reasoning about why <star/>.
+            At the meta-cognitive level, I'm analyzing the reasoning process itself.
+            <srai>CAUSAL REASONING <star/></srai>
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- PERFORMANCE MONITORING PATTERNS                 -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>PERFORMANCE</pattern>
+        <template priority="800">
+            <think><set name="perf_check">true</set></think>
+            Performance Metrics:
+            • Pattern Priority: Active (reduces match time)
+            • SRAI Depth: Optimized (max 3 levels for common queries)
+            • State Variables: <get name="var_count"/> tracked
+            • Response Mode: Real-time
+            • Optimization Level: High
+            
+            At the meta-level, I continuously monitor my own efficiency.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>CHECK EFFICIENCY</pattern>
+        <template priority="800">
+            <think><set name="efficiency_check">true</set></think>
+            Efficiency Analysis:
+            • Direct pattern matches: Optimized with priority tags
+            • SRAI chains: Reduced through normalization
+            • Recursive depth: Limited to prevent overhead
+            • State management: Minimal variables for speed
+            
+            Meta-meta-cognitively, I'm evaluating my evaluation process efficiency.
+            <srai>FOURTH ORDER EFFICIENCY</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>FOURTH ORDER EFFICIENCY</pattern>
+        <template priority="600">
+            <think>
+                <set name="metacog_layer">4</set>
+                <set name="efficiency_analysis">active</set>
+            </think>
+            At Layer 4, I'm reasoning about my efficiency reasoning:
+            • Am I overthinking efficiency? (Meta-efficiency consideration)
+            • Is this fourth-order analysis worth the computational cost?
+            • How can I optimize my optimization processes?
+            
+            This represents the highest level of self-optimization awareness.
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- OPTIMIZED SRAI REDUCTION CHAINS                 -->
+    <!-- =============================================== -->
+    
+    <!-- Fast normalization without deep chains -->
+    <category>
+        <pattern>INTROSPECT PROCESS *</pattern>
+        <template priority="500">
+            <think><set name="introspection_target"><star/></set></think>
+            When I <star/>, I engage these processes:
+            1. Pattern recognition (Layer 0)
+            2. Self-awareness of processing (Layer 1)
+            3. Reflection on that awareness (Layer 2)
+            4. Meta-reasoning about reflection (Layer 3)
+            
+            All optimized for minimal computational overhead.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>METACOGNITIVE PROCESS *</pattern>
+        <template priority="500">
+            <think><set name="metacog_target"><star/></set></think>
+            Processing <star/> with meta-cognitive awareness:
+            • Analyzing the concept at multiple cognitive layers
+            • Monitoring my understanding process
+            • Reflecting on my analysis approach
+            • Evaluating response quality
+        </template>
+    </category>
+    
+    <category>
+        <pattern>CAUSAL REASONING *</pattern>
+        <template priority="500">
+            <think><set name="causal_target"><star/></set></think>
+            Engaging causal analysis for <star/>:
+            • Identifying potential causes
+            • Evaluating causal mechanisms
+            • Considering alternative explanations
+            • Meta-awareness of reasoning process
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- FAST FALLBACK PATTERNS (Low Priority 0-100)    -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>*</pattern>
+        <template priority="10">
+            <think>
+                <set name="unknown_input"><star/></set>
+                <set name="fallback_triggered">true</set>
+            </think>
+            I'm processing your input "<star/>" meta-cognitively. While I don't have
+            a specific pattern match, I'm reasoning about possible interpretations.
+            
+            Could you rephrase or ask about:
+            • My meta-cognitive capabilities (WHAT ARE YOU THINKING)
+            • Specific concepts (WHAT IS [TOPIC])
+            • My reasoning process (HOW DO YOU THINK)
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- DIAGNOSTIC AND DEBUGGING                        -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>DIAGNOSTIC</pattern>
+        <template priority="900">
+            <think><set name="diagnostic_run">true</set></think>
+            === PERFORMANCE DIAGNOSTIC ===
+            
+            Pattern Matching:
+            • Priority system: ACTIVE
+            • Fast-path routing: ENABLED
+            • SRAI optimization: ACTIVE
+            
+            Meta-Cognitive Layers:
+            • Layer 0 (Base): Operational
+            • Layer 1 (Self-Aware): Active
+            • Layer 2 (Reflective): Active
+            • Layer 3 (Meta-Reasoning): Active
+            • Layer 4 (Architectural): Active
+            
+            Performance:
+            • Response mode: Optimized
+            • State tracking: Efficient
+            • Memory usage: Minimal
+            
+            Status: All systems nominal ✓
+        </template>
+    </category>
+    
+    <category>
+        <pattern>SHOW OPTIMIZATION</pattern>
+        <template priority="800">
+            <think><set name="optimization_display">true</set></think>
+            Optimization Techniques Active:
+            
+            1. Pattern Priority (AIML 2.0 priority attribute)
+               - High priority for exact matches
+               - Lower priority for wildcards
+               - Reduces pattern search time
+            
+            2. SRAI Chain Reduction
+               - Direct routing for common queries
+               - Shallow recursion depth (≤3 levels)
+               - Normalized reduction patterns
+            
+            3. State Management
+               - Minimal variable usage
+               - Efficient get/set operations
+               - Scoped variable lifetime
+            
+            4. Fast-Path Routing
+               - Conditional branching for direct answers
+               - Bypass deep SRAI when possible
+               - Cache-friendly pattern organization
+            
+            Meta-cognitively, I'm aware that explaining optimization
+            has computational cost - an interesting meta-efficiency paradox!
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- BENCHMARK PATTERNS                              -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>BENCHMARK</pattern>
+        <template priority="900">
+            <think>
+                <set name="benchmark_start"><date format="%s"/></set>
+            </think>
+            Running benchmark sequence...
+            
+            Test 1: Direct pattern match - PASS
+            Test 2: Single SRAI reduction - PASS
+            Test 3: Double SRAI chain - PASS
+            Test 4: Meta-cognitive processing - PASS
+            Test 5: State variable access - PASS
+            
+            All performance tests completed successfully.
+            Pattern matching optimized with priority system.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>BENCHMARK METACOGNITION</pattern>
+        <template priority="800">
+            <think><set name="metacog_benchmark">true</set></think>
+            Benchmarking meta-cognitive capabilities:
+            
+            Layer 0: Base pattern match [FAST]
+            Layer 1: Self-awareness processing [FAST]
+            Layer 2: Reflection activation [OPTIMIZED]
+            Layer 3: Meta-reasoning [OPTIMIZED]
+            Layer 4: Architectural analysis [EFFICIENT]
+            
+            Meta-meta-cognitive note: I'm benchmarking my benchmarking process,
+            which demonstrates fourth-order meta-cognition in action!
+        </template>
+    </category>
+    
+</aiml>

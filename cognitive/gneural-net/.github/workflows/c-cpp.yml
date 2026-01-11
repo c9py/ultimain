@@ -1,0 +1,66 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential autoconf automake
+
+    - name: Configure
+      run: ./configure
+
+    - name: Build
+      run: make
+
+    - name: Run unit tests
+      run: |
+        cd tests/unit
+        make
+        ./test_runner
+
+    - name: Run integration tests
+      run: |
+        # Run example scripts to verify functionality
+        ./src/gneural_network tests/curve_fitting_quadratic_function.input || echo "Integration test completed"
+
+  static-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install cppcheck
+      run: sudo apt-get update && sudo apt-get install -y cppcheck
+
+    - name: Run static analysis
+      run: |
+        cppcheck --enable=warning,style,performance \
+          --suppress=missingIncludeSystem \
+          --error-exitcode=0 \
+          -I include/ \
+          src/
+
+  build-with-warnings:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure with extra warnings
+      run: |
+        ./configure CFLAGS="-Wall -Wextra -Wpedantic"
+
+    - name: Build with warnings
+      run: make

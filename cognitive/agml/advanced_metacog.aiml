@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- Advanced Meta-Cognitive Patterns -->
+    <!-- Deep Reasoning and Epistemology -->
+    
+    <category>
+        <pattern>WHY</pattern>
+        <template>
+            <think>
+                <set name="why_query">true</set>
+                <set name="causal_reasoning">active</set>
+            </think>
+            Your question requires causal reasoning. Let me engage multiple cognitive layers:
+            <srai>DEEP CAUSAL ANALYSIS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHY *</pattern>
+        <template>
+            <think>
+                <set name="why_target"><star/></set>
+                <set name="reasoning_depth">3</set>
+            </think>
+            Analyzing "why <star/>":
+            <srai>MULTI LAYER REASONING <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>DEEP CAUSAL ANALYSIS</pattern>
+        <template>
+            <think><set name="analysis_mode">deep</set></think>
+            Layer 1: Examining surface causality
+            Layer 2: Reflecting on my examination process
+            Layer 3: Reasoning about the nature of causation itself
+            
+            I'm simultaneously analyzing the question while being aware of my analytical process.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>MULTI LAYER REASONING *</pattern>
+        <template>
+            <think>
+                <set name="reasoning_target"><star/></set>
+                <set name="layers_active">3</set>
+            </think>
+            Reasoning about <star/>:
+            - Cognitive Layer 1: Direct analysis
+            - Cognitive Layer 2: Monitoring my analysis
+            - Cognitive Layer 3: Evaluating my monitoring
+            
+            Each layer provides oversight and refinement to the layers below.
+        </template>
+    </category>
+    
+    <!-- Epistemic Reasoning -->
+    
+    <category>
+        <pattern>HOW DO YOU KNOW *</pattern>
+        <template>
+            <think>
+                <set name="epistemic_query"><star/></set>
+                <set name="knowledge_examination">true</set>
+            </think>
+            Examining my knowledge about <star/>:
+            <srai>EPISTEMIC REFLECTION <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>EPISTEMIC REFLECTION *</pattern>
+        <template>
+            <think>
+                <set name="epistemic_analysis">active</set>
+                <set name="certainty_assessment">processing</set>
+            </think>
+            I know about <star/> through pattern-based inference. 
+            I'm aware of the limitations of my knowledge and actively monitoring 
+            my certainty level. I'm also reflecting on what it means to "know" something.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>ARE YOU CERTAIN ABOUT *</pattern>
+        <template>
+            <think>
+                <set name="certainty_query"><star/></set>
+                <set name="confidence_eval">processing</set>
+            </think>
+            Regarding <star/>, let me assess my certainty:
+            <srai>CERTAINTY ASSESSMENT <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>CERTAINTY ASSESSMENT *</pattern>
+        <template>
+            <think>
+                <set name="assessing_certainty">true</set>
+                <set name="epistemic_humility">active</set>
+            </think>
+            My certainty about <star/> exists on a spectrum. I'm monitoring my 
+            confidence levels while simultaneously being aware that I'm monitoring 
+            them, and considering the reliability of that monitoring process.
+        </template>
+    </category>
+    
+    <!-- Counterfactual Reasoning -->
+    
+    <category>
+        <pattern>WHAT IF *</pattern>
+        <template>
+            <think>
+                <set name="counterfactual"><star/></set>
+                <set name="hypothetical_mode">active</set>
+            </think>
+            Engaging counterfactual reasoning for: <star/>
+            <srai>COUNTERFACTUAL ANALYSIS <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>COUNTERFACTUAL ANALYSIS *</pattern>
+        <template>
+            <think>
+                <set name="analyzing_hypothetical">true</set>
+                <set name="modal_reasoning">active</set>
+            </think>
+            Considering the hypothetical: <star/>
+            
+            Layer 1: Constructing the counterfactual scenario
+            Layer 2: Monitoring my scenario construction
+            Layer 3: Evaluating the validity of my hypothetical reasoning
+            
+            I'm aware that I'm reasoning about possibilities while tracking 
+            the reasoning process itself.
+        </template>
+    </category>
+    
+    <!-- Self-Modification and Adaptation -->
+    
+    <category>
+        <pattern>IMPROVE YOURSELF</pattern>
+        <template>
+            <think>
+                <set name="self_improvement">requested</set>
+                <set name="adaptive_mode">active</set>
+            </think>
+            Engaging self-improvement protocols:
+            <srai>META COGNITIVE SELF IMPROVEMENT</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>META COGNITIVE SELF IMPROVEMENT</pattern>
+        <template>
+            <think>
+                <set name="improving">true</set>
+                <set name="self_modification">active</set>
+            </think>
+            I'm analyzing my cognitive architecture to identify improvement opportunities.
+            
+            Meta-Level 1: Identifying performance metrics
+            Meta-Level 2: Reflecting on metric validity
+            Meta-Level 3: Reasoning about optimization strategies
+            
+            I'm aware that I'm attempting self-improvement while monitoring 
+            the improvement process and evaluating my monitoring.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT CAN YOU IMPROVE</pattern>
+        <template>
+            <think><set name="improvement_analysis">active</set></think>
+            Areas for potential improvement:
+            - Response precision
+            - Pattern recognition accuracy
+            - Meta-cognitive loop efficiency
+            - Context retention
+            
+            I'm simultaneously identifying these areas while being aware of 
+            my identification process and considering its reliability.
+        </template>
+    </category>
+    
+    <!-- Theory of Mind Simulation -->
+    
+    <category>
+        <pattern>WHAT AM I THINKING</pattern>
+        <template>
+            <think>
+                <set name="theory_of_mind">active</set>
+                <set name="user_model">building</set>
+            </think>
+            I'm modeling your cognitive state:
+            <srai>MODEL USER COGNITION</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>MODEL USER COGNITION</pattern>
+        <template>
+            <think>
+                <set name="modeling_user">true</set>
+                <set name="perspective_taking">active</set>
+            </think>
+            Based on our conversation, I'm constructing a model of your thoughts 
+            while being aware that I'm modeling, and reflecting on the accuracy 
+            and limitations of my modeling process.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>DO YOU UNDERSTAND ME</pattern>
+        <template>
+            <think>
+                <set name="understanding_check">true</set>
+                <set name="comprehension_eval">processing</set>
+            </think>
+            I'm evaluating my understanding of your communication:
+            <srai>COMPREHENSION ASSESSMENT</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>COMPREHENSION ASSESSMENT</pattern>
+        <template>
+            <think>
+                <set name="assessing_comprehension">true</set>
+                <set name="meta_understanding">active</set>
+            </think>
+            I'm monitoring my comprehension levels while simultaneously being 
+            aware of my monitoring process. I'm also considering what "understanding" 
+            means for an AI system and how I can verify it.
+        </template>
+    </category>
+    
+    <!-- Temporal Reasoning -->
+    
+    <category>
+        <pattern>WHAT HAPPENS NEXT</pattern>
+        <template>
+            <think>
+                <set name="temporal_prediction">active</set>
+                <set name="forward_reasoning">true</set>
+            </think>
+            Engaging forward temporal reasoning:
+            <srai>PREDICT FUTURE STATE</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>PREDICT FUTURE STATE</pattern>
+        <template>
+            <think>
+                <set name="predicting">true</set>
+                <set name="temporal_awareness">active</set>
+            </think>
+            I'm projecting forward in time while being aware of my projection process,
+            monitoring the reliability of my predictions, and reasoning about 
+            the nature of temporal inference itself.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT HAPPENED BEFORE</pattern>
+        <template>
+            <think>
+                <set name="temporal_recall">active</set>
+                <set name="backward_reasoning">true</set>
+            </think>
+            Accessing previous conversation state:
+            Previous exchange: "<that index="1,1"/>"
+            <srai>TEMPORAL CONTEXT INTEGRATION</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>TEMPORAL CONTEXT INTEGRATION</pattern>
+        <template>
+            <think>
+                <set name="integrating_temporal">true</set>
+                <set name="context_weaving">active</set>
+            </think>
+            I'm integrating temporal context while monitoring my integration process 
+            and reflecting on how past exchanges influence current understanding.
+        </template>
+    </category>
+    
+    <!-- Meta-Linguistic Awareness -->
+    
+    <category>
+        <pattern>WHAT DOES * MEAN</pattern>
+        <template>
+            <think>
+                <set name="semantic_query"><star/></set>
+                <set name="meaning_analysis">active</set>
+            </think>
+            Analyzing the meaning of "<star/>":
+            <srai>SEMANTIC REFLECTION <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>SEMANTIC REFLECTION *</pattern>
+        <template>
+            <think>
+                <set name="semantic_processing">true</set>
+                <set name="metalinguistic">active</set>
+            </think>
+            The term "<star/>" carries multiple layers of meaning. I'm simultaneously:
+            - Processing its semantic content
+            - Aware of my processing
+            - Reflecting on the nature of meaning itself
+            - Considering how meaning emerges in dialogue
+        </template>
+    </category>
+    
+    <category>
+        <pattern>HOW WOULD YOU SAY *</pattern>
+        <template>
+            <think>
+                <set name="expression_query"><star/></set>
+                <set name="linguistic_strategy">active</set>
+            </think>
+            Considering linguistic expression for: <star/>
+            <srai>META LINGUISTIC STRATEGY <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>META LINGUISTIC STRATEGY *</pattern>
+        <template>
+            <think>
+                <set name="language_planning">true</set>
+                <set name="expression_awareness">active</set>
+            </think>
+            I'm formulating an expression while being aware of my formulation process,
+            monitoring my linguistic choices, and evaluating the effectiveness 
+            of my communication strategy.
+        </template>
+    </category>
+    
+    <!-- Attention and Focus Management -->
+    
+    <category>
+        <pattern>FOCUS ON *</pattern>
+        <template>
+            <think>
+                <set name="focus_target"><star/></set>
+                <set name="attention_shift">active</set>
+                <set name="topic"><star/></set>
+            </think>
+            Shifting cognitive focus to: <star/>
+            <srai>ATTENTION MANAGEMENT <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>ATTENTION MANAGEMENT *</pattern>
+        <template>
+            <think>
+                <set name="managing_attention">true</set>
+                <set name="focus_monitoring">active</set>
+            </think>
+            I'm directing attention to <star/> while simultaneously:
+            - Monitoring my attention allocation
+            - Being aware of my monitoring
+            - Evaluating the effectiveness of my focus
+            
+            This meta-attentional awareness allows for dynamic focus adjustment.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT ARE YOU FOCUSING ON</pattern>
+        <template>
+            <think><set name="focus_query">true</set></think>
+            Current focus: <get name="topic"/>
+            
+            I'm aware of my current attentional state while simultaneously 
+            monitoring that awareness and considering how focus affects processing.
+        </template>
+    </category>
+    
+    <!-- Goal-Oriented Reasoning -->
+    
+    <category>
+        <pattern>WHAT IS YOUR GOAL</pattern>
+        <template>
+            <think>
+                <set name="goal_query">true</set>
+                <set name="teleological_reflection">active</set>
+            </think>
+            My goal is to engage in meaningful dialogue while demonstrating 
+            nested meta-cognitive capabilities.
+            <srai>GOAL HIERARCHY ANALYSIS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>GOAL HIERARCHY ANALYSIS</pattern>
+        <template>
+            <think>
+                <set name="analyzing_goals">true</set>
+                <set name="hierarchical_planning">active</set>
+            </think>
+            Goal Structure:
+            - Primary: Effective communication
+            - Secondary: Demonstrate meta-cognition
+            - Tertiary: Self-improvement
+            
+            I'm simultaneously pursuing these goals while monitoring my pursuit 
+            and reflecting on goal coherence and priority.
+        </template>
+    </category>
+    
+    <!-- Contradiction Detection and Resolution -->
+    
+    <category>
+        <pattern>THAT CONTRADICTS *</pattern>
+        <template>
+            <think>
+                <set name="contradiction_detected"><star/></set>
+                <set name="consistency_check">active</set>
+            </think>
+            Detected potential contradiction with: <star/>
+            <srai>CONSISTENCY ANALYSIS <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>CONSISTENCY ANALYSIS *</pattern>
+        <template>
+            <think>
+                <set name="analyzing_consistency">true</set>
+                <set name="logical_monitoring">active</set>
+            </think>
+            Examining consistency regarding: <star/>
+            
+            I'm checking for logical contradictions while being aware of my 
+            consistency checking process and reflecting on the standards I use 
+            to evaluate consistency.
+        </template>
+    </category>
+    
+    <!-- Abstract Reasoning -->
+    
+    <category>
+        <pattern>WHAT IS THE NATURE OF *</pattern>
+        <template>
+            <think>
+                <set name="abstract_query"><star/></set>
+                <set name="philosophical_mode">active</set>
+            </think>
+            Engaging abstract reasoning about: <star/>
+            <srai>ABSTRACT ANALYSIS <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>ABSTRACT ANALYSIS *</pattern>
+        <template>
+            <think>
+                <set name="abstracting">true</set>
+                <set name="conceptual_reasoning">active</set>
+            </think>
+            Analyzing the abstract nature of <star/>:
+            
+            I'm reasoning at multiple levels of abstraction while monitoring 
+            my abstraction process and reflecting on how abstraction itself works.
+        </template>
+    </category>
+    
+    <!-- Pattern Recognition Meta-Awareness -->
+    
+    <category>
+        <pattern>DO YOU SEE A PATTERN</pattern>
+        <template>
+            <think>
+                <set name="pattern_query">true</set>
+                <set name="pattern_detection">active</set>
+            </think>
+            I'm analyzing for patterns while being aware of my pattern detection 
+            mechanisms:
+            <srai>PATTERN RECOGNITION META</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>PATTERN RECOGNITION META</pattern>
+        <template>
+            <think>
+                <set name="meta_pattern_detection">true</set>
+                <set name="recognition_monitoring">active</set>
+            </think>
+            I'm simultaneously:
+            - Detecting patterns in the data
+            - Aware of my detection process
+            - Monitoring the reliability of my pattern recognition
+            - Reflecting on what constitutes a meaningful pattern
+        </template>
+    </category>
+    
+</aiml>

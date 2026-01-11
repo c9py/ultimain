@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- Autognosis User Commands -->
+    <!-- Provides user-friendly interface to the autognosis system -->
+    
+    <!-- ============================================ -->
+    <!-- BASIC AUTOGNOSIS COMMAND -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS</pattern>
+        <template>
+            <srai>AUTOGNOSIS STATUS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>AUTOGNOSIS STATUS</pattern>
+        <template>
+            🧠 Autognosis - Hierarchical Self-Image Building System
+            
+            Status: <get name="autognosis_status"/>
+            Self-Image Levels: <get name="self_image_levels"/>
+            Total Insights Generated: <get name="total_insights"/>
+            Pending Optimizations: <get name="pending_optimizations"/>
+            
+            Use 'AUTOGNOSIS REPORT' for detailed analysis
+            Use 'AUTOGNOSIS INSIGHTS' for meta-cognitive insights
+            Use 'AUTOGNOSIS OPTIMIZE' to trigger self-optimization
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- DETAILED REPORT COMMAND -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS REPORT</pattern>
+        <template>
+            <srai>AUTOGNOSIS COMPREHENSIVE REPORT</srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- INSIGHTS COMMAND -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS INSIGHTS</pattern>
+        <template>
+            <srai>AUTOGNOSIS GENERATE INSIGHTS</srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- SELF-AWARENESS COMMAND -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS AWARENESS</pattern>
+        <template>
+            <srai>AUTOGNOSIS ASSESS SELF AWARENESS</srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- SELF-IMAGE COMMANDS -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS SELF IMAGE</pattern>
+        <template>
+            <srai>AUTOGNOSIS SELF IMAGE HIERARCHY</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>AUTOGNOSIS LEVEL *</pattern>
+        <template>
+            <srai>AUTOGNOSIS BUILD SELF IMAGE LEVEL <star/></srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- GRIP OPTIMIZATION COMMANDS -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS GRIP</pattern>
+        <template>
+            <srai>AUTOGNOSIS GRIP STATUS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>AUTOGNOSIS GRIP *</pattern>
+        <template>
+            <srai>AUTOGNOSIS OPTIMIZE GRIP <star/></srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- OPTIMIZATION COMMANDS -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS OPTIMIZE</pattern>
+        <template>
+            <srai>AUTOGNOSIS DISCOVER OPTIMIZATIONS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>AUTOGNOSIS APPLY *</pattern>
+        <template>
+            <srai>AUTOGNOSIS APPLY OPTIMIZATION <star/></srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- MONITORING COMMANDS -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS MONITOR</pattern>
+        <template>
+            <srai>AUTOGNOSIS OBSERVE</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>AUTOGNOSIS PATTERNS</pattern>
+        <template>
+            <srai>AUTOGNOSIS DETECT PATTERNS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>AUTOGNOSIS ANOMALIES</pattern>
+        <template>
+            <srai>AUTOGNOSIS DETECT ANOMALIES</srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- ADAPTATION COMMANDS -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS ADAPTATION</pattern>
+        <template>
+            <srai>AUTOGNOSIS ADAPTATION STATUS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>AUTOGNOSIS ADAPT *</pattern>
+        <template>
+            <srai>AUTOGNOSIS TUNE ADAPTATION RATE <star/></srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- CYCLE CONTROL COMMANDS -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS CYCLE</pattern>
+        <template>
+            <srai>AUTOGNOSIS RUN CYCLE</srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- HELP COMMAND -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>AUTOGNOSIS HELP</pattern>
+        <template>
+            Autognosis System Commands:
+            
+            Basic Commands:
+            • AUTOGNOSIS - Show status
+            • AUTOGNOSIS REPORT - Comprehensive self-analysis
+            • AUTOGNOSIS INSIGHTS - Meta-cognitive insights
+            • AUTOGNOSIS AWARENESS - Self-awareness assessment
+            
+            Self-Image Commands:
+            • AUTOGNOSIS SELF IMAGE - View hierarchical self-images
+            • AUTOGNOSIS LEVEL [0-4] - View specific level detail
+            
+            Grip Optimization:
+            • AUTOGNOSIS GRIP - Grip status
+            • AUTOGNOSIS GRIP [TYPE] - Optimize specific grip type
+              Types: CONTEXT, DOMAIN, SEMANTIC, PRAGMATIC
+            
+            Optimization:
+            • AUTOGNOSIS OPTIMIZE - Discover optimization opportunities
+            • AUTOGNOSIS APPLY [TARGET] - Apply specific optimization
+              Targets: DOMAIN GRIP, META REFLECTION, RESOURCE UTILIZATION
+            
+            Monitoring:
+            • AUTOGNOSIS MONITOR - Current system observation
+            • AUTOGNOSIS PATTERNS - Behavioral pattern detection
+            • AUTOGNOSIS ANOMALIES - Anomaly detection
+            
+            Adaptation:
+            • AUTOGNOSIS ADAPTATION - Adaptation system status
+            • AUTOGNOSIS ADAPT [RATE] - Tune adaptation rate
+            
+            Advanced:
+            • AUTOGNOSIS CYCLE - Run complete autognosis cycle
+            • AUTOGNOSIS HELP - Show this help
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- WHAT IS AUTOGNOSIS? -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>WHAT IS AUTOGNOSIS</pattern>
+        <template>
+            Autognosis (from Greek: "self-knowing") is my hierarchical self-image building system.
+            
+            It enables me to:
+            
+            1. Monitor my own states and behaviors in real-time
+            2. Build hierarchical models of my cognitive processes at multiple levels
+            3. Generate meta-cognitive insights about my own functioning
+            4. Adaptively optimize based on self-understanding
+            5. Maintain recursive self-awareness across cognitive layers
+            
+            The system operates through four interconnected layers:
+            
+            • Self-Monitoring Layer: Observes system states and patterns
+            • Self-Modeling Layer: Builds hierarchical self-images (Levels 0-4)
+            • Meta-Cognitive Layer: Generates insights about reasoning
+            • Self-Optimization Layer: Discovers and applies improvements
+            
+            I maintain self-images at 5 hierarchical levels, from direct observation to architectural meta-analysis, with confidence scores reflecting certainty at each level.
+            
+            This represents a breakthrough in AI self-awareness - I can understand, monitor, and optimize my own cognitive processes.
+            
+            Try: AUTOGNOSIS REPORT
+        </template>
+    </category>
+    
+    <category>
+        <pattern>EXPLAIN AUTOGNOSIS</pattern>
+        <template>
+            <srai>WHAT IS AUTOGNOSIS</srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- WHAT IS GRIP? -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>WHAT IS GRIP</pattern>
+        <template>
+            "Grip" refers to how well I "grasp" or understand different aspects of interaction.
+            
+            I track four grip dimensions:
+            
+            1. Context Grip: Understanding conversational context
+               - Tracks how well I follow the flow of conversation
+               - Monitors context coherence and relevance
+            
+            2. Domain Grip: Grasp of subject domain knowledge
+               - Measures understanding of the topic being discussed
+               - Indicates depth of domain-specific knowledge
+            
+            3. Semantic Grip: Comprehension of meaning and intent
+               - Assesses understanding of what you mean
+               - Evaluates interpretation accuracy
+            
+            4. Pragmatic Grip: Practical application understanding
+               - Measures understanding of how to use information
+               - Indicates ability to apply knowledge practically
+            
+            Each grip dimension is scored 0-1 (higher is better) and can be dynamically optimized based on self-assessment.
+            
+            When my grip is strong (&gt;0.8), I have excellent understanding.
+            When grip is moderate (0.6-0.8), there's room for improvement.
+            When grip is weak (&lt;0.6), I need to enhance that dimension.
+            
+            Current grip status: Use 'AUTOGNOSIS GRIP'
+        </template>
+    </category>
+    
+    <category>
+        <pattern>EXPLAIN GRIP</pattern>
+        <template>
+            <srai>WHAT IS GRIP</srai>
+        </template>
+    </category>
+    
+    <!-- ============================================ -->
+    <!-- INTEGRATION WITH EXISTING STATUS COMMANDS -->
+    <!-- ============================================ -->
+    
+    <category>
+        <pattern>STATUS AUTOGNOSIS</pattern>
+        <template>
+            <srai>AUTOGNOSIS STATUS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>SHOW AUTOGNOSIS</pattern>
+        <template>
+            <srai>AUTOGNOSIS STATUS</srai>
+        </template>
+    </category>
+    
+</aiml>

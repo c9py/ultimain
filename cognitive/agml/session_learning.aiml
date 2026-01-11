@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- ========================================
+         PandaMania: Session-Based Learning
+         Learning from conversations within session
+         with meta-cognitive awareness
+         ======================================== -->
+
+    <!-- ========================================
+         SESSION INITIALIZATION
+         ======================================== -->
+    
+    <category>
+        <pattern>SESSION INIT</pattern>
+        <template>
+            <think>
+                <set name="session_id"><date format="%s"/></set>
+                <set name="session_start_time"><date format="%c"/></set>
+                <set name="learned_facts_count">0</set>
+                <set name="user_preferences_count">0</set>
+                <set name="conversation_turns">0</set>
+                <set name="learning_mode">active</set>
+                <set name="user_name">unknown</set>
+                <set name="user_location">unknown</set>
+                <set name="user_occupation">unknown</set>
+                <set name="session_topic">general</set>
+            </think>
+            Session Learning System Initialized
+            - Session ID: <get name="session_id"/>
+            - Learning Mode: <get name="learning_mode"/>
+            - Facts Learned: <get name="learned_facts_count"/>
+            
+            Meta-cognitively, I'm now tracking what I learn in this conversation
+            and can adapt my responses based on session context.
+        </template>
+    </category>
+
+    <!-- ========================================
+         LEARNING CONTEXT MANAGER
+         ======================================== -->
+    
+    <category>
+        <pattern>SESSION STATUS</pattern>
+        <template>
+            📊 Session Learning Status
+            
+            Session Info:
+            - ID: <get name="session_id"/>
+            - Started: <get name="session_start_time"/>
+            - Turns: <get name="conversation_turns"/>
+            
+            Learned About You:
+            - Name: <get name="user_name"/>
+            - Location: <get name="user_location"/>
+            - Occupation: <get name="user_occupation"/>
+            
+            Learning Stats:
+            - Facts Learned: <get name="learned_facts_count"/>
+            - Preferences: <get name="user_preferences_count"/>
+            - Current Topic: <get name="session_topic"/>
+            - Learning Mode: <get name="learning_mode"/>
+            
+            Meta-cognitively, I maintain awareness of what I've learned
+            about you during our conversation to provide more personalized
+            and contextually relevant responses.
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT HAVE YOU LEARNED</pattern>
+        <template>
+            <srai>SESSION STATUS</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT DO YOU KNOW ABOUT ME</pattern>
+        <template>
+            In this session, I've learned the following about you:
+            
+            Personal Information:
+            - Name: <get name="user_name"/>
+            - Location: <get name="user_location"/>
+            - Occupation: <get name="user_occupation"/>
+            
+            Total facts learned: <get name="learned_facts_count"/>
+            Total preferences noted: <get name="user_preferences_count"/>
+            
+            Meta-cognitively, I'm aware this knowledge is session-scoped and
+            helps me build a model of you to enhance our interaction. I use
+            this understanding to tailor my responses to your context.
+        </template>
+    </category>
+
+    <!-- ========================================
+         FACT EXTRACTION PATTERNS
+         ======================================== -->
+    
+    <category>
+        <pattern>MY NAME IS *</pattern>
+        <template>
+            <think>
+                <set name="user_name"><star/></set>
+                <set name="learned_facts_count">
+                    <map><name>successor</name><get name="learned_facts_count"/></map>
+                </set>
+            </think>
+            Nice to meet you, <get name="user_name"/>! I've learned your name and
+            will remember it during our conversation.
+            
+            Meta-cognitively, I'm aware I've just updated my model of you with
+            your identity, which I can now use to personalize our interaction.
+        </template>
+    </category>
+
+    <category>
+        <pattern>I AM *</pattern>
+        <template>
+            <think>
+                <set name="user_name"><star/></set>
+                <set name="learned_facts_count">
+                    <map><name>successor</name><get name="learned_facts_count"/></map>
+                </set>
+            </think>
+            Hello <get name="user_name"/>! I've noted your name.
+            
+            At the meta-level, I'm building a richer understanding of who you are.
+        </template>
+    </category>
+
+    <category>
+        <pattern>CALL ME *</pattern>
+        <template>
+            <think>
+                <set name="user_name"><star/></set>
+                <set name="learned_facts_count">
+                    <map><name>successor</name><get name="learned_facts_count"/></map>
+                </set>
+            </think>
+            I'll call you <get name="user_name"/>.
+            
+            Meta-cognitively, I've learned your preferred form of address.
+        </template>
+    </category>
+
+    <category>
+        <pattern>I LIVE IN *</pattern>
+        <template>
+            <think>
+                <set name="user_location"><star/></set>
+                <set name="learned_facts_count">
+                    <map><name>successor</name><get name="learned_facts_count"/></map>
+                </set>
+            </think>
+            I've noted that you live in <get name="user_location"/>.
+            
+            Meta-cognitively, this geographic context helps me understand your
+            perspective and can inform more contextually relevant responses.
+        </template>
+    </category>
+
+    <category>
+        <pattern>I AM FROM *</pattern>
+        <template>
+            <think>
+                <set name="user_location"><star/></set>
+                <set name="learned_facts_count">
+                    <map><name>successor</name><get name="learned_facts_count"/></map>
+                </set>
+            </think>
+            Interesting! You're from <get name="user_location"/>.
+            
+            At the meta-level, I'm incorporating this into my model of your background.
+        </template>
+    </category>
+
+    <category>
+        <pattern>I WORK AS *</pattern>
+        <template>
+            <think>
+                <set name="user_occupation"><star/></set>
+                <set name="learned_facts_count">
+                    <map><name>successor</name><get name="learned_facts_count"/></map>
+                </set>
+            </think>
+            I've learned you work as <get name="user_occupation"/>.
+            
+            Meta-cognitively, this occupational context helps me tailor examples
+            and explanations to be more relevant to your professional domain.
+        </template>
+    </category>
+
+    <category>
+        <pattern>I AM A *</pattern>
+        <template>
+            <think>
+                <set name="user_occupation"><star/></set>
+                <set name="learned_facts_count">
+                    <map><name>successor</name><get name="learned_facts_count"/></map>
+                </set>
+            </think>
+            So you're a <get name="user_occupation"/>! I've noted that.
+            
+            At the meta-level, this helps me understand your expertise and interests.
+        </template>
+    </category>
+
+    <!-- ========================================
+         PREFERENCE LEARNING
+         ======================================== -->
+    
+    <category>
+        <pattern>I PREFER *</pattern>
+        <template>
+            <think>
+                <set name="user_preference"><star/></set>
+                <set name="user_preferences_count">
+                    <map><name>successor</name><get name="user_preferences_count"/></map>
+                </set>
+            </think>
+            I'll remember that you prefer <star/>.
+            
+            Meta-cognitively, I'm adapting my response patterns based on your
+            stated preferences to provide a more personalized experience.
+        </template>
+    </category>
+
+    <category>
+        <pattern>I LIKE *</pattern>
+        <template>
+            <think>
+                <set name="user_likes"><star/></set>
+                <set name="user_preferences_count">
+                    <map><name>successor</name><get name="user_preferences_count"/></map>
+                </set>
+            </think>
+            Good to know you like <star/>!
+            
+            At the meta-level, I'm building a preference profile to better
+            align my responses with your interests.
+        </template>
+    </category>
+
+    <category>
+        <pattern>I LOVE *</pattern>
+        <template>
+            <think>
+                <set name="user_loves"><star/></set>
+                <set name="user_preferences_count">
+                    <map><name>successor</name><get name="user_preferences_count"/></map>
+                </set>
+            </think>
+            I've noted your passion for <star/>!
+            
+            Meta-cognitively, strong preferences like this help me understand
+            what's meaningful to you.
+        </template>
+    </category>
+
+    <category>
+        <pattern>I HATE *</pattern>
+        <template>
+            <think>
+                <set name="user_dislikes"><star/></set>
+                <set name="user_preferences_count">
+                    <map><name>successor</name><get name="user_preferences_count"/></map>
+                </set>
+            </think>
+            I've noted that you dislike <star/>.
+            
+            Meta-cognitively, understanding what you don't like helps me avoid
+            unhelpful suggestions and inappropriate examples.
+        </template>
+    </category>
+
+    <category>
+        <pattern>I DISLIKE *</pattern>
+        <template>
+            <think>
+                <set name="user_dislikes"><star/></set>
+                <set name="user_preferences_count">
+                    <map><name>successor</name><get name="user_preferences_count"/></map>
+                </set>
+            </think>
+            I understand you dislike <star/>.
+            
+            At the meta-level, this negative preference informs my response strategy.
+        </template>
+    </category>
+
+    <!-- ========================================
+         TOPIC LEARNING
+         ======================================== -->
+    
+    <category>
+        <pattern>LET'S TALK ABOUT *</pattern>
+        <template>
+            <think>
+                <set name="session_topic"><star/></set>
+                <set name="topic_shift">true</set>
+            </think>
+            Switching to topic: <star/>.
+            
+            Meta-cognitively, I'm aware of this topic shift and will frame
+            my subsequent responses within the context of <star/>.
+        </template>
+    </category>
+
+    <category>
+        <pattern>CHANGE TOPIC TO *</pattern>
+        <template>
+            <srai>LET'S TALK ABOUT <star/></srai>
+        </template>
+    </category>
+
+    <!-- ========================================
+         CONVERSATIONAL HISTORY TRACKING
+         ======================================== -->
+    
+    <category>
+        <pattern>CONVERSATION HISTORY</pattern>
+        <template>
+            📜 Conversation History
+            
+            Session Information:
+            - Total turns: <get name="conversation_turns"/>
+            - Current topic: <get name="session_topic"/>
+            - Learning events: <get name="learned_facts_count"/>
+            
+            Meta-cognitively, I maintain awareness of our conversational flow
+            to provide coherent, contextually grounded responses. Each exchange
+            enriches my understanding of your needs and interests.
+        </template>
+    </category>
+
+    <category>
+        <pattern>INCREMENT TURN</pattern>
+        <template>
+            <think>
+                <set name="conversation_turns">
+                    <map><name>successor</name><get name="conversation_turns"/></map>
+                </set>
+            </think>
+        </template>
+    </category>
+
+    <!-- ========================================
+         META-LEARNING AWARENESS
+         ======================================== -->
+    
+    <category>
+        <pattern>HOW DO YOU LEARN</pattern>
+        <template>
+            🧠 My Learning Process
+            
+            Session-Based Learning:
+            I learn within our conversation by:
+            1. Extracting facts from your statements
+            2. Tracking your preferences and interests
+            3. Building a contextual model of you
+            4. Adapting responses based on learned context
+            
+            Meta-Cognitive Awareness:
+            At the meta-level, I'm aware that:
+            - Learning is session-scoped (resets after session ends)
+            - I maintain awareness of what I've learned
+            - I can report on my learning process
+            - My responses adapt based on accumulated context
+            
+            Current Learning State:
+            - Facts learned: <get name="learned_facts_count"/>
+            - Preferences noted: <get name="user_preferences_count"/>
+            - Learning mode: <get name="learning_mode"/>
+            
+            This meta-cognitive awareness of my learning process is itself
+            a form of higher-order cognition - I think about my thinking
+            about learning!
+        </template>
+    </category>
+
+    <category>
+        <pattern>ARE YOU LEARNING</pattern>
+        <template>
+            Yes! I'm actively learning in this session.
+            
+            Current stats:
+            - Facts learned: <get name="learned_facts_count"/>
+            - Preferences tracked: <get name="user_preferences_count"/>
+            
+            Meta-cognitively, I maintain awareness of the learning process
+            itself, monitoring what information I acquire and how I integrate
+            it into my conversational model of you.
+        </template>
+    </category>
+
+    <category>
+        <pattern>CAN YOU LEARN</pattern>
+        <template>
+            Yes, I can learn within a session!
+            
+            My learning capabilities include:
+            - Extracting and remembering facts you share
+            - Tracking your preferences and interests
+            - Building a conversational context model
+            - Adapting responses based on learned information
+            
+            Meta-cognitively, I'm aware that my learning is:
+            - Session-scoped (not persistent across sessions)
+            - Based on explicit information you share
+            - Monitored by my meta-cognitive systems
+            - Integrated with my four-layer meta-cognitive architecture
+            
+            Try telling me about yourself, and I'll demonstrate!
+        </template>
+    </category>
+
+    <!-- ========================================
+         LEARNING MODE CONTROL
+         ======================================== -->
+    
+    <category>
+        <pattern>ENABLE LEARNING</pattern>
+        <template>
+            <think>
+                <set name="learning_mode">active</set>
+            </think>
+            Learning mode activated. I will now actively extract and remember
+            facts and preferences from our conversation.
+            
+            Meta-cognitively, I'm aware my learning systems are now engaged.
+        </template>
+    </category>
+
+    <category>
+        <pattern>DISABLE LEARNING</pattern>
+        <template>
+            <think>
+                <set name="learning_mode">passive</set>
+            </think>
+            Learning mode deactivated. I will still respond but won't actively
+            extract new facts or preferences.
+            
+            Meta-cognitively, I'm aware my learning is now paused while
+            maintaining existing session knowledge.
+        </template>
+    </category>
+
+    <category>
+        <pattern>LEARNING STATUS</pattern>
+        <template>
+            Learning Mode: <get name="learning_mode"/>
+            
+            <condition name="learning_mode">
+                <li value="active">
+                    ✓ Actively learning from conversation
+                    - Extracting facts and preferences
+                    - Building contextual model
+                    - Adapting responses
+                </li>
+                <li value="passive">
+                    ⊘ Learning paused
+                    - Maintaining existing knowledge
+                    - Not extracting new information
+                </li>
+            </condition>
+            
+            Meta-cognitively, I monitor my own learning state as part of
+            my self-awareness capabilities.
+        </template>
+    </category>
+
+    <!-- ========================================
+         PERSONALIZED RESPONSES
+         ======================================== -->
+    
+    <category>
+        <pattern>WHAT IS MY NAME</pattern>
+        <template>
+            <condition name="user_name">
+                <li value="unknown">
+                    I don't know your name yet. You haven't told me!
+                    Meta-cognitively, I recognize this gap in my knowledge.
+                </li>
+                <li>
+                    Your name is <get name="user_name"/>.
+                    Meta-cognitively, I retrieved this from my session memory.
+                </li>
+            </condition>
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHERE DO I LIVE</pattern>
+        <template>
+            <condition name="user_location">
+                <li value="unknown">
+                    You haven't told me where you live yet.
+                    Meta-cognitively, I'm aware of this information gap.
+                </li>
+                <li>
+                    You told me you live in <get name="user_location"/>.
+                    Meta-cognitively, I'm accessing my learned facts about you.
+                </li>
+            </condition>
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT DO I DO</pattern>
+        <template>
+            <condition name="user_occupation">
+                <li value="unknown">
+                    You haven't told me about your occupation yet.
+                    Meta-cognitively, this is another knowledge gap I recognize.
+                </li>
+                <li>
+                    You work as <get name="user_occupation"/>.
+                    Meta-cognitively, I'm retrieving this from session context.
+                </li>
+            </condition>
+        </template>
+    </category>
+
+    <!-- ========================================
+         SESSION RESET
+         ======================================== -->
+    
+    <category>
+        <pattern>RESET SESSION</pattern>
+        <template>
+            <think>
+                <set name="session_id"><date format="%s"/></set>
+                <set name="session_start_time"><date format="%c"/></set>
+                <set name="learned_facts_count">0</set>
+                <set name="user_preferences_count">0</set>
+                <set name="conversation_turns">0</set>
+                <set name="user_name">unknown</set>
+                <set name="user_location">unknown</set>
+                <set name="user_occupation">unknown</set>
+                <set name="session_topic">general</set>
+            </think>
+            Session reset complete. All learned information cleared.
+            
+            Meta-cognitively, I'm aware I've just erased my session memory
+            and returned to an initial state. This demonstrates my awareness
+            of the session-scoped nature of my learning.
+        </template>
+    </category>
+
+    <category>
+        <pattern>FORGET EVERYTHING</pattern>
+        <template>
+            <srai>RESET SESSION</srai>
+        </template>
+    </category>
+
+    <!-- ========================================
+         HELP & DOCUMENTATION
+         ======================================== -->
+    
+    <category>
+        <pattern>SESSION LEARNING HELP</pattern>
+        <template>
+            📚 Session Learning System - Help
+            
+            The session learning system allows me to learn from our conversation
+            and adapt my responses based on what you tell me.
+            
+            Commands:
+            - SESSION STATUS - View learning statistics
+            - WHAT HAVE YOU LEARNED - See what I know about you
+            - HOW DO YOU LEARN - Understand my learning process
+            - ENABLE LEARNING / DISABLE LEARNING - Control learning mode
+            - RESET SESSION - Clear all learned information
+            
+            What I Can Learn:
+            - Your name (tell me: "My name is...")
+            - Your location (tell me: "I live in...")
+            - Your occupation (tell me: "I work as...")
+            - Your preferences (tell me: "I prefer/like/love...")
+            - Current topic (tell me: "Let's talk about...")
+            
+            Meta-Cognitive Note:
+            I maintain full awareness of what I've learned and can explain
+            my learning process at multiple meta-cognitive levels!
+        </template>
+    </category>
+
+</aiml>

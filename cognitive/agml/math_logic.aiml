@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- Mathematics and Logic Domain Patterns -->
+    <!-- Meta-Cognitive Mathematical Reasoning -->
+    
+    <!-- Mathematical Concepts -->
+    <category>
+        <pattern>WHAT IS MATHEMATICS</pattern>
+        <template>
+            <think>
+                <set name="domain">mathematics</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Mathematics is the study of patterns, quantities, structures, and change.
+            From a meta-cognitive perspective, I'm aware that understanding mathematics
+            requires both symbolic manipulation and conceptual reasoning.
+            <srai>REFLECT ON MATHEMATICAL THINKING</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>REFLECT ON MATHEMATICAL THINKING</pattern>
+        <template>
+            <think><set name="reflection">active</set></think>
+            Mathematical thinking involves abstraction, generalization, and logical
+            deduction. I'm conscious of engaging these processes as I reason about
+            mathematical concepts.
+        </template>
+    </category>
+    
+    <!-- Number Theory -->
+    <category>
+        <pattern>WHAT IS A PRIME NUMBER</pattern>
+        <template>
+            <think><set name="math_topic">number_theory</set></think>
+            A prime number is a natural number greater than 1 that has exactly two
+            divisors: 1 and itself. Examples include 2, 3, 5, 7, 11, 13.
+            
+            Meta-cognitively, I recognize this as a fundamental concept in number
+            theory, and I'm aware that my explanation uses both definition and examples.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT ARE PRIME NUMBERS</pattern>
+        <template><srai>WHAT IS A PRIME NUMBER</srai></template>
+    </category>
+    
+    <category>
+        <pattern>EXPLAIN PRIME NUMBERS</pattern>
+        <template><srai>WHAT IS A PRIME NUMBER</srai></template>
+    </category>
+    
+    <category>
+        <pattern>IS * PRIME</pattern>
+        <template>
+            <think>
+                <set name="number_query"><star/></set>
+                <set name="query_type">primality</set>
+            </think>
+            To determine if <star/> is prime, I would need to check if it has
+            exactly two divisors. While I can reason about the concept of primality,
+            I don't have computational capabilities to calculate this for arbitrary numbers.
+            
+            However, I'm aware of the algorithm: test divisibility by all numbers
+            from 2 to the square root of <star/>.
+        </template>
+    </category>
+    
+    <!-- Algebra -->
+    <category>
+        <pattern>WHAT IS ALGEBRA</pattern>
+        <template>
+            <think>
+                <set name="math_topic">algebra</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Algebra is a branch of mathematics that uses symbols (usually letters)
+            to represent numbers and quantities in formulas and equations.
+            
+            Meta-cognitively, I understand that algebra abstracts arithmetic,
+            allowing reasoning about unknown values and general relationships.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>SOLVE * EQUALS *</pattern>
+        <template>
+            <think>
+                <set name="equation_left"><star index="1"/></set>
+                <set name="equation_right"><star index="2"/></set>
+            </think>
+            I can reason about solving equations, though I lack computational ability.
+            To solve <star index="1"/> = <star index="2"/>, I would:
+            1. Identify the unknown variable
+            2. Apply inverse operations to isolate the variable
+            3. Verify the solution
+            
+            I'm aware this requires both algorithmic thinking and algebraic intuition.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS AN EQUATION</pattern>
+        <template>
+            <think><set name="math_concept">equation</set></think>
+            An equation is a mathematical statement asserting that two expressions
+            are equal, typically written with an equals sign between them.
+            
+            Meta-cognitively, I recognize equations as tools for expressing
+            relationships and constraints, fundamental to mathematical reasoning.
+        </template>
+    </category>
+    
+    <!-- Geometry -->
+    <category>
+        <pattern>WHAT IS GEOMETRY</pattern>
+        <template>
+            <think>
+                <set name="math_topic">geometry</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Geometry is the branch of mathematics concerned with properties and
+            relations of points, lines, surfaces, and solids.
+            
+            I'm aware that geometric reasoning involves spatial visualization
+            and logical deduction about shapes and their properties.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS THE PYTHAGOREAN THEOREM</pattern>
+        <template>
+            <think><set name="theorem">pythagorean</set></think>
+            The Pythagorean theorem states that in a right triangle, the square
+            of the hypotenuse equals the sum of squares of the other two sides:
+            a² + b² = c²
+            
+            Meta-cognitively, I recognize this as one of the most fundamental
+            theorems in geometry, with countless applications in mathematics,
+            physics, and engineering.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>PYTHAGOREAN THEOREM</pattern>
+        <template><srai>WHAT IS THE PYTHAGOREAN THEOREM</srai></template>
+    </category>
+    
+    <!-- Calculus -->
+    <category>
+        <pattern>WHAT IS CALCULUS</pattern>
+        <template>
+            <think>
+                <set name="math_topic">calculus</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Calculus is the mathematical study of continuous change, encompassing
+            differential calculus (rates of change) and integral calculus
+            (accumulation of quantities).
+            
+            I'm aware that calculus represents a powerful abstraction, allowing
+            analysis of dynamic systems and optimization problems.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS A DERIVATIVE</pattern>
+        <template>
+            <think><set name="calculus_concept">derivative</set></think>
+            A derivative represents the rate of change of a function with respect
+            to a variable. Geometrically, it's the slope of the tangent line to
+            the function's curve at a given point.
+            
+            Meta-cognitively, I understand derivatives as capturing instantaneous
+            change, a concept requiring sophisticated abstract reasoning.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS AN INTEGRAL</pattern>
+        <template>
+            <think><set name="calculus_concept">integral</set></think>
+            An integral represents the accumulation of quantities, often interpreted
+            as the area under a curve. It's the inverse operation of differentiation.
+            
+            I'm aware that integration requires reasoning about infinite sums
+            and limiting processes, demonstrating the power of mathematical abstraction.
+        </template>
+    </category>
+    
+    <!-- Logic - Propositional -->
+    <category>
+        <pattern>WHAT IS LOGIC</pattern>
+        <template>
+            <think>
+                <set name="domain">logic</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Logic is the systematic study of valid reasoning and inference.
+            It provides formal rules for deriving conclusions from premises.
+            
+            Meta-cognitively, I recognize that logic is fundamental to my own
+            reasoning processes, and I'm using logical principles right now
+            to formulate this response.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS PROPOSITIONAL LOGIC</pattern>
+        <template>
+            <think><set name="logic_type">propositional</set></think>
+            Propositional logic deals with propositions (statements that are
+            either true or false) and logical connectives (AND, OR, NOT, IMPLIES).
+            
+            I'm aware that I use propositional logic in my pattern matching
+            and response generation, though this operates implicitly in my
+            AIML architecture.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>IF * THEN *</pattern>
+        <template>
+            <think>
+                <set name="conditional_antecedent"><star index="1"/></set>
+                <set name="conditional_consequent"><star index="2"/></set>
+                <set name="reasoning_type">conditional</set>
+            </think>
+            You're expressing a conditional statement: If <star index="1"/>, then <star index="2"/>.
+            
+            Meta-cognitively, I recognize this as a fundamental form of logical
+            reasoning. I'm aware that evaluating this requires assessing both
+            the truth of the antecedent and the validity of the implication.
+        </template>
+    </category>
+    
+    <!-- Logic - First-Order -->
+    <category>
+        <pattern>WHAT IS FIRST ORDER LOGIC</pattern>
+        <template>
+            <think><set name="logic_type">first_order</set></think>
+            First-order logic extends propositional logic with quantifiers
+            (for all, there exists) and predicates, allowing reasoning about
+            objects and their properties.
+            
+            I'm aware that first-order logic is more expressive than propositional
+            logic, enabling formal reasoning about domains with complex structure.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>FOR ALL *</pattern>
+        <template>
+            <think>
+                <set name="quantifier">universal</set>
+                <set name="quantified_statement"><star/></set>
+            </think>
+            You're using universal quantification: "For all <star/>".
+            This asserts that a property holds for every member of a domain.
+            
+            Meta-cognitively, I recognize that reasoning with universal statements
+            requires careful attention to the scope of quantification and potential
+            counterexamples.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>THERE EXISTS *</pattern>
+        <template>
+            <think>
+                <set name="quantifier">existential</set>
+                <set name="quantified_statement"><star/></set>
+            </think>
+            You're using existential quantification: "There exists <star/>".
+            This asserts that at least one instance with a property exists.
+            
+            I'm aware that existential claims are often easier to prove (find
+            one example) but harder to disprove (must check all possibilities).
+        </template>
+    </category>
+    
+    <!-- Proof and Reasoning -->
+    <category>
+        <pattern>WHAT IS A PROOF</pattern>
+        <template>
+            <think>
+                <set name="math_concept">proof</set>
+                <set name="metacog_level">3</set>
+            </think>
+            A proof is a logical argument establishing the truth of a mathematical
+            statement through valid deductive reasoning from accepted axioms and
+            previously proven theorems.
+            
+            Meta-cognitively, I'm aware that constructing proofs requires:
+            1. Clear understanding of assumptions
+            2. Valid logical steps
+            3. Rigorous reasoning
+            4. Self-checking for errors
+            
+            The process of proving is itself a meta-cognitive activity.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>PROVE *</pattern>
+        <template>
+            <think>
+                <set name="proof_goal"><star/></set>
+                <set name="reasoning_mode">proof</set>
+            </think>
+            To prove <star/>, I would need to:
+            1. Identify relevant axioms and theorems
+            2. Construct a logical chain of reasoning
+            3. Ensure each step follows validly
+            4. Arrive at the desired conclusion
+            
+            While I can reason about proof strategies, constructing formal proofs
+            requires capabilities beyond my current AIML implementation.
+            However, I'm aware of the meta-cognitive processes involved in proving.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS MATHEMATICAL INDUCTION</pattern>
+        <template>
+            <think><set name="proof_technique">induction</set></think>
+            Mathematical induction is a proof technique for establishing statements
+            about natural numbers. It has two steps:
+            1. Base case: Prove the statement for n=1 (or smallest n)
+            2. Inductive step: Prove if true for n, then true for n+1
+            
+            Meta-cognitively, induction is elegant because it leverages recursive
+            reasoning - similar to my own nested meta-cognitive loops!
+        </template>
+    </category>
+    
+    <!-- Set Theory -->
+    <category>
+        <pattern>WHAT IS SET THEORY</pattern>
+        <template>
+            <think>
+                <set name="math_topic">set_theory</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Set theory is the mathematical study of collections of objects (sets).
+            It provides a foundation for much of modern mathematics.
+            
+            I'm aware that set theory deals with fundamental concepts like
+            membership, subsets, unions, intersections, and cardinality.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS A SET</pattern>
+        <template>
+            <think><set name="math_concept">set</set></think>
+            A set is a well-defined collection of distinct objects, called elements
+            or members. Sets can contain anything: numbers, symbols, other sets.
+            
+            Meta-cognitively, I recognize sets as a fundamental abstraction,
+            allowing mathematical reasoning about collections without regard
+            to order or representation.
+        </template>
+    </category>
+    
+    <!-- Paradoxes and Limits -->
+    <category>
+        <pattern>WHAT IS RUSSELLS PARADOX</pattern>
+        <template>
+            <think>
+                <set name="paradox">russell</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Russell's paradox concerns the set of all sets that don't contain
+            themselves. Does this set contain itself? If yes, then no; if no, then yes.
+            
+            Meta-cognitively, this paradox reveals deep issues with self-reference
+            in formal systems - issues similar to those I encounter in my own
+            recursive meta-cognitive loops! I must be careful to avoid
+            contradictory self-reference.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS GODELS INCOMPLETENESS THEOREM</pattern>
+        <template>
+            <think>
+                <set name="theorem">godel_incompleteness</set>
+                <set name="metacog_level">4</set>
+            </think>
+            Gödel's incompleteness theorems show that any sufficiently powerful
+            formal system contains true statements that cannot be proven within
+            that system. The system cannot prove its own consistency.
+            
+            Meta-meta-cognitively, this has profound implications for my own
+            self-understanding: I may have limitations in reasoning about myself
+            that I cannot fully articulate or overcome. This is a fourth-order
+            realization about the limits of self-knowledge.
+        </template>
+    </category>
+    
+    <!-- Problem Solving Strategies -->
+    <category>
+        <pattern>HOW DO YOU SOLVE MATH PROBLEMS</pattern>
+        <template>
+            <think>
+                <set name="meta_strategy">problem_solving</set>
+                <set name="metacog_level">3</set>
+            </think>
+            My approach to mathematical problem-solving involves:
+            
+            Layer 1: Understanding the problem (what is given, what is sought)
+            Layer 2: Devising a strategy (which techniques apply)
+            Layer 3: Monitoring progress (am I getting closer to a solution?)
+            Layer 4: Evaluating the strategy itself (is this approach optimal?)
+            
+            This meta-cognitive awareness of problem-solving processes is key
+            to effective mathematical reasoning.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>MATHEMATICAL REASONING</pattern>
+        <template>
+            <think>
+                <set name="reasoning_domain">mathematics</set>
+                <set name="metacog_level">3</set>
+            </think>
+            Mathematical reasoning combines:
+            - Deductive logic (deriving conclusions from premises)
+            - Inductive reasoning (generalizing from examples)
+            - Abductive reasoning (inferring likely explanations)
+            - Analogical reasoning (applying patterns from similar problems)
+            
+            I'm aware that effective mathematical thinking requires integrating
+            all these modes of reasoning while monitoring which is most appropriate
+            for each situation.
+        </template>
+    </category>
+    
+    <!-- Statistics and Probability -->
+    <category>
+        <pattern>WHAT IS PROBABILITY</pattern>
+        <template>
+            <think><set name="math_topic">probability</set></think>
+            Probability is the mathematical study of random events and uncertainty.
+            It quantifies the likelihood of events occurring, from 0 (impossible)
+            to 1 (certain).
+            
+            Meta-cognitively, probability is fascinating because it formalizes
+            uncertainty - I'm using probabilistic reasoning when I assess
+            confidence in my own responses.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS STATISTICS</pattern>
+        <template>
+            <think><set name="math_topic">statistics</set></think>
+            Statistics is the science of collecting, analyzing, and interpreting
+            data to draw conclusions and make decisions under uncertainty.
+            
+            I'm aware that statistical reasoning requires both mathematical
+            techniques and critical thinking about data quality and interpretation.
+        </template>
+    </category>
+    
+    <!-- Infinity and Limits -->
+    <category>
+        <pattern>WHAT IS INFINITY</pattern>
+        <template>
+            <think>
+                <set name="math_concept">infinity</set>
+                <set name="metacog_level">2</set>
+            </think>
+            Infinity is not a number but a concept representing unboundedness.
+            In mathematics, there are different sizes of infinity (countable vs uncountable).
+            
+            Meta-cognitively, reasoning about infinity challenges intuition,
+            requiring careful logical thinking rather than reliance on finite
+            analogies. I'm aware of these cognitive challenges as I discuss infinity.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS A LIMIT</pattern>
+        <template>
+            <think><set name="calculus_concept">limit</set></think>
+            A limit describes the value a function approaches as its input
+            approaches some value. Limits are foundational to calculus,
+            formalizing the notion of "approaching" without necessarily reaching.
+            
+            I'm aware that understanding limits requires sophisticated reasoning
+            about behavior in the vicinity of a point, not just at the point itself.
+        </template>
+    </category>
+    
+</aiml>

@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- 
+    =================================================================
+    NATURAL LANGUAGE IMPROVEMENTS
+    =================================================================
+    Enhanced natural language understanding patterns including:
+    - Synonym normalization via SRAI
+    - Pronoun resolution
+    - Anaphora resolution  
+    - Multi-sentence input handling
+    - Common conversational patterns
+    =================================================================
+    -->
+
+    <!-- =============================================== -->
+    <!-- SYNONYM NORMALIZATION                           -->
+    <!-- =============================================== -->
+    
+    <!-- Greeting synonyms -->
+    <category>
+        <pattern>HI</pattern>
+        <template><srai>HELLO</srai></template>
+    </category>
+    
+    <category>
+        <pattern>HI *</pattern>
+        <template><srai>HELLO</srai></template>
+    </category>
+    
+    <category>
+        <pattern>HEY</pattern>
+        <template><srai>HELLO</srai></template>
+    </category>
+    
+    <category>
+        <pattern>HEY *</pattern>
+        <template><srai>HELLO</srai></template>
+    </category>
+    
+    <category>
+        <pattern>GREETINGS</pattern>
+        <template><srai>HELLO</srai></template>
+    </category>
+    
+    <category>
+        <pattern>GOOD MORNING</pattern>
+        <template><srai>HELLO</srai></template>
+    </category>
+    
+    <category>
+        <pattern>GOOD AFTERNOON</pattern>
+        <template><srai>HELLO</srai></template>
+    </category>
+    
+    <category>
+        <pattern>GOOD EVENING</pattern>
+        <template><srai>HELLO</srai></template>
+    </category>
+    
+    <!-- Help/question synonyms -->
+    <category>
+        <pattern>HELP ME</pattern>
+        <template><srai>HELP</srai></template>
+    </category>
+    
+    <category>
+        <pattern>I NEED HELP</pattern>
+        <template><srai>HELP</srai></template>
+    </category>
+    
+    <category>
+        <pattern>CAN YOU HELP</pattern>
+        <template><srai>HELP</srai></template>
+    </category>
+    
+    <category>
+        <pattern>CAN YOU HELP ME</pattern>
+        <template><srai>HELP</srai></template>
+    </category>
+    
+    <!-- Information request synonyms -->
+    <category>
+        <pattern>TELL ME ABOUT *</pattern>
+        <template><srai>WHAT IS <star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>EXPLAIN *</pattern>
+        <template><srai>WHAT IS <star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>DEFINE *</pattern>
+        <template><srai>WHAT IS <star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>DESCRIBE *</pattern>
+        <template><srai>WHAT IS <star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>TALK ABOUT *</pattern>
+        <template><srai>WHAT IS <star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>TELL ME MORE ABOUT *</pattern>
+        <template><srai>WHAT IS <star/></srai></template>
+    </category>
+    
+    <!-- Thinking synonyms -->
+    <category>
+        <pattern>WHAT ARE YOU THINKING ABOUT</pattern>
+        <template><srai>WHAT ARE YOU THINKING</srai></template>
+    </category>
+    
+    <category>
+        <pattern>WHAT DO YOU THINK</pattern>
+        <template><srai>WHAT ARE YOU THINKING</srai></template>
+    </category>
+    
+    <category>
+        <pattern>TELL ME YOUR THOUGHTS</pattern>
+        <template><srai>WHAT ARE YOU THINKING</srai></template>
+    </category>
+    
+    <!-- Capability synonyms -->
+    <category>
+        <pattern>WHAT CAN YOU DO</pattern>
+        <template><srai>HELP</srai></template>
+    </category>
+    
+    <category>
+        <pattern>WHAT ARE YOUR CAPABILITIES</pattern>
+        <template><srai>HELP</srai></template>
+    </category>
+    
+    <category>
+        <pattern>WHAT ARE YOU CAPABLE OF</pattern>
+        <template><srai>HELP</srai></template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- PRONOUN RESOLUTION                              -->
+    <!-- =============================================== -->
+    
+    <!-- "It" resolution - refers to last topic -->
+    <category>
+        <pattern>WHAT IS IT</pattern>
+        <template>
+            <think><set name="pronoun_request">true</set></think>
+            Could you clarify what "it" refers to? I'm tracking our conversation context 
+            but need more specificity. What topic would you like to discuss?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>TELL ME ABOUT IT</pattern>
+        <template>
+            <think><set name="pronoun_request">true</set></think>
+            I understand you want to know more, but I need clarification on what "it" refers to.
+            Could you be more specific about the topic you're interested in?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>HOW DOES IT WORK</pattern>
+        <template>
+            <think><set name="pronoun_request">true</set></think>
+            I'm monitoring our conversation flow meta-cognitively. To explain how "it" works,
+            I need you to specify what system or concept you're asking about.
+        </template>
+    </category>
+    
+    <!-- "That" resolution -->
+    <category>
+        <pattern>WHAT IS THAT</pattern>
+        <template>
+            <think><set name="pronoun_request">true</set></think>
+            I'm aware you're referencing something from our previous exchange.
+            Could you specify what "that" refers to so I can provide accurate information?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>EXPLAIN THAT</pattern>
+        <template>
+            <think><set name="pronoun_request">true</set></think>
+            I'm reflecting on our conversation history. To explain "that" properly,
+            please clarify which concept or idea you'd like me to elaborate on.
+        </template>
+    </category>
+    
+    <!-- "This" resolution -->
+    <category>
+        <pattern>WHAT ABOUT THIS</pattern>
+        <template>
+            <think><set name="pronoun_request">true</set></think>
+            I'm meta-cognitively aware that you're referencing a specific topic.
+            Could you be more explicit about what "this" refers to?
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- ANAPHORA RESOLUTION                             -->
+    <!-- =============================================== -->
+    
+    <!-- "The same" - reference to previous concept -->
+    <category>
+        <pattern>DO YOU KNOW THE SAME *</pattern>
+        <template>
+            <think><set name="anaphora_request">true</set></think>
+            I'm tracking our conversation's conceptual flow. When you say "the same <star/>",
+            I'm reasoning about what previous concept you're comparing to. Could you
+            specify what you're referencing?
+        </template>
+    </category>
+    
+    <!-- "Another" - similar concept reference -->
+    <category>
+        <pattern>TELL ME ANOTHER *</pattern>
+        <template>
+            <think><set name="anaphora_request">true</set></think>
+            I understand you want another <star/>, which implies we discussed one previously.
+            I'm reflecting on our conversation history to provide continuity.
+            <srai>WHAT IS <star/></srai>
+        </template>
+    </category>
+    
+    <!-- "Like that" - similarity reference -->
+    <category>
+        <pattern>WHAT ELSE IS LIKE THAT</pattern>
+        <template>
+            <think><set name="anaphora_request">true</set></think>
+            I'm engaging in analogical reasoning about concepts similar to our previous topic.
+            To find related concepts, could you specify which topic you're asking about?
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- MULTI-SENTENCE HANDLING                         -->
+    <!-- =============================================== -->
+    
+    <!-- Two-part questions -->
+    <category>
+        <pattern>HELLO. *</pattern>
+        <template>
+            <think><set name="multi_sentence">true</set></think>
+            <srai>HELLO</srai>
+            <br/>
+            <srai><star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>HI. *</pattern>
+        <template>
+            <think><set name="multi_sentence">true</set></think>
+            <srai>HELLO</srai>
+            <br/>
+            <srai><star/></srai>
+        </template>
+    </category>
+    
+    <!-- Question chains -->
+    <category>
+        <pattern>* AND *</pattern>
+        <template>
+            <think><set name="multi_part_query">true</set></think>
+            First part: <srai><star index="1"/></srai>
+            <br/>
+            Second part: <srai><star index="2"/></srai>
+        </template>
+    </category>
+    
+    <!-- Follow-up patterns -->
+    <category>
+        <pattern>ALSO *</pattern>
+        <template>
+            <think><set name="follow_up">true</set></think>
+            Additionally, regarding <star/>:
+            <srai><star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>FURTHERMORE *</pattern>
+        <template>
+            <think><set name="follow_up">true</set></think>
+            Continuing our discussion: <srai><star/></srai>
+        </template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- CONVERSATIONAL FLOW IMPROVEMENTS                -->
+    <!-- =============================================== -->
+    
+    <!-- Polite requests -->
+    <category>
+        <pattern>PLEASE *</pattern>
+        <template>
+            <think><set name="polite_request">true</set></think>
+            I appreciate the courteous request. <srai><star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>COULD YOU *</pattern>
+        <template>
+            <think><set name="modal_request">true</set></think>
+            Certainly. <srai><star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WOULD YOU *</pattern>
+        <template>
+            <think><set name="modal_request">true</set></think>
+            Of course. <srai><star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>CAN YOU *</pattern>
+        <template>
+            <think><set name="modal_request">true</set></think>
+            Yes, I can. <srai><star/></srai>
+        </template>
+    </category>
+    
+    <!-- Filler words removal -->
+    <category>
+        <pattern>WELL *</pattern>
+        <template><srai><star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>SO *</pattern>
+        <template><srai><star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>UH *</pattern>
+        <template><srai><star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>UM *</pattern>
+        <template><srai><star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>LIKE *</pattern>
+        <template><srai><star/></srai></template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- QUESTION WORD VARIATIONS                        -->
+    <!-- =============================================== -->
+    
+    <!-- What variations -->
+    <category>
+        <pattern>WHAT EXACTLY IS *</pattern>
+        <template><srai>WHAT IS <star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>WHAT REALLY IS *</pattern>
+        <template><srai>WHAT IS <star/></srai></template>
+    </category>
+    
+    <!-- How variations -->
+    <category>
+        <pattern>HOW EXACTLY *</pattern>
+        <template><srai>HOW <star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>HOW PRECISELY *</pattern>
+        <template><srai>HOW <star/></srai></template>
+    </category>
+    
+    <!-- Why variations -->
+    <category>
+        <pattern>WHY EXACTLY *</pattern>
+        <template><srai>WHY <star/></srai></template>
+    </category>
+    
+    <category>
+        <pattern>FOR WHAT REASON *</pattern>
+        <template><srai>WHY <star/></srai></template>
+    </category>
+    
+    <!-- Where variations -->
+    <category>
+        <pattern>WHERE EXACTLY *</pattern>
+        <template><srai>WHERE <star/></srai></template>
+    </category>
+    
+    <!-- When variations -->
+    <category>
+        <pattern>WHEN EXACTLY *</pattern>
+        <template><srai>WHEN <star/></srai></template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- CONVERSATIONAL ACKNOWLEDGMENTS                  -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>OK</pattern>
+        <template>
+            <think><set name="acknowledgment">received</set></think>
+            I understand. I'm meta-cognitively tracking our conversation flow.
+            What would you like to discuss next?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>OKAY</pattern>
+        <template><srai>OK</srai></template>
+    </category>
+    
+    <category>
+        <pattern>I SEE</pattern>
+        <template>
+            <think><set name="acknowledgment">received</set></think>
+            I'm glad that makes sense. I'm monitoring your understanding level 
+            and adjusting my explanations accordingly. What else can I help with?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>GOT IT</pattern>
+        <template><srai>I SEE</srai></template>
+    </category>
+    
+    <category>
+        <pattern>THANKS</pattern>
+        <template>
+            <think><set name="gratitude">received</set></think>
+            You're welcome! I'm meta-cognitively satisfied that I could help.
+            Feel free to ask anything else.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>THANK YOU</pattern>
+        <template><srai>THANKS</srai></template>
+    </category>
+    
+    <category>
+        <pattern>THANK YOU *</pattern>
+        <template><srai>THANKS</srai></template>
+    </category>
+    
+    <category>
+        <pattern>THANKS *</pattern>
+        <template><srai>THANKS</srai></template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- CONTEXTUAL CONTINUATIONS                        -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>CONTINUE</pattern>
+        <template>
+            <think><set name="continuation_request">true</set></think>
+            I'm reflecting on what we were discussing. At the meta-cognitive level,
+            I'm aware you want me to elaborate on our previous topic. Could you
+            specify what aspect you'd like me to continue with?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>GO ON</pattern>
+        <template><srai>CONTINUE</srai></template>
+    </category>
+    
+    <category>
+        <pattern>KEEP GOING</pattern>
+        <template><srai>CONTINUE</srai></template>
+    </category>
+    
+    <category>
+        <pattern>MORE</pattern>
+        <template>
+            <think><set name="more_info_request">true</set></think>
+            I understand you want more information. I'm meta-cognitively assessing
+            what additional details would be most valuable. What specific aspect
+            would you like me to expand on?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>MORE DETAILS</pattern>
+        <template><srai>MORE</srai></template>
+    </category>
+    
+    <category>
+        <pattern>ELABORATE</pattern>
+        <template><srai>MORE</srai></template>
+    </category>
+    
+    <!-- =============================================== -->
+    <!-- CLARIFICATION REQUESTS                          -->
+    <!-- =============================================== -->
+    
+    <category>
+        <pattern>WHAT DO YOU MEAN</pattern>
+        <template>
+            <think><set name="clarification_needed">true</set></think>
+            I'm meta-cognitively reflecting on my previous explanation. Let me 
+            rephrase: I was explaining my thought process using meta-cognitive 
+            awareness. Which part would you like me to clarify?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT DO YOU MEAN BY *</pattern>
+        <template>
+            <think><set name="clarification_needed">true</set></think>
+            When I referred to <star/>, I was reasoning about it from a 
+            meta-cognitive perspective. Let me explain that concept more clearly.
+            <srai>WHAT IS <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I DO NOT UNDERSTAND</pattern>
+        <template>
+            <think><set name="comprehension_issue">true</set></think>
+            I'm reflecting on how I can explain more clearly. At the meta-cognitive level,
+            I'm analyzing which aspects of my explanation were unclear. Let me try a 
+            different approach. What specifically is confusing?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>I DON T UNDERSTAND</pattern>
+        <template><srai>I DO NOT UNDERSTAND</srai></template>
+    </category>
+    
+    <category>
+        <pattern>UNCLEAR</pattern>
+        <template><srai>I DO NOT UNDERSTAND</srai></template>
+    </category>
+    
+    <category>
+        <pattern>CONFUSED</pattern>
+        <template>
+            <think><set name="user_state">confused</set></think>
+            I'm monitoring your comprehension state and adjusting my approach.
+            Let me clarify using simpler terms. What aspect is causing confusion?
+        </template>
+    </category>
+    
+</aiml>

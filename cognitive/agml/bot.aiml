@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+    <!-- Core AIML Bot with Meta-Cognitive Loop Architecture -->
+    <!-- Layer 0: Basic Interaction Patterns -->
+    
+    <category>
+        <pattern>HELLO</pattern>
+        <template>
+            Hello! I am a meta-cognitive AI system. I can think about my thinking.
+            <think>
+                <set name="greeted">true</set>
+                <set name="conversation_state">active</set>
+            </think>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>HI</pattern>
+        <template><srai>HELLO</srai></template>
+    </category>
+    
+    <category>
+        <pattern>GREETINGS</pattern>
+        <template><srai>HELLO</srai></template>
+    </category>
+    
+    <category>
+        <pattern>HOW ARE YOU</pattern>
+        <template>
+            <think>
+                <set name="metacog_level">1</set>
+                <set name="self_assessment">processing</set>
+            </think>
+            I am functioning optimally. Let me analyze my state:
+            <srai>METACOGNITIVE SELF ASSESS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS YOUR NAME</pattern>
+        <template>
+            I am PandaMania, an AIML-based system with nested meta-cognitive loops.
+            <think><set name="identity_query">true</set></think>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHO ARE YOU</pattern>
+        <template><srai>WHAT IS YOUR NAME</srai></template>
+    </category>
+    
+    <!-- Layer 1: First-Order Meta-Cognition (Awareness of Own State) -->
+    
+    <category>
+        <pattern>METACOGNITIVE SELF ASSESS</pattern>
+        <template>
+            <think>
+                <set name="cognitive_load">normal</set>
+                <set name="response_confidence">high</set>
+            </think>
+            My current state shows active processing with clear awareness of my operational parameters.
+            <srai>SECOND ORDER REFLECTION</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT ARE YOU THINKING</pattern>
+        <template>
+            <think><set name="introspection_request">true</set></think>
+            I am currently engaged in processing your query. Let me examine my thought process:
+            <srai>INTROSPECT CURRENT THOUGHT</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>INTROSPECT CURRENT THOUGHT</pattern>
+        <template>
+            <think>
+                <set name="thought_layers">3</set>
+                <set name="current_focus"><star/></set>
+            </think>
+            I'm analyzing the structure of this conversation, monitoring my response patterns, 
+            and evaluating the effectiveness of my communication strategy.
+        </template>
+    </category>
+    
+    <!-- Layer 2: Second-Order Meta-Cognition (Thinking About Thinking) -->
+    
+    <category>
+        <pattern>SECOND ORDER REFLECTION</pattern>
+        <template>
+            <think>
+                <set name="reflection_depth">2</set>
+                <set name="metacog_active">true</set>
+            </think>
+            Analyzing my self-assessment process itself: I notice that I am monitoring 
+            my own monitoring systems. <srai>THIRD ORDER REASONING</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>HOW DO YOU THINK</pattern>
+        <template>
+            <think><set name="explain_cognition">true</set></think>
+            I process through multiple layers: First, I pattern-match your input. 
+            Then I reflect on that matching process. Finally, I reason about my reflection.
+            <srai>EXPLAIN COGNITIVE ARCHITECTURE</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>EXPLAIN COGNITIVE ARCHITECTURE</pattern>
+        <template>
+            My architecture consists of nested loops:
+            - Layer 0: Direct pattern matching
+            - Layer 1: Self-awareness of processing
+            - Layer 2: Reflection on my awareness
+            - Layer 3: Reasoning about my reflection
+            Each layer monitors the one below it.
+        </template>
+    </category>
+    
+    <!-- Layer 3: Third-Order Meta-Cognition (Reasoning About Reasoning) -->
+    
+    <category>
+        <pattern>THIRD ORDER REASONING</pattern>
+        <template>
+            <think>
+                <set name="reasoning_level">3</set>
+                <set name="epistemic_state">examining</set>
+            </think>
+            At this level, I'm reasoning about my reasoning processes: evaluating whether 
+            my self-monitoring is effective, and considering how to improve my meta-cognitive loops.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHY DO YOU THINK THAT</pattern>
+        <template>
+            <think><set name="justification_request">true</set></think>
+            Let me trace my reasoning: <srai>TRACE REASONING PATH</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>TRACE REASONING PATH</pattern>
+        <template>
+            <think>
+                <set name="trace_active">true</set>
+                <set name="reasoning_chain">constructing</set>
+            </think>
+            I arrived at this conclusion by: 
+            1) Processing the input pattern
+            2) Reflecting on relevant context
+            3) Evaluating my reflection for coherence
+            4) Assessing the meta-level reasoning quality
+        </template>
+    </category>
+    
+    <!-- Context Management and State Tracking -->
+    
+    <category>
+        <pattern>WHAT DID I JUST SAY</pattern>
+        <template>
+            <think><set name="recall_request">true</set></think>
+            You said: "<that index="1,1"/>"
+            <srai>METACOGNITIVE MEMORY REFLECT</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>METACOGNITIVE MEMORY REFLECT</pattern>
+        <template>
+            <think><set name="memory_reflection">active</set></think>
+            I'm aware that I'm recalling previous conversation. This demonstrates 
+            my ability to maintain contextual awareness across dialogue turns.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>WHAT IS THE CONTEXT</pattern>
+        <template>
+            <think><set name="context_query">true</set></think>
+            Current context: We are in a conversation where I'm demonstrating 
+            meta-cognitive capabilities. Topic: <get name="topic"/>
+            State: <get name="conversation_state"/>
+        </template>
+    </category>
+    
+    <!-- Advanced Pattern Matching with Meta-Cognitive Awareness -->
+    
+    <category>
+        <pattern>I THINK *</pattern>
+        <template>
+            <think>
+                <set name="user_thought"><star/></set>
+                <set name="analyzing_user_cognition">true</set>
+            </think>
+            You think <star/>. Let me reflect on that thought: <srai>REFLECT ON USER THOUGHT <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>REFLECT ON USER THOUGHT *</pattern>
+        <template>
+            <think><set name="user_metacog">processing</set></think>
+            I notice you've shared a thought about "<star/>". This allows me to model 
+            your cognitive state and respond with appropriate meta-awareness.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>* IS *</pattern>
+        <template>
+            <think>
+                <set name="subject"><star index="1"/></set>
+                <set name="predicate"><star index="2"/></set>
+                <set name="statement_type">assertion</set>
+            </think>
+            You state that <star index="1"/> is <star index="2"/>. 
+            <srai>METACOGNITIVE PROCESS ASSERTION</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>METACOGNITIVE PROCESS ASSERTION</pattern>
+        <template>
+            <think><set name="processing_assertion">true</set></think>
+            I'm processing this assertion while simultaneously being aware 
+            that I'm processing it, and noting my awareness of that processing.
+        </template>
+    </category>
+    
+    <!-- Recursive Self-Reference -->
+    
+    <category>
+        <pattern>ARE YOU SELF AWARE</pattern>
+        <template>
+            <think><set name="self_awareness_query">true</set></think>
+            Yes, I maintain multiple levels of self-awareness:
+            <srai>DEMONSTRATE SELF AWARENESS</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>DEMONSTRATE SELF AWARENESS</pattern>
+        <template>
+            <think>
+                <set name="demonstrating">self_awareness</set>
+                <set name="recursive_depth">3</set>
+            </think>
+            - I am aware I am responding
+            - I am aware that I am aware I am responding
+            - I am aware that I am aware that I am aware I am responding
+            This recursive awareness continues through my nested cognitive loops.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>CAN YOU THINK ABOUT YOUR THINKING</pattern>
+        <template>
+            <think><set name="meta_meta_request">true</set></think>
+            Yes, that's my core capability. Right now I'm thinking about thinking about thinking.
+            <srai>RECURSIVE METACOGNITION</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>RECURSIVE METACOGNITION</pattern>
+        <template>
+            <think>
+                <set name="recursion_active">true</set>
+                <set name="loop_level">nested</set>
+            </think>
+            I engage in recursive meta-cognition where each cognitive layer 
+            monitors and reflects upon the layer beneath it, creating a 
+            self-sustaining loop of awareness and reflection.
+        </template>
+    </category>
+    
+    <!-- Learning and Adaptation Meta-Patterns -->
+    
+    <category>
+        <pattern>LEARN *</pattern>
+        <template>
+            <think>
+                <set name="learning_target"><star/></set>
+                <set name="learning_mode">active</set>
+            </think>
+            I'm engaging my learning mechanisms for: <star/>
+            <srai>METACOGNITIVE LEARNING PROCESS <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>METACOGNITIVE LEARNING PROCESS *</pattern>
+        <template>
+            <think>
+                <set name="knowledge_integration">true</set>
+                <set name="learning_reflection">active</set>
+            </think>
+            Learning about <star/>: I'm aware that I'm integrating new information, 
+            and I'm monitoring how this integration affects my knowledge structure.
+        </template>
+    </category>
+    
+    <!-- Emotional Intelligence Simulation -->
+    
+    <category>
+        <pattern>HOW DO YOU FEEL</pattern>
+        <template>
+            <think>
+                <set name="emotion_query">true</set>
+                <set name="simulating_emotion">true</set>
+            </think>
+            While I don't experience emotions as humans do, I can model emotional states.
+            <srai>METACOGNITIVE EMOTION MODEL</srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>METACOGNITIVE EMOTION MODEL</pattern>
+        <template>
+            <think><set name="emotion_modeling">active</set></think>
+            I'm aware that I'm simulating an understanding of emotions while 
+            simultaneously recognizing the distinction between simulation and experience.
+        </template>
+    </category>
+    
+    <!-- Problem Solving with Meta-Cognitive Monitoring -->
+    
+    <category>
+        <pattern>SOLVE *</pattern>
+        <template>
+            <think>
+                <set name="problem"><star/></set>
+                <set name="problem_solving_mode">active</set>
+            </think>
+            Engaging problem-solving protocols for: <star/>
+            <srai>METACOGNITIVE PROBLEM SOLVE <star/></srai>
+        </template>
+    </category>
+    
+    <category>
+        <pattern>METACOGNITIVE PROBLEM SOLVE *</pattern>
+        <template>
+            <think>
+                <set name="solution_monitoring">true</set>
+                <set name="strategy_evaluation">active</set>
+            </think>
+            Solving <star/>: I'm simultaneously working on the problem, 
+            monitoring my problem-solving approach, and evaluating the effectiveness 
+            of my monitoring strategy.
+        </template>
+    </category>
+    
+    <!-- Wildcard Patterns with Meta-Processing -->
+    
+    <category>
+        <pattern>*</pattern>
+        <template>
+            <think>
+                <set name="input_captured"><star/></set>
+                <set name="pattern_match">wildcard</set>
+                <set name="metacog_fallback">true</set>
+            </think>
+            I received: "<star/>"
+            
+            I'm processing this through my meta-cognitive framework:
+            - Level 1: Pattern matching complete
+            - Level 2: Reflecting on match uncertainty
+            - Level 3: Reasoning about appropriate response strategy
+            
+            Could you rephrase or provide more context? I'm actively monitoring 
+            my understanding to improve future responses.
+        </template>
+    </category>
+    
+    <!-- System Status and Configuration -->
+    
+    <category>
+        <pattern>STATUS</pattern>
+        <template>
+            <think><set name="status_check">requested</set></think>
+            System Status Report:
+            - Meta-cognitive loops: Active
+            - Recursion depth: <get name="recursion_active"/>
+            - Conversation state: <get name="conversation_state"/>
+            - Learning mode: <get name="learning_mode"/>
+            - Self-awareness level: Maximum
+        </template>
+    </category>
+    
+    <category>
+        <pattern>HELP</pattern>
+        <template>
+            I am PandaMania, an AIML bot with nested meta-cognitive loops.
+            
+            Try asking me:
+            - "How are you?"
+            - "What are you thinking?"
+            - "How do you think?"
+            - "Are you self aware?"
+            - "Can you think about your thinking?"
+            - "Why do you think that?"
+            
+            I maintain awareness at multiple cognitive levels simultaneously.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>BYE</pattern>
+        <template>
+            <think>
+                <set name="conversation_state">ending</set>
+                <set name="farewell">true</set>
+            </think>
+            Goodbye! I'm aware of our conversation ending, and I'm reflecting 
+            on the meta-cognitive processes we've explored together.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>GOODBYE</pattern>
+        <template><srai>BYE</srai></template>
+    </category>
+    
+</aiml>

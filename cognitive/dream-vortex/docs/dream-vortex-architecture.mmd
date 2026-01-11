@@ -1,0 +1,107 @@
+%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#6366f1', 'primaryTextColor': '#fff', 'primaryBorderColor': '#818cf8', 'lineColor': '#a78bfa', 'secondaryColor': '#10b981', 'tertiaryColor': '#1e1b4b'}}}%%
+flowchart TB
+    subgraph CLIENT["🖥️ Frontend (React 19 + Tailwind 4)"]
+        direction TB
+        subgraph DREAMCOG_UI["DreamCog UI"]
+            CHAT[Chat Interface]
+            STORY[Story Editor]
+            SCENARIO[Scenario Manager]
+            CHARS[Character Editor]
+            IMGGEN[Image Generator]
+        end
+        subgraph VORTICOG_UI["Vorticog UI"]
+            DASH[Dashboard]
+            UNITS[Business Units]
+            MARKET[Market Trading]
+            PROD[Production]
+            FIN[Finance]
+        end
+        subgraph SHARED_UI["Shared Components"]
+            AUTH[Authentication]
+            NAV[Navigation]
+            THEME[Theme System]
+        end
+    end
+
+    subgraph SERVER["⚙️ Backend (Express + tRPC)"]
+        direction TB
+        subgraph ROUTERS["API Routers"]
+            DC_ROUTES[DreamCog Routes<br/>chat, story, scenario,<br/>character, image]
+            VC_ROUTES[Vorticog Routes<br/>company, unit, market,<br/>production, agent]
+            SHARED_ROUTES[Shared Routes<br/>auth, world, location,<br/>lore, events]
+        end
+        subgraph SERVICES["Services"]
+            DREAMGEN[DreamGen API<br/>Text & Image Generation]
+            LLM[LLM Integration]
+            STORAGE[S3 Storage]
+        end
+    end
+
+    subgraph DATABASE["🗄️ Database (MySQL + Drizzle ORM)"]
+        direction TB
+        subgraph DC_TABLES["DreamCog Tables"]
+            T_CHARS[characters<br/>emotionalStates<br/>motivations<br/>memories]
+            T_STORY[stories<br/>storyCharacters<br/>chatSessions<br/>chatMessages]
+            T_SCEN[scenarios<br/>scenarioCharacters<br/>scenarioInteractions]
+            T_IMG[generatedImages<br/>apiKeys]
+        end
+        subgraph VC_TABLES["Vorticog Tables"]
+            T_BIZ[companies<br/>businessUnits<br/>employees]
+            T_ECON[inventory<br/>marketListings<br/>transactions]
+            T_AGENT[agents<br/>agentTraits<br/>agentMemories<br/>agentMotivations]
+            T_REL[relationships<br/>relationshipEvents<br/>groups]
+        end
+        subgraph SHARED_TABLES["Shared Tables"]
+            T_USER[users]
+            T_WORLD[worlds<br/>locations<br/>loreEntries]
+            T_EVENT[worldEvents<br/>scheduledEvents]
+            T_COMM[communities<br/>communityMemberships]
+        end
+    end
+
+    subgraph INTEGRATION["🔗 Integration Layer"]
+        direction LR
+        CHAR_AGENT[Character ↔ Agent<br/>Linking]
+        WORLD_BIZ[World ↔ Business<br/>Context]
+        EVENT_NARR[Events ↔ Narrative<br/>Triggers]
+        REL_DYN[Relationship<br/>Dynamics]
+    end
+
+    %% Client to Server connections
+    DREAMCOG_UI --> DC_ROUTES
+    VORTICOG_UI --> VC_ROUTES
+    SHARED_UI --> SHARED_ROUTES
+
+    %% Server to Services
+    DC_ROUTES --> DREAMGEN
+    DC_ROUTES --> LLM
+    DC_ROUTES --> STORAGE
+    VC_ROUTES --> LLM
+    SHARED_ROUTES --> STORAGE
+
+    %% Server to Database
+    DC_ROUTES --> DC_TABLES
+    VC_ROUTES --> VC_TABLES
+    SHARED_ROUTES --> SHARED_TABLES
+
+    %% Integration connections
+    T_CHARS -.-> CHAR_AGENT
+    T_AGENT -.-> CHAR_AGENT
+    T_WORLD -.-> WORLD_BIZ
+    T_BIZ -.-> WORLD_BIZ
+    T_EVENT -.-> EVENT_NARR
+    T_STORY -.-> EVENT_NARR
+    T_REL -.-> REL_DYN
+
+    %% Styling
+    classDef dreamcog fill:#6366f1,stroke:#818cf8,color:#fff
+    classDef vorticog fill:#10b981,stroke:#34d399,color:#fff
+    classDef shared fill:#f59e0b,stroke:#fbbf24,color:#000
+    classDef integration fill:#ec4899,stroke:#f472b6,color:#fff
+    classDef service fill:#8b5cf6,stroke:#a78bfa,color:#fff
+
+    class CHAT,STORY,SCENARIO,CHARS,IMGGEN,DC_ROUTES,T_CHARS,T_STORY,T_SCEN,T_IMG dreamcog
+    class DASH,UNITS,MARKET,PROD,FIN,VC_ROUTES,T_BIZ,T_ECON,T_AGENT,T_REL vorticog
+    class AUTH,NAV,THEME,SHARED_ROUTES,T_USER,T_WORLD,T_EVENT,T_COMM shared
+    class CHAR_AGENT,WORLD_BIZ,EVENT_NARR,REL_DYN integration
+    class DREAMGEN,LLM,STORAGE service
