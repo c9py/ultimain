@@ -52,6 +52,9 @@ set(EXULT_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/shapes
     ${CMAKE_CURRENT_SOURCE_DIR}/shapes/shapeinf
     ${CMAKE_CURRENT_SOURCE_DIR}/usecode
+    ${CMAKE_CURRENT_SOURCE_DIR}/data
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools
+    ${CMAKE_CURRENT_SOURCE_DIR}/data/bg
     ${CMAKE_CURRENT_BINARY_DIR}
     ${SDL3_INCLUDE_DIRS}
 )
@@ -78,6 +81,7 @@ endif()
 file(GLOB FILES_SOURCES
     files/*.cc
     files/sha1/*.cc
+    files/sha1/*.cpp
     files/zip/*.cc
 )
 add_library(exult_files STATIC ${FILES_SOURCES})
@@ -150,7 +154,9 @@ target_compile_definitions(exult_server PUBLIC ${EXULT_COMPILE_DEFS})
 file(GLOB AUDIO_SOURCES 
     audio/*.cc
     audio/midi_drivers/*.cc
+    audio/midi_drivers/*.cpp
     audio/midi_drivers/timidity/*.cc
+    audio/midi_drivers/timidity/*.cpp
 )
 # Exclude platform-specific files
 list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*CoreAudio.*")
@@ -221,18 +227,18 @@ target_include_directories(exult PRIVATE ${EXULT_INCLUDE_DIRS})
 target_compile_definitions(exult PRIVATE ${EXULT_COMPILE_DEFS})
 
 target_link_libraries(exult PRIVATE
-    exult_audio
-    exult_conf
-    exult_files
-    exult_flic
     exult_gamemgr
-    exult_gumps
-    exult_imagewin
-    exult_objs
-    exult_pathfinder
-    exult_server
-    exult_shapes
     exult_usecode
+    exult_gumps
+    exult_objs
+    exult_shapes
+    exult_audio
+    exult_server
+    exult_flic
+    exult_imagewin
+    exult_pathfinder
+    exult_files
+    exult_conf
     ${SDL3_LIBRARIES}
     ZLIB::ZLIB
     pthread
