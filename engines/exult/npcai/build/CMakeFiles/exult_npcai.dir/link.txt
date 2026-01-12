@@ -1,0 +1,2 @@
+/usr/bin/ar qc libexult_npcai.a CMakeFiles/exult_npcai.dir/ExultNPCBridge.cpp.o CMakeFiles/exult_npcai.dir/DialogueHooks.cpp.o CMakeFiles/exult_npcai.dir/ScheduleIntegration.cpp.o
+/usr/bin/ranlib libexult_npcai.a

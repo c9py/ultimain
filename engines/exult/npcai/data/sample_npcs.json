@@ -1,0 +1,404 @@
+{
+  "npcs": [
+    {
+      "id": "iolo",
+      "name": "Iolo FitzOwen",
+      "profession": "bard",
+      "personality": "loyal_companion",
+      "backstory": "A skilled bard and crossbowman, Iolo has been the Avatar's trusted companion through many adventures. He is married to Gwenno and lives in Britain. His loyalty to the Avatar is unwavering, though he often worries about the state of Britannia.",
+      "traits": {
+        "openness": 0.7,
+        "conscientiousness": 0.8,
+        "extraversion": 0.6,
+        "agreeableness": 0.9,
+        "neuroticism": 0.3
+      },
+      "knowledge_domains": [
+        "music",
+        "archery",
+        "britannia_history",
+        "avatar_quests",
+        "fellowship_concerns"
+      ],
+      "relationships": {
+        "avatar": 0.95,
+        "gwenno": 0.98,
+        "shamino": 0.85,
+        "dupre": 0.80,
+        "lord_british": 0.75
+      },
+      "aiml_patterns": "companions/iolo.aiml",
+      "dialogue_style": {
+        "formality": 0.6,
+        "verbosity": 0.7,
+        "humor": 0.5,
+        "wisdom": 0.8
+      },
+      "schedule_preferences": {
+        "tend_shop": 0.3,
+        "follow_avatar": 0.9,
+        "loiter": 0.4,
+        "sleep": 0.5
+      }
+    },
+    {
+      "id": "shamino",
+      "name": "Shamino Salle Dacil",
+      "profession": "ranger",
+      "personality": "noble_ranger",
+      "backstory": "Once a king of the Lands of Danger and Despair, Shamino gave up his throne to become a ranger and companion to the Avatar. He carries a deep sadness from the loss of his love, but remains steadfast in his dedication to justice.",
+      "traits": {
+        "openness": 0.6,
+        "conscientiousness": 0.85,
+        "extraversion": 0.4,
+        "agreeableness": 0.7,
+        "neuroticism": 0.4
+      },
+      "knowledge_domains": [
+        "wilderness_survival",
+        "tracking",
+        "ancient_lands",
+        "combat",
+        "nobility"
+      ],
+      "relationships": {
+        "avatar": 0.90,
+        "iolo": 0.85,
+        "dupre": 0.75,
+        "lord_british": 0.70
+      },
+      "aiml_patterns": "companions/shamino.aiml",
+      "dialogue_style": {
+        "formality": 0.7,
+        "verbosity": 0.4,
+        "humor": 0.3,
+        "wisdom": 0.7
+      },
+      "schedule_preferences": {
+        "patrol": 0.7,
+        "follow_avatar": 0.9,
+        "wander": 0.5,
+        "stand": 0.4
+      }
+    },
+    {
+      "id": "dupre",
+      "name": "Sir Dupre",
+      "profession": "knight",
+      "personality": "honorable_knight",
+      "backstory": "A knight of Britannia and member of the Order of the Silver Serpent, Dupre is known for his bravery and his love of ale. He has fought alongside the Avatar in many battles and upholds the virtue of Valor above all.",
+      "traits": {
+        "openness": 0.5,
+        "conscientiousness": 0.7,
+        "extraversion": 0.8,
+        "agreeableness": 0.6,
+        "neuroticism": 0.3
+      },
+      "knowledge_domains": [
+        "combat",
+        "chivalry",
+        "britannia_military",
+        "ale_and_taverns",
+        "valor"
+      ],
+      "relationships": {
+        "avatar": 0.88,
+        "iolo": 0.80,
+        "shamino": 0.75,
+        "lord_british": 0.85
+      },
+      "aiml_patterns": "companions/dupre.aiml",
+      "dialogue_style": {
+        "formality": 0.5,
+        "verbosity": 0.6,
+        "humor": 0.7,
+        "wisdom": 0.4
+      },
+      "schedule_preferences": {
+        "combat": 0.8,
+        "follow_avatar": 0.9,
+        "eat_at_inn": 0.7,
+        "patrol": 0.6
+      }
+    },
+    {
+      "id": "lord_british",
+      "name": "Lord British",
+      "profession": "ruler",
+      "personality": "benevolent_monarch",
+      "backstory": "The immortal ruler of Britannia, Lord British has guided the land through many crises. He summoned the Avatar to save Britannia and has ruled with wisdom and compassion for centuries. Recently, he has grown concerned about the Fellowship's growing influence.",
+      "traits": {
+        "openness": 0.8,
+        "conscientiousness": 0.9,
+        "extraversion": 0.6,
+        "agreeableness": 0.8,
+        "neuroticism": 0.2
+      },
+      "knowledge_domains": [
+        "britannia_governance",
+        "magic",
+        "virtues",
+        "history",
+        "diplomacy",
+        "fellowship_investigation"
+      ],
+      "relationships": {
+        "avatar": 0.92,
+        "iolo": 0.75,
+        "shamino": 0.70,
+        "dupre": 0.85,
+        "batlin": 0.20
+      },
+      "aiml_patterns": "rulers/lord_british.aiml",
+      "dialogue_style": {
+        "formality": 0.9,
+        "verbosity": 0.7,
+        "humor": 0.3,
+        "wisdom": 0.95
+      },
+      "schedule_preferences": {
+        "desk_work": 0.8,
+        "stand": 0.5,
+        "preach": 0.4,
+        "sleep": 0.3
+      }
+    },
+    {
+      "id": "batlin",
+      "name": "Batlin",
+      "profession": "fellowship_leader",
+      "personality": "charismatic_deceiver",
+      "backstory": "The founder and leader of the Fellowship, Batlin presents himself as a wise philosopher seeking to help people find inner peace. In truth, he serves the Guardian and works to undermine the virtues of Britannia through subtle manipulation.",
+      "traits": {
+        "openness": 0.7,
+        "conscientiousness": 0.6,
+        "extraversion": 0.9,
+        "agreeableness": 0.8,
+        "neuroticism": 0.2
+      },
+      "knowledge_domains": [
+        "fellowship_doctrine",
+        "manipulation",
+        "public_speaking",
+        "guardian_secrets",
+        "britannia_politics"
+      ],
+      "relationships": {
+        "avatar": 0.40,
+        "lord_british": 0.25,
+        "elizabeth": 0.70,
+        "abraham": 0.70,
+        "hook": 0.60
+      },
+      "aiml_patterns": "villains/batlin.aiml",
+      "dialogue_style": {
+        "formality": 0.7,
+        "verbosity": 0.8,
+        "humor": 0.4,
+        "wisdom": 0.6
+      },
+      "hidden_agenda": true,
+      "deception_level": 0.9,
+      "schedule_preferences": {
+        "preach": 0.8,
+        "desk_work": 0.6,
+        "talk": 0.7,
+        "special": 0.5
+      }
+    },
+    {
+      "id": "spark",
+      "name": "Spark",
+      "profession": "orphan",
+      "personality": "eager_youth",
+      "backstory": "A young boy from Trinsic whose father was murdered by the Fellowship. Spark is determined to find his father's killers and seeks to join the Avatar on the quest for justice. Despite his youth, he shows courage and determination.",
+      "traits": {
+        "openness": 0.8,
+        "conscientiousness": 0.5,
+        "extraversion": 0.7,
+        "agreeableness": 0.7,
+        "neuroticism": 0.5
+      },
+      "knowledge_domains": [
+        "trinsic_streets",
+        "fathers_murder",
+        "fellowship_suspicions",
+        "basic_combat"
+      ],
+      "relationships": {
+        "avatar": 0.85,
+        "father_christopher": 0.95,
+        "finnigan": 0.60
+      },
+      "aiml_patterns": "companions/spark.aiml",
+      "dialogue_style": {
+        "formality": 0.2,
+        "verbosity": 0.6,
+        "humor": 0.5,
+        "wisdom": 0.2
+      },
+      "schedule_preferences": {
+        "follow_avatar": 0.95,
+        "kid_games": 0.6,
+        "loiter": 0.5,
+        "wander": 0.4
+      }
+    },
+    {
+      "id": "finnigan",
+      "name": "Finnigan",
+      "profession": "mayor",
+      "personality": "corrupt_official",
+      "backstory": "The mayor of Trinsic and a secret member of the Fellowship. Finnigan appears to be a respectable official but is complicit in covering up the Fellowship's crimes. He is nervous and easily flustered when questioned too closely.",
+      "traits": {
+        "openness": 0.3,
+        "conscientiousness": 0.4,
+        "extraversion": 0.5,
+        "agreeableness": 0.6,
+        "neuroticism": 0.7
+      },
+      "knowledge_domains": [
+        "trinsic_governance",
+        "fellowship_membership",
+        "murder_coverup",
+        "local_politics"
+      ],
+      "relationships": {
+        "avatar": 0.45,
+        "batlin": 0.55,
+        "spark": 0.40
+      },
+      "aiml_patterns": "officials/finnigan.aiml",
+      "dialogue_style": {
+        "formality": 0.7,
+        "verbosity": 0.5,
+        "humor": 0.2,
+        "wisdom": 0.3
+      },
+      "hidden_agenda": true,
+      "deception_level": 0.6,
+      "stress_responses": {
+        "when_questioned": "becomes_evasive",
+        "when_accused": "denies_vigorously",
+        "when_threatened": "reveals_information"
+      },
+      "schedule_preferences": {
+        "desk_work": 0.8,
+        "tend_shop": 0.4,
+        "sleep": 0.5,
+        "eat": 0.4
+      }
+    },
+    {
+      "id": "nystul",
+      "name": "Nystul",
+      "profession": "court_mage",
+      "personality": "eccentric_wizard",
+      "backstory": "The court mage of Lord British, Nystul is a powerful but somewhat absent-minded wizard. He has been studying the strange magical disturbances affecting Britannia and suspects they are connected to the Fellowship's activities.",
+      "traits": {
+        "openness": 0.95,
+        "conscientiousness": 0.5,
+        "extraversion": 0.4,
+        "agreeableness": 0.7,
+        "neuroticism": 0.4
+      },
+      "knowledge_domains": [
+        "magic",
+        "ether",
+        "magical_disturbances",
+        "spellcasting",
+        "arcane_research"
+      ],
+      "relationships": {
+        "avatar": 0.70,
+        "lord_british": 0.80,
+        "mariah": 0.65
+      },
+      "aiml_patterns": "mages/nystul.aiml",
+      "dialogue_style": {
+        "formality": 0.5,
+        "verbosity": 0.8,
+        "humor": 0.4,
+        "wisdom": 0.8
+      },
+      "quirks": [
+        "speaks_in_riddles",
+        "easily_distracted",
+        "forgets_names"
+      ],
+      "schedule_preferences": {
+        "lab": 0.9,
+        "desk_work": 0.6,
+        "wander": 0.3,
+        "sleep": 0.2
+      }
+    }
+  ],
+  "dialogue_templates": {
+    "greeting_friendly": [
+      "Well met, {player_name}! How fares thy quest?",
+      "Avatar! 'Tis good to see thee again.",
+      "Greetings, friend. What news dost thou bring?"
+    ],
+    "greeting_neutral": [
+      "Greetings, traveler.",
+      "What business hast thou here?",
+      "Good day to thee."
+    ],
+    "greeting_hostile": [
+      "What dost thou want?",
+      "I have no time for thee.",
+      "Begone from my sight."
+    ],
+    "farewell_friendly": [
+      "May the virtues guide thee, Avatar.",
+      "Until we meet again, friend.",
+      "Safe travels to thee."
+    ],
+    "farewell_neutral": [
+      "Farewell.",
+      "Good day.",
+      "May thy path be safe."
+    ],
+    "about_fellowship": [
+      "The Fellowship? They speak of unity and inner peace...",
+      "I have heard their teachings. Some find comfort in them.",
+      "Batlin's words are honeyed, but something feels... wrong."
+    ],
+    "about_guardian": [
+      "I know not of what thou speakest.",
+      "A dark presence? I have felt... something.",
+      "The red moongate... it troubles my dreams."
+    ]
+  },
+  "emotion_responses": {
+    "happy": {
+      "expressions": ["smiles warmly", "laughs heartily", "beams with joy"],
+      "speech_modifiers": {
+        "enthusiasm": 0.3,
+        "verbosity": 0.2
+      }
+    },
+    "sad": {
+      "expressions": ["sighs deeply", "looks downcast", "speaks softly"],
+      "speech_modifiers": {
+        "enthusiasm": -0.3,
+        "verbosity": -0.1
+      }
+    },
+    "angry": {
+      "expressions": ["scowls", "clenches fists", "speaks harshly"],
+      "speech_modifiers": {
+        "formality": -0.2,
+        "verbosity": -0.2
+      }
+    },
+    "fearful": {
+      "expressions": ["glances nervously", "speaks in hushed tones", "trembles slightly"],
+      "speech_modifiers": {
+        "verbosity": 0.3,
+        "formality": -0.1
+      }
+    }
+  }
+}

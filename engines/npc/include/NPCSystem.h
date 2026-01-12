@@ -77,6 +77,13 @@ public:
     };
     Decision makeDecision(const std::vector<std::string>& options);
 
+    // Events
+    void notifyEvent(const std::string& eventType, const std::map<std::string, std::string>& data);
+    
+    // Emotional state (from persona)
+    Persona::EmotionalState& getEmotionalState();
+    const Persona::EmotionalState& getEmotionalState() const;
+    
     // Serialization
     std::string serialize() const;
     bool deserialize(const std::string& data);

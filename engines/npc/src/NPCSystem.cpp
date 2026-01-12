@@ -150,6 +150,34 @@ NPCEntity::Decision NPCEntity::makeDecision(const std::vector<std::string>& opti
     return decision;
 }
 
+void NPCEntity::notifyEvent(const std::string& eventType, const std::map<std::string, std::string>& data) {
+    // Record event in memory
+    std::string description = "Event: " + eventType;
+    for (const auto& [key, value] : data) {
+        description += " | " + key + "=" + value;
+    }
+    
+    // Adjust emotional state based on event type
+    if (eventType == "combat" || eventType == "attack") {
+        persona_->emotionalState.arousal += 0.3;
+        persona_->emotionalState.emotions[Persona::EmotionType::Fear] += 0.3;
+    } else if (eventType == "gift" || eventType == "compliment") {
+        persona_->emotionalState.overallValence += 0.2;
+        persona_->emotionalState.emotions[Persona::EmotionType::Happiness] += 0.3;
+    } else if (eventType == "insult" || eventType == "theft") {
+        persona_->emotionalState.overallValence -= 0.2;
+        persona_->emotionalState.emotions[Persona::EmotionType::Anger] += 0.3;
+    }
+}
+
+Persona::EmotionalState& NPCEntity::getEmotionalState() {
+    return persona_->emotionalState;
+}
+
+const Persona::EmotionalState& NPCEntity::getEmotionalState() const {
+    return persona_->emotionalState;
+}
+
 std::string NPCEntity::serialize() const {
     return "{}";  // Placeholder
 }
