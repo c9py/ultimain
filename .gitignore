@@ -1,0 +1,20 @@
+# Build artifacts
+*.o
+*.o.d
+*.a
+*.so
+*.dylib
+build/
+*.internal
+
+# Large downloaded files
+research/ultima_collection.iso
+research/ultima_collection/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
