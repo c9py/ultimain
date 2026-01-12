@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/ubuntu/ultima-integration/engines/npc/build/examples",
+  "command": "/usr/bin/c++  -I/home/ubuntu/ultima-integration/engines/npc/include -I/home/ubuntu/ultima-integration/engines/npc/../../cognitive/gneural-net/include -std=gnu++17 -o CMakeFiles/npc_demo.dir/npc_demo.cpp.o -c /home/ubuntu/ultima-integration/engines/npc/examples/npc_demo.cpp",
+  "file": "/home/ubuntu/ultima-integration/engines/npc/examples/npc_demo.cpp"
+},
+{
+  "directory": "/home/ubuntu/ultima-integration/engines/npc/build/examples",
+  "command": "/usr/bin/c++  -I/home/ubuntu/ultima-integration/engines/npc/include -I/home/ubuntu/ultima-integration/engines/npc/../../cognitive/gneural-net/include -std=gnu++17 -o CMakeFiles/dialogue_demo.dir/dialogue_demo.cpp.o -c /home/ubuntu/ultima-integration/engines/npc/examples/dialogue_demo.cpp",
+  "file": "/home/ubuntu/ultima-integration/engines/npc/examples/dialogue_demo.cpp"
+}
+]

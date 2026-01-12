@@ -519,6 +519,13 @@ bool UrbanGrowthModel::canDevelop(const City& city, int x, int y) const {
     return p && !p->hasBuilding && p->landUse == LandUse::Vacant;
 }
 
+// Missing stub implementations
+ZoningSystem::ZoningSystem() = default;
+ZoningSystem::~ZoningSystem() = default;
+
+OSMIntegration::OSMIntegration() = default;
+OSMIntegration::~OSMIntegration() = default;
+
 } // namespace Urban
 } // namespace NPC
 } // namespace Ultima

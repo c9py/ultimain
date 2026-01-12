@@ -1,0 +1,15 @@
+/home/ubuntu/ultima-integration/engines/npc/build/CMakeFiles/ultima_npc_ai.dir
+/home/ubuntu/ultima-integration/engines/npc/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/ultima-integration/engines/npc/build/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/ultima-integration/engines/npc/build/CMakeFiles/list_install_components.dir
+/home/ubuntu/ultima-integration/engines/npc/build/CMakeFiles/install.dir
+/home/ubuntu/ultima-integration/engines/npc/build/CMakeFiles/install/local.dir
+/home/ubuntu/ultima-integration/engines/npc/build/CMakeFiles/install/strip.dir
+/home/ubuntu/ultima-integration/engines/npc/build/examples/CMakeFiles/npc_demo.dir
+/home/ubuntu/ultima-integration/engines/npc/build/examples/CMakeFiles/dialogue_demo.dir
+/home/ubuntu/ultima-integration/engines/npc/build/examples/CMakeFiles/edit_cache.dir
+/home/ubuntu/ultima-integration/engines/npc/build/examples/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/ultima-integration/engines/npc/build/examples/CMakeFiles/list_install_components.dir
+/home/ubuntu/ultima-integration/engines/npc/build/examples/CMakeFiles/install.dir
+/home/ubuntu/ultima-integration/engines/npc/build/examples/CMakeFiles/install/local.dir
+/home/ubuntu/ultima-integration/engines/npc/build/examples/CMakeFiles/install/strip.dir

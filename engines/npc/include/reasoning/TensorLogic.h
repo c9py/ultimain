@@ -280,6 +280,9 @@ public:
      */
     void clear();
 
+    bool matchFormula(const Formula& formula, const Binding& binding,
+                     LogicalValue& result) const;
+
 private:
     std::vector<Fact> facts_;
     std::vector<InferenceRule> rules_;
@@ -288,9 +291,6 @@ private:
     // Indexes for fast lookup
     std::multimap<std::string, size_t> predicateIndex_;
     std::multimap<std::string, size_t> entityIndex_;
-
-    bool matchFormula(const Formula& formula, const Binding& binding,
-                     LogicalValue& result) const;
     std::vector<Binding> findBindings(const Term& pattern) const;
     LogicalValue evaluateFormula(const Formula& f, const Binding& binding) const;
 };

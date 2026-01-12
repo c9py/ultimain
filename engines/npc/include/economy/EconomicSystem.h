@@ -19,6 +19,7 @@
 #include <memory>
 #include <optional>
 #include <functional>
+#include <cfloat>
 
 namespace Ultima {
 namespace NPC {

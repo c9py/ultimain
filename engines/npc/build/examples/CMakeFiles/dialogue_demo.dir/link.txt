@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/dialogue_demo.dir/dialogue_demo.cpp.o -o dialogue_demo  ../libultima_npc_ai.a 

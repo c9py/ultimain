@@ -154,11 +154,11 @@ public:
      */
     const std::vector<std::string>& getErrors() const { return errors_; }
 
-private:
-    std::vector<std::string> errors_;
-
     std::vector<PatternElement> parsePattern(const std::string& patternStr);
     std::vector<TemplateElement> parseTemplate(const std::string& templateStr);
+
+private:
+    std::vector<std::string> errors_;
     TemplateElement parseTemplateElement(const std::string& tagName,
                                          const std::map<std::string, std::string>& attrs,
                                          const std::string& content);

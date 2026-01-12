@@ -291,6 +291,22 @@ EconomicSystem::EconomicStats EconomicSystem::getStatistics() const {
     return stats;
 }
 
+// Stub implementations for missing classes
+NPCEconomicDecision::NPCEconomicDecision() = default;
+NPCEconomicDecision::~NPCEconomicDecision() = default;
+
+ProductionFacility::ProductionFacility(const std::string& id) : id(id) {}
+ProductionFacility::~ProductionFacility() = default;
+
+bool Inventory::hasType(ResourceType type, double minQuantity) const {
+    for (const auto& [id, res] : resources_) {
+        if (res.type == type && res.quantity >= minQuantity) {
+            return true;
+        }
+    }
+    return false;
+}
+
 } // namespace Economy
 } // namespace NPC
 } // namespace Ultima

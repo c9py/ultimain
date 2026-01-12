@@ -275,6 +275,53 @@ void RelationshipSystem::createFaction(const Faction& faction) {
     factions_[faction.id] = faction;
 }
 
+//=============================================================================
+// GossipSystem Implementation
+//=============================================================================
+
+GossipSystem::GossipSystem() = default;
+GossipSystem::~GossipSystem() = default;
+
+std::string GossipSystem::createGossip(const std::string& subject,
+                                       const std::string& content,
+                                       const std::string& originator,
+                                       double truthfulness) {
+    Gossip g;
+    g.id = "gossip_" + std::to_string(gossips_.size());
+    g.subject = subject;
+    g.content = content;
+    g.originEntity = originator;
+    g.truthfulness = truthfulness;
+    g.knownBy.insert(originator);
+    gossips_[g.id] = g;
+    return g.id;
+}
+
+void GossipSystem::spreadGossip(const std::string& gossipId,
+                                const std::string& from,
+                                const std::string& to) {
+    auto it = gossips_.find(gossipId);
+    if (it != gossips_.end()) {
+        it->second.knownBy.insert(to);
+    }
+}
+
+void GossipSystem::simulateSpread(SocialNetwork& network, double spreadProbability) {
+    (void)network;
+    (void)spreadProbability;
+    // Placeholder for gossip spread simulation
+}
+
+std::vector<GossipSystem::Gossip> GossipSystem::getKnownGossip(const std::string& entityId) const {
+    std::vector<Gossip> result;
+    for (const auto& [id, g] : gossips_) {
+        if (g.knownBy.count(entityId)) {
+            result.push_back(g);
+        }
+    }
+    return result;
+}
+
 } // namespace Social
 } // namespace NPC
 } // namespace Ultima

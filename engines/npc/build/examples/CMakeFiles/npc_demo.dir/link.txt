@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/npc_demo.dir/npc_demo.cpp.o -o npc_demo  ../libultima_npc_ai.a 

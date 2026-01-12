@@ -42,6 +42,13 @@ set(PHASE4_SOURCES
 # Source files - Phase 5: Urban Dynamics
 set(PHASE5_SOURCES
     src/UrbanDynamics.cpp
+    src/NPCSystem.cpp
+)
+
+# Source files - Phase 6: LLM and Hybrid Dialogue
+set(PHASE6_SOURCES
+    src/TinyLLM.cpp
+    src/HybridDialogue.cpp
 )
 
 # All sources
@@ -51,6 +58,7 @@ set(NPC_SOURCES
     ${PHASE3_SOURCES}
     ${PHASE4_SOURCES}
     ${PHASE5_SOURCES}
+    ${PHASE6_SOURCES}
 )
 
 # Header files
@@ -73,6 +81,9 @@ set(NPC_HEADERS
 
     # Phase 5
     include/urban/UrbanDynamics.h
+    # Phase 6
+    include/llm/TinyLLM.h
+    include/aiml/HybridDialogue.h
 )
 
 # Create static library
@@ -138,4 +149,5 @@ message(STATUS "  Phase 2 - Reasoning:     Tensor Logic, Rule Set, Memory System
 message(STATUS "  Phase 3 - Social:        Relationship System, Emotional State Machine")
 message(STATUS "  Phase 4 - Economy:       Economic Agents, Market Simulation")
 message(STATUS "  Phase 5 - Urban:         City Simulation, OSM Integration")
+message(STATUS "  Phase 6 - Dialogue:      TinyLLM, Hybrid AIML+LLM Dialogue")
 message(STATUS "")

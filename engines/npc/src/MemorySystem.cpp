@@ -226,6 +226,10 @@ void MemoryNetwork::reset() {
     }
 }
 
+// Missing stub implementations
+AutobiographicalMemory::AutobiographicalMemory() = default;
+AutobiographicalMemory::~AutobiographicalMemory() = default;
+
 } // namespace Memory
 } // namespace NPC
 } // namespace Ultima
