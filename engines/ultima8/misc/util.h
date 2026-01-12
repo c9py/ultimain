@@ -1,40 +1,48 @@
-/* ScummVM - Graphic Adventure Engine
- *
- * ScummVM is the legal property of its developers, whose names
- * are too numerous to list here. Please refer to the COPYRIGHT
- * file distributed with this source distribution.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+/*
+Copyright (C) 2002-2006 The Pentagram team
 
-#ifndef ULTIMA8_MISC_UTIL_H
-#define ULTIMA8_MISC_UTIL_H
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
-#include "ultima/shared/std/containers.h"
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-namespace Ultima {
-namespace Ultima8 {
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
 
-template<class T> void StringToArgv(const T &args, Common::Array<T> &argv);
+#ifndef UTIL_H
+#define UTIL_H
 
-template<class T> void SplitString(const T &args, char sep, Std::vector<T> &argv);
+#include <string>
+#include <vector>
+#include "istring.h"
+
+namespace Pentagram {
+
+template<class T> T to_uppercase(const T s);
+
+template<class T> void StringToArgv(const T &args, std::vector<T> &argv);
+template<class T> void ArgvToString(const std::vector<T> &argv, T &args);
+
+
+template<class T> void TrimSpaces(T& str);
+
+template<class T> void TabsToSpaces(T& str, unsigned int nspaces);
+
+template<class T> void SplitString(const T &args, char sep,
+								   std::vector<T> &argv);
 
 template<class T> void SplitStringKV(const T &args, char sep,
-									 Std::vector<Common::Pair<T, T> > &argv);
+									 std::vector<std::pair<T,T> > &argv);
 
-} // End of namespace Ultima8
-} // End of namespace Ultima
+
+
+}
 
 #endif

@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE readme SYSTEM "docs.dtd">
+<readme title="Pentagram" changed="09 November 2011 (GMT)">		
+	<section title="Configuration">
+		<sub name="quick_ini">
+			<header>Quick guide</header>
+			<body>
+				<para>
+					<Pent/> needs a pentagram.ini file to point it to the game data files. The location of the 
+					file varies depending on the Operating System and in the case of Windows OS it also depends 
+					on the version of Windows.
+				</para>
+				<ul>
+					<li>On Linux, pentagram.ini has to be in the <kbd>~/.pentagram</kbd> directory.</li>
+					<li>On Mac OS X, it has to be in the <kbd>~/Library/Application Support/Pentagram</kbd> folder. 
+						Unfortunately <kbd>~/Library</kbd> is hidden on OS X Lion, to open this folder click on the "Go" menu 
+						item of Finder while pressing <key>Option/Alt</key></li>
+					<li>Windows 95, 98, 98 SE and ME save the ini to the folder where you installed <Pent/> to (by 
+						default <kbd>C:\Program Files\Pentagram)</kbd></li>
+					<li>Windows 2000 and XP save pentagram.ini to <kbd>APPDATA\Pentagram</kbd>, which translates to 
+						<kbd>C:\Documents and Settings\YourUsername\Application Data\Pentagram</kbd> for an English version 
+						of Windows.</li>
+					<li>Windows Vista and Windows 7 also save pentagram.ini to <kbd>APPDATA\Pentagram</kbd>, but on these this 
+						translates to <kbd>C:\Users\YourUsername\AppData\Roaming\Pentagram</kbd></li>
+					<li>On Windows 2000, XP, Vista and 7 you can quickly access this folder by executing 
+						<kbd>shell:AppData\Pentagram</kbd> in the "Run" entry of the Startmenu (or the "Run or Search" entry 
+						of the Windows Vista and 7 Startmenu)</li>
+				</ul>
+				<para>
+					A sample pentagram.ini is included below (this is all that is needed at the
+					moment to run <Pent/>). Comments are marked with <kbd>#</kbd> and are above the ini-entries.<br/>
+					You can copy/paste these settings with the comments to your ini file as <Pent/> will ignore
+					lines beginning with <kbd>#</kbd>.
+				</para>
+				<configdesc>
+					<configsec name="u8">
+							<configtag name="path">
+							path to U8 directory
+							<comment># replace 'path to U8 directory' with the directory containing 'u8.exe'</comment>
+							</configtag>
+					</configsec>
+				</configdesc>
+			</body>
+		</sub>
+		<sub name="advanced_ini">
+			<header>Advanced Configuration</header>
+			<body>
+				<para>
+					Right now <Pent/> assumes some default settings that don't need to be set to
+					make <Pent/> work. The settings below are the default settings.
+				</para>
+				<configdesc>
+					<configsec name="pentagram">
+<!--					<configtag name="data">
+							path to pentagram data dir
+							<comment># replace 'path to pentagram data dir' with the pentagram data directory</comment>
+							<comment># (that's the directory that contains fixedfont.tga)</comment>
+						</configtag> -->
+						<configtag name="defaultgame">
+							u8
+						</configtag>
+						<configtag name="fullscreen">
+							no
+						</configtag>						
+						<configtag name="scalex">
+							320
+							<comment># Width of the game resolution.</comment>
+						</configtag>
+						<configtag name="scaley">
+							240
+							<comment># height of the game resolution.</comment>
+						</configtag>
+						<configtag name="scaler">
+							2xSaI
+							<comment># Select the scaler you want to use. Currently you can choose between</comment>
+							<comment># point, bilinear, scale2x, 2xSaI, super2xSaI, supereagle, hq.</comment>
+							<comment># hq scaler will automatically decide whether to use HQ2x, HQ3x or HQ4x</comment>
+							<comment># depending on width and height.</comment>
+						</configtag>
+<!--					<configtag name="scaler2">
+							point
+							<comment># Secondary scaler, point or bilinear only,used for aspect correction.</comment>
+							<comment># Done automatically, so best not set.</comment>
+						</configtag> 
+						<configtag name="scalex2">
+							400
+							<comment># Width of the secondary scaler.</comment>
+							<comment># Done automatically, so best not set.</comment>
+						</configtag>
+						<configtag name="scaley2">
+							300
+							<comment># Height of secondary scaler.</comment>
+							<comment># Done automatically, so best not set.</comment>
+						</configtag> -->
+						<configtag name="width">
+							640
+							<comment># The game resolution is scaled to this width.</comment>
+						</configtag>
+						<configtag name="height">
+							480
+							<comment># The game resolution is scaled to this height.</comment>
+						</configtag>
+						<configtag name="bpp">
+							32
+						</configtag>
+						<configtag name="ttf">
+							no
+							<comment># Enable this to use the BitStream Vera font for conversations and object descriptions.</comment>
+						</configtag>
+						<configtag name="midi_driver">
+							disabled/windows/fmopl/timidity/alsa/unixseq/coreaudio/coremidi/fluidsynth
+							<comment># If you don't specify midi_driver, Pentagram will automatically select one,</comment>
+							<comment># based on your platform.</comment>
+							<comment># (Note: Windows will only work on Windows. CoreAudio and CoreMIDI only on Mac OS X.</comment>
+							<comment># Alsa is Linux-only and UnixSeq will only work on Unix variants.)</comment>
+							<comment># See further down for more options on Linux.</comment>
+						</configtag>
+						<configtag name="soundfont">
+							path to soundfont
+							<comment>#  Enter the path to the SoundFont for CoreAudio (optional) and FluidSynth (required).</comment>
+						</configtag>						
+						<configtag name="textdelay">
+							8
+							<comment># Conversation speed. Higher is slower.</comment>
+						</configtag>
+					</configsec>
+					<configsec name="u8">
+						<configtag name="path">
+							path to U8 directory
+							<comment># replace 'path to U8 directory' with the directory containing 'u8.exe'</comment>
+						</configtag>
+						<configtag name="save">
+							path to U8 savegames directory
+							<comment># replace with the directory you want Pentagram to save games to.</comment>
+							<comment># (no, loading of the original's savegames is not supported)</comment>
+						</configtag>
+						<configtag name="skipstart">
+							no
+							<comment># Enable this to skip the intro of U8 and initial conversation with Devon.</comment>
+						</configtag>
+						<configtag name="endgame">
+							no
+							<comment># Gives the option to see the endgame animation.</comment>
+						</configtag>
+						<configtag name="quotes">
+							no
+							<comment># Gives the option to see the quotes (without having to watch the credits).</comment>
+						</configtag>
+						<configtag name="footsteps">
+							yes
+							<comment># Footsteps are audible.</comment>
+						</configtag>
+						<configtag name="targetedjump">
+							yes
+							<comment># Enables post patch targeted jumps.</comment>
+						</configtag>
+						<configtag name="cheat">
+							yes
+							<comment># Enables cheating by clicking on the Avatar - currently cannot be disabled.</comment>
+						</configtag>
+					</configsec>
+				</configdesc>
+				<para>
+					You may also override most settings under [pentagram] by writing them
+					under [u8]. Except for defaultgame all can be overriden.<br/>
+					Right now this is not necessary as we only support U8 but if we start to
+					support other games it might come in handy.
+				</para>
+			</body>
+		</sub>
+		<sub name="linux_midi">
+			<header>Optional MIDI settings for Linux</header>
+			<body>
+				<para>
+					MIDI used on Linux might need some fine tuning in pentagram.ini to work correctly.
+					Below are the settings you can configure.
+				</para>
+				<configdesc>
+					<configsec name="pentagram">
+							<configtag name="midi_driver">
+							disabled/windows/fmopl/timidity/alsa/unixseq/coreaudio
+							<comment># If you don't specify midi_driver, Pentagram will automatically select one,</comment>
+							<comment># based on your platform.</comment>
+							<comment>#(Note: Windows will only work on Windows. CoreAudio only on MacOSX.)</comment> 
+						</configtag>
+						<configtag name="timiditycfg">
+							path to timidity.cfg
+							<comment># You may need to set timiditycfg if you choose midi_driver=timidity.</comment>
+						</configtag>
+						<configtag name="alsa_port">
+							alsa:port
+							<comment># You may need to set alsa_port if you choose midi_driver=alsa.</comment>
+						</configtag>
+						<configtag name="unixseqdevice">
+							/dev/sequencer
+							<comment># You may need to set unixseqdevice if you choose midi_driver=unixseq.</comment>
+						</configtag>
+					</configsec>
+				</configdesc>
+			</body>
+		</sub>
+	</section>
+	<section title="Movement and Keys">
+		<sub name="movement">
+			<header>Movement</header>
+			<body>
+				<ul>					
+					<li>Double-click with the right mouse button will make the Avatar
+						find a path to the selected spot.</li>
+					<li>Left-click on NPCs or objects to identify them.</li>
+					<li>Double-left-click on NPCs or objects to initiate conversations or use the item.</li>
+					<li>On pressing the right mouse button down the Avatar walks or runs 
+						(depending on distance between cursor and Avatar).</li>
+					<li>Pressing right and left mouse button, makes the Avatar jump or while running a running jump.</li>
+				</ul>
+  			</body>
+		</sub>
+		<sub name="pent_keys">
+			<header>Keyboard commands</header>
+			<body>
+				<para>
+					All key commands of <Pent/> can be changed by editing u8bindings.ini or via the options menu in the game.<br/>
+					We are distinguishing between default keyboard commands and debug keyboard commands that are used to help 
+					debugging the engine. At the moment you can't turn off the debug commands.
+				</para>
+				<keytable title="Default keyboard commands">
+					<keydesc name="i">open backpack</keydesc>
+					<keydesc name="z">open paperdoll/status</keydesc>
+					<keydesc name="r">recall</keydesc>
+					<keydesc name="c">switches combat mode on/off</keydesc>
+					<keydesc name="m">show/hide minimap</keydesc>
+					<keydesc name="ESC">main menu</keydesc>
+					<keydesc name="ctrl+q">quits without confirmation </keydesc>
+					<keydesc name="backspace">close all open containers</keydesc>
+					<keydesc name="F4">toogle fullscreen</keydesc>
+					<keydesc name="F7">Quicksave</keydesc>
+					<keydesc name="F8">Quickload</keydesc>
+				</keytable>
+				<keytable title="Debug keyboard commands">
+					<keydesc name="~, F5">hides/restores console</keydesc>
+					<keydesc name="arrow keys">moves Avatar around the map (no walking)</keydesc>
+					<keydesc name="home,end">moves Avatar vertically </keydesc>
+					<keydesc name="t">outputs kernel/usecode/world/location stats to the console</keydesc>
+					<keydesc name="e">toggles editor items</keydesc>
+					<keydesc name="h">highlights any item you are "hitting", colliding with</keydesc>
+					<keydesc name="F10">toggles "avatarInStasis"</keydesc>
+					<keydesc name="F11">Shapeviewer</keydesc>
+					<keydesc name="F12">toggles frame by frame</keydesc>
+					<keydesc name="shift">quarter speed mode. needs to be held down</keydesc>
+					<keydesc name="[">clears the screen, multiple presses show the paint order</keydesc>
+					<keydesc name="]">above backwards</keydesc>
+				</keytable>
+			</body>
+		</sub>
+  	</section>
+  	<section title="Other stuff">
+		<sub name="console_commands">
+			<header>Console commands</header>
+			<body>
+				<para>
+					<Pent/> has a debugging console with various useful commands. A selection is listed below.
+				</para>
+				<keytable title="Console commands">
+					<keydesc name="GUIApp::quit">quit</keydesc>
+					<keydesc name="ConsoleGump::toggle">open/close console</keydesc>
+					<keydesc name="Cheat::heal">heal the avatar</keydesc>
+					<keydesc name="Cheat::equip">equip the avatar with magic armour</keydesc>
+					<keydesc name="Cheat::maxstats">set str/dex/int to 25</keydesc>
+					<keydesc name="Cheat::toggleInvincibility">toggle avatar invincibility</keydesc>
+					<keydesc name="MainActor::name &lt;name&gt;">set avatar name</keydesc>
+					<keydesc name="MainActor::teleport &lt;map&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;">teleport to coordinates</keydesc>
+					<keydesc name="MiniMapGump::toggle">show/hide minimap</keydesc>
+				</keytable>
+			</body>
+		</sub>
+		<sub name="games_versions">
+			<header>Supported games and versions</header>
+			<body>
+				<para>
+					At the moment we only support the English versions of Ultima 8, both pre-patch
+					and post-patch. The German, French, Spanish versions should also work, but are
+					less well-tested. The Japanese version has a chance of working, but has hardly been tested at all.
+				</para>
+			</body>
+		</sub>
+	</section>
+	<section title="Building SVN">
+		<sub name="dependencies">
+			<header>Build dependencies</header>
+			<body>
+			<para>
+				Before you build <Pent/>, make sure you have the following tools/libraries.
+			</para>
+			<ul>
+				<li>SDL;</li>
+				<li>SDL_ttf;</li>
+				<li>zlib;</li>
+				<li>libpng;</li>
+				<li>for Linux/Unix, you need autoconf and automake.</li>
+			</ul>
+			</body>
+		</sub>
+		<sub name="building_linux">
+			<header>Linux/Unix</header>
+			<body>
+				<ol>
+					<li> Run the "bootstrap" script to create the "configure" script:<br/>
+						<kbd>./bootstrap</kbd></li>
+					<li>Now run configure:<br/>
+						<kbd>./configure</kbd></li>
+					<li>Finally, start the build as usual:<br/>
+						<kbd>make</kbd></li>
+				</ol>
+			</body>
+		</sub>
+		<sub name="building_win32">
+			<header>Windows</header>
+			<body>
+				<para>
+					nothing here yet
+				</para>
+			</body>
+		</sub>
+		<sub name="building_macosx">
+			<header>Mac OS X</header>
+			<body>
+				<para>
+					Under OS X, the dependencies are built into the application bundle as embedded libraries.
+					<Pent/> provides makefiles to build the dependencies appropriately.
+					Internally, the OS X specific makefiles use normal unix-style configure &amp; make to
+					build Pentagram and all dependencies.
+				</para>
+				<para>
+					For the build, you should install XCode and the SDK for OS X 10.4 as it is currently the
+					oldest supported version of OS X for the official builds. The build may still work on
+					older versions or if the SDK is missing, but it will attempt target your version of OS X
+					by default. Additional editing of <kbd>system/macosx/archs.mk</kbd> may be required for
+					some configurations.
+				</para>
+				<para>
+					You also should ensure <kbd>/Developer/usr/bin</kbd> is in you <kbd>PATH</kbd> environment
+					variable. You can do this by adding the following to <kbd>~/.profile</kbd><br/>
+						<kbd>export PATH=$PATH:/Developer/usr/bin</kbd>
+				</para>
+				<para>
+					Lastly, you may need to add configuration for <kbd>autoconf</kbd> and associated tools to
+					work correctly. The following is a sample version of this configuration is in
+					<kbd>system/macosx/autom4te.cfg</kbd>. Copy the contents of that file to
+					<kbd>~/.autom4te.cfg</kbd> if the "bootstrap" script encounters problems.
+				</para>
+				<para>
+					After completing the system configuration listed above, perform the following steps to
+					build <Pent/>.
+				</para>
+				<ol>
+					<li> Run the "bootstrap" script to create the "configure" script:<br/>
+						<kbd>./bootstrap</kbd></li>
+					<li>Build all dependencies:<br/>
+						<kbd>make -f Makefile.macosx deps</kbd></li>
+					<li>Build Pentagram:<br/>
+						<kbd>make -f Makefile.macosx build</kbd></li>
+					<li>Build Pentagram.app:<br/>
+						<kbd>make -f Makefile.macosx bundle</kbd></li>
+					<li>Build disk image:<br/>
+						<kbd>make -f Makefile.macosx image</kbd></li>
+					<li>The disk image is located in the build directory and contains the universal binary</li>
+				</ol>
+			</body>
+		</sub>
+	</section>
+	<section title="Changes to the Documentation">
+		<sub name="09112011">
+			<header>- 09 November 2011</header>
+			<body>
+				<para>
+					<ref1 target="advanced_ini"/>: More scalers and soundfont setting for FluidSynth and CoreAudio.<br/>
+				</para>
+			</body>
+		</sub>
+		<sub name="30102011">
+			<header>- 30 October 2011</header>
+			<body>
+				<para>
+					<ref1 target="advanced_ini"/>: added a lot of settings.<br/>
+					<ref1 target="movement"/>: no more keypad movement and the not for Mac OS is no longer needed.<br/>
+					<ref1 target="pent_keys"/>: updated and split in default and debug keys.<br/>
+					Moved the Building SVN section to the bottom.
+				</para>
+			</body>
+		</sub>
+		<sub name="05012010">
+			<header>- 5 January 2010</header>
+			<body>
+				<para>
+					<ref1 target="building_macosx"/>: added additional information for builds.<br/>
+				</para>
+			</body>
+		</sub>
+		<sub name="04092008">
+			<header>- 4 September 2008</header>
+			<body>
+				<para>
+					<ref1 target="building_macosx"/>: replaced old build instructions.<br/>
+				</para>
+			</body>
+		</sub>
+		<sub name="03082007">
+			<header>- 3 August 2007</header>
+			<body>
+				<para>
+					<ref1 target="console_commands"/>: added (short) list of console commands.<br/>
+				</para>
+			</body>
+		</sub>
+		<sub name="19022006">
+			<header>- 19 February 2006</header>
+			<body>
+				<para>
+					<ref1 target="games_versions"/>: updated status of non-English U8.<br/>
+				</para>
+			</body>
+		</sub>
+		<sub name="22052005">
+			<header>- 22 May 2005</header>
+			<body>
+				<para>
+					<ref1 target="advanced_ini"/> some more configurations added.<br/>
+					<ref1 target="linux_midi"/> added.<br/>
+				</para>
+			</body>
+		</sub>
+		<sub name="21052005">
+			<header>- 21 May 2005</header>
+			<body>
+				<para>cleaned up outdated sections</para>
+			</body>
+		</sub>
+		<sub name="14102004">
+			<header>- 14 October 2004</header>
+			<body>
+				<para>
+					<ref1 target="advanced_ini"/> enable font replacement.
+				</para>
+			</body>
+		</sub>
+	</section>
+</readme>

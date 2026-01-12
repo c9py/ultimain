@@ -1,0 +1,241 @@
+# Pentagram makefile for use in Windows with mingw using GCC 3.2 and msys shell
+# It may require a little tweaking. (paths)
+VERSION=0.1svn
+
+# Where is Ultima 8 installed
+U8PATH=C:/Ultima8
+
+# msys2 changed the location of system includes to avoid having to ship duplicates for
+# 32- and 64-bit systems. This unfortunately broke anything relying on pkg-config if it
+# has a -I$(MSYSTEM_PREFIX)/include on it. This function removes such entries from
+# the input and return the stripped output.
+MSYSTEM_WPREFIX := $(shell cygpath -m $(MSYSTEM_PREFIX))
+S := $() $()
+
+define clean_includes
+$(subst -I$(MSYSTEM_WPREFIX)/include$(S),,$(subst -I$(MSYSTEM_PREFIX)/include$(S),,$(1)))
+endef
+
+# Includes under $(MSYSTEM_PREFIX) are not considered "system" headers, and will print
+# tons of warnings. This functions turns "-IXXX" into "-isystem XXX" to counteract that.
+define make_system
+$(subst -I, -isystem$(S), $(1))
+endef
+
+# Base of the pentagram source
+SRC=.
+
+# Choose Architecture and Compiler based on $(MSYSTEM), use 64 bits GCC by default.
+ifeq ($(MSYSTEM),MINGW64)
+	ARCHTYPE:=-march=x86-64
+	ARCHFLAGS:=-m64
+	CC:=gcc
+	CXX:=g++
+else ifeq ($(MSYSTEM),MINGW32)
+	ARCHTYPE:=-march=i686
+	ARCHFLAGS:=-m32
+	CC:=gcc
+	CXX:=g++
+else ifeq ($(MSYSTEM),CLANG64)
+	ARCHTYPE:=-march=x86-64
+	ARCHFLAGS:=-m64
+	CC:=clang
+	CXX:=clang++
+else ifeq ($(MSYSTEM),CLANG32)
+	ARCHTYPE:=-march=i686
+	ARCHFLAGS:=-m32
+	CC:=clang
+	CXX:=clang++
+else ifeq ($(MSYSTEM),UCRT64)
+	ARCHTYPE:=-march=x86-64
+	ARCHFLAGS:=-m64
+	CC:=gcc
+	CXX:=g++
+else ifeq ($(MSYSTEM),CLANGARM64)
+# march=native should not be used when building official releases
+# so if we start making official ARM build this needs to be changed
+	ARCHTYPE:=-march=native
+	ARCHFLAGS:=-m64
+	CC:=clang
+	CXX:=clang++
+else
+	ARCHTYPE:=-march=x86-64
+	ARCHFLAGS:=-m64
+	CC:=gcc
+	CXX:=g++
+endif
+
+ifdef USE_CONSOLE
+	SUBSYSTEM:=-mconsole
+	SYSFLAGS:=-DUSE_CONSOLE
+else
+	SUBSYSTEM:=-mwindows
+	SYSFLAGS:=
+endif
+
+# If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
+GTK_INCLUDES = `pkg-config --cflags gtk+-win32-2.0`
+# If this doesn't work, insert output of `pkg-config --libs gtk+-win32-2.0` manually
+GTK_LIBS = `pkg-config --libs gtk+-win32-2.0`
+
+# If this doesn't work, insert output of 'pkg-config --cflags gimp-2.0' manually
+GIMP_INCLUDES = `pkg-config --cflags gimpui-2.0`
+# If this doesn't work, insert output of 'pkg-config --libs gimp-2.0' manually
+GIMP_LIBS = `pkg-config --libs gimpui-2.0`
+
+### Modify these paths
+SDL_CFLAGS:=$(shell pkg-config --cflags-only-I sdl)
+SDL_LIBS:=$(shell pkg-config --libs sdl)
+
+CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBUILTIN_DATA -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DSIZEOF_INTP=4   \
+	-DCOMPILE_ALL_BILINEAR_SCALERS -DCOMPILE_GAMMA_CORRECT_SCALERS  \
+	-DHAVE_SYS_STAT_H -DHAVE_SYS_TYPES_H -DHAVE_UNISTD_H \
+	-DUSE_FLUIDSYNTH_MIDI -DUSE_FMOPL_MIDI -DUSE_HQ2X_SCALER -DUSE_HQ3X_SCALER -DUSE_HQ4X_SCALER \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/audio/midi -I$(SRC)/audio/timidity -I$(SRC)/conf \
+	-I$(SRC)/convert -I$(SRC)/filesys -I$(SRC)/filesys/zip -I$(SRC)/games -I$(SRC)/graphics \
+	-I$(SRC)/graphics/fonts -I$(SRC)/graphics/scalers -I$(SRC)/gumps -I$(SRC)/gumps/widgets  \
+	-I$(SRC)/kernel -I$(SRC)/misc -I$(SRC)/tools/compile -I$(SRC)/tools/disasm \
+	-I$(SRC)/tools/flexpack -I$(SRC)/tools/fold -I$(SRC)/usecode -I$(SRC)/world \
+	-I$(SRC)/world/actors $(SDL_CFLAGS) $(GTK_INCLUDES) $(GIMP_INCLUDES) 
+CXXFLAGS=-O2
+CXX=g++
+CFLAGS=-O2
+CC=gcc
+
+LFLAGS=-static-libgcc -static-libstdc++ -mwindows
+LIBS=-lmingw32 -lfluidsynth -ldsound -lwinmm -lz -lpng $(SDL_LIBS)
+
+include objects.mk
+
+all: pentagram.exe
+
+amf2mod.exe : tools/amf2mod/amf2mod.o
+	$(CXX) $(LFLAGS) -o $@ $+ -mconsole
+
+FOLD_OBJCS = \
+	filesys/FileSystem.o misc/Args.o misc/Console.o misc/istring.o misc/util.o \
+	tools/fold/CallNodes.o tools/fold/Folder.o tools/fold/FuncNodes.o \
+	tools/fold/IfNode.o tools/fold/OperatorNodes.o tools/fold/Type.o \
+	tools/fold/VarNodes.o tools/fold/LoopScriptNodes.o
+
+FLEXPACK_OBJCS = \
+	filesys/FileSystem.o filesys/RawArchive.o filesys/Archive.o filesys/ArchiveFile.o filesys/FlexFile.o \
+	filesys/ZipFile.o filesys/U8SaveFile.o filesys/DirFile.o filesys/zip/ioapi.o filesys/zip/unzip.o \
+	misc/Console.o misc/istring.o misc/pent_include.o misc/util.o tools/flexpack/FlexPack.o \
+	graphics/Shape.o graphics/ShapeFrame.o \
+	tools/flexpack/FlexWriter.o $(CONVERT)
+
+SHAPECONV_OBJS = \
+	filesys/FileSystem.o filesys/RawArchive.o filesys/Archive.o filesys/ArchiveFile.o filesys/FlexFile.o \
+	filesys/ZipFile.o filesys/U8SaveFile.o filesys/DirFile.o filesys/zip/ioapi.o filesys/zip/unzip.o \
+	tools/shapeconv/ShapeConv.o $(CONVERT) $(UNZIP) $(MISC) $(ARGS)
+
+ASEPRITE_OBJS = \
+	filesys/FileSystem.o graphics/Palette.o graphics/XFormBlend.o \
+	graphics/Shape.o graphics/ShapeFrame.o \
+	tools/aseprite_plugin/pent_shp.o $(CONVERT) $(MISC) $(ARGS)
+
+data2c.exe : tools/data2c/data2c.o
+	$(CXX) $(LFLAGS) -o $@ $+ -mconsole
+
+disasm.exe : tools/disasm/Disasm.o $(FOLD_OBJCS)
+	$(CXX) $(LFLAGS) -o $@ $+ -mconsole
+
+flexpack.exe: $(FLEXPACK_OBJCS)
+	$(CXX) $(LFLAGS) -o $@ $+ -lz -mconsole
+
+fold.exe : tools/fold/Fold.o $(FOLD_OBJCS)
+	$(CXX) $(LFLAGS) -o $@ $+ -mconsole
+
+shapeconv.exe : $(SHAPECONV_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ -lz -mconsole
+
+pent_shp.exe : $(ASEPRITE_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ -lpng -mconsole
+
+PENTSHP_OBJCS = \
+	$(CONVERT) $(MISC) filesys/FileSystem.o graphics/Palette.o graphics/Shape.o graphics/ShapeFrame.o \
+	tools/gimp-plugin/pentpal.o \
+	tools/gimp-plugin/pentshp.o
+
+pentshp.exe : $(PENTSHP_OBJCS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(GTK_LIBS) $(GIMP_LIBS)
+
+data/data.h: data2c.exe $(DATA_FILES)
+	data2c.exe data/data.h $(DATA_FILES)
+
+filesys/data.o: data/data.h
+
+PENTAGRAM_OBJS = \
+	$(KERNEL) $(KERNEL2) $(USECODE) $(FILESYS) $(UNZIP) $(CONVERT) $(CONF)\
+	$(GRAPHICS) $(SCALERS) $(MISC) $(ARGS) $(GUMPS) $(WIDGETS) $(WORLD) $(ACTORS)\
+	$(COMPILE) $(DISASM) $(AUDIO) $(MIDI) $(TIMIDITY) $(GAMES) $(GAMES2) \
+	$(FONTS) filesys/OutputLogger.o kernel/GUIApp.o misc/version.o pentagram.o
+
+pentagramico.o: system/win32/pentagram.rc system/win32/pentagram.rc
+	windres --include-dir system/win32 system/win32/pentagram.rc pentagramico.o
+
+pentagram.exe: $(PENTAGRAM_OBJS) pentagramico.o
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+tools: amf2mod.exe data2c.exe disasm.exe flexpack.exe fold.exe shapeconv.exe pent_shp.exe
+
+gimp-plugin: pentshp.exe
+
+clean:
+	rm -f $(PENTAGRAM_OBJS) pentagram.o pentagramico.o data/data.h tools/data2c/data2c.o
+
+toolsclean:
+	rm -f tools/amf2mod/amf2mod.o tools/data2c/data2c.o tools/disasm/Disasm.o $(FLEXPACK_OBJCS) tools/fold/Fold.o $(FOLD_OBJCS) tools/shapeconv/ShapeConv.o tools/aseprite/pent_shp.o *.exe $(PENTSHP_OBJCS) tools/gimp-plugin/pentshp.exe
+
+install: pentagram.exe
+	mkdir -p $(U8PATH)
+	strip pentagram.exe -o $(U8PATH)/pentagram.exe
+
+toolsinstall: tools
+	mkdir -p $(U8PATH)/tools
+	strip amf2mod.exe -o $(U8PATH)/tools/amf2mod.exe
+	strip data2c.exe -o $(U8PATH)/tools/data2c.exe
+	strip disasm.exe -o $(U8PATH)/tools/disasm.exe
+	strip fold.exe -o $(U8PATH)/tools/fold.exe
+	strip flexpack.exe -o $(U8PATH)/tools/flexpack.exe
+	strip shapeconv.exe -o $(U8PATH)/tools/shapeconv.exe
+	strip pent_shp.exe -o $(U8PATH)/tools/pent_shp.exe
+
+dist:   install tools
+	cp AUTHORS $(U8PATH)/AUTHORS.txt
+	cp ChangeLog $(U8PATH)/ChangeLog.txt
+	cp FAQ $(U8PATH)/FAQ.txt
+	cp README $(U8PATH)/README.txt
+	cp COPYING $(U8PATH)/COPYING.txt
+	cp SDL/README-SDL.txt $(U8PATH)
+	cp SDL/lib/SDL.dll $(U8PATH)
+	cp SDL/lib/SDL_ttf.dll $(U8PATH)
+	u2d $(U8PATH)/*.txt
+	cp win32/Pentagram.iss $(U8PATH)
+
+toolsdist: toolsinstall
+	cp docs/maps.txt $(U8PATH)/tools
+	cp docs/musiceggs.txt $(U8PATH)/tools
+	cp docs/musicflx.txt $(U8PATH)/tools
+	cp docs/shapes.cmp.txt $(U8PATH)/tools
+	cp docs/snippets.txt $(U8PATH)/tools
+	cp docs/u8anim.txt $(U8PATH)/tools
+	cp docs/u8cheat.txt $(U8PATH)/tools
+	cp docs/u8fonts.txt $(U8PATH)/tools
+	cp docs/u8gfxfmt.txt $(U8PATH)/tools
+	cp docs/u8mapfmt.txt $(U8PATH)/tools
+	cp docs/u8npc.txt $(U8PATH)/tools
+	cp docs/u8savfmt.txt $(U8PATH)/tools
+	cp docs/u8sfxfmt.txt $(U8PATH)/tools
+	cp docs/u8skf.txt $(U8PATH)/tools
+	cp docs/u8typeflag.txt $(U8PATH)/tools
+	cp docs/u8usecode.txt $(U8PATH)/tools
+	cp docs/u8weapon.txt $(U8PATH)/tools
+	u2d $(U8PATH)/tools/*.txt
+
+allclean: clean toolsclean
+
+allinstall: install toolsinstall
+
+alldist: dist toolsdist

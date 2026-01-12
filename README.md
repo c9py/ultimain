@@ -18,6 +18,7 @@ This repository contains an integrated codebase for the ScummVM Ultima VIII (Pag
 
 - **Shared Library**: Compiles successfully with SDL3 3.5.0.
 - **Exult Engine**: ✅ **Successfully builds** with SDL3 3.5.0 (15.8 MB binary).
+- **Pentagram (Ultima 8)**: ✅ **Successfully builds** with SDL3 3.5.0 (3.0 MB binary).
 - **Unified Launcher**: Compiles and runs, but requires a display environment.
 - **Web Launcher**: Ready for deployment.
 - **NPC AI System**: ~7,400 lines of C++ code across 12 source files.
@@ -44,26 +45,29 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc) && sudo make install && sudo ldconfig
 ```
 
-### 2. Build the Exult Engine
+### 2. Build the Exult Engine (Ultima VII)
 
 ```bash
 cd engines/exult
-
-# Generate FLX data files (required for build)
-cd data
-../tools/build/expack -i flx.in
-cd si && ../../tools/build/expack -i flx.in && cd ..
-cd ..
-
-# Build Exult
 mkdir build && cd build
 cmake ..
 make -j$(nproc)
 
-# The exult binary will be in engines/exult/build/exult
+# Binary: engines/exult/build/exult
 ```
 
-### 3. Build the Unified Launcher
+### 3. Build the Pentagram Engine (Ultima VIII)
+
+```bash
+cd engines/ultima8
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+
+# Binary: engines/ultima8/build/pentagram
+```
+
+### 4. Build the Unified Launcher
 
 ```bash
 cd launcher
@@ -73,7 +77,7 @@ make
 ./ultima-launcher
 ```
 
-### 4. Generate Maps from OpenStreetMap
+### 5. Generate Maps from OpenStreetMap
 
 ```bash
 cd tools/osm2ultima
@@ -85,7 +89,7 @@ python osm2ultima.py --place "London, UK" --radius 500 --output london_map
 python osm2ultima.py --bbox "-0.1,51.5,0.0,51.6" --output custom_map
 ```
 
-### 5. Web Launcher
+### 6. Web Launcher
 
 Open `web/index.html` in a modern web browser. The web launcher uses CheerpX to run DOS-based Ultima games and provides a unified interface for all supported titles.
 
@@ -123,7 +127,7 @@ ultimain/
 ## Next Steps
 
 1. ~~**Complete Exult Build**: Obtain the necessary game data files to generate the remaining FLX data and complete the Exult engine build.~~ ✅ **DONE**
-2. **Integrate ScummVM Ultima8**: Extract the Ultima 8 engine from the ScummVM codebase and integrate it with the unified launcher.
+2. ~~**Integrate ScummVM Ultima8**: Extract the Ultima 8 engine from the ScummVM codebase and integrate it with the unified launcher.~~ ✅ **DONE** (using original Pentagram codebase)
 3. **CheerpX Integration**: Fully implement the CheerpX integration to run the C++ engines (Exult, ScummVM) in the browser via WebAssembly.
 4. **Data File Management**: Create a system for managing and locating the required game data files for all engines.
 5. **Expand OSM2Ultima**: Add support for more OSM features and improve the map generation quality.

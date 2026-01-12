@@ -1,0 +1,597 @@
+
+Savegame format:
+
+char id[17]    "PentagramSavegame"
+uint32 count   number of files
+[count files]
+
+each file:
+uint16 namelen         size of name of this file
+char name[namelen]     name of this file
+uint32 datalen         size of this file
+uint8 data[datalen]    data
+
+
+
+
+Savegame files:
+
+global version 2:
+
+savegame description stored in zip global comment field
+VERSION: Savegame version
+GAME: GameInfo
+INFO: savegame/avatar info (shouldn't contain anything that is actually used)
+KERNEL: Processes
+OBJECTS: Objects (includes currently loaded items, gumps)
+WORLD: World data (currently current map, ethereal items)
+MAPS: Maps ('nonfixed' data)
+CURRENTMAP: fast area
+UCSTRINGS: Strings
+UCGLOBALS: Globals
+UCLISTS: Lists
+APP: GUIApp/CoreApp data
+
+future plans: screenshots, pentagram version, current resolution?
+
+
+VERSION: (unversioned)
+uint32 version		global savegame version
+
+GAME: (v2)
+a single human-readable string:
+"%s,%s,%d,%s\n", type.shortname, language.name, version, md5
+
+INFO: (v2)
+uint16 year
+uint8 month, day [1-12, 1-31]
+uint8 hour, min, sec [0-23, 0-59, 0-60]
+uint32 save_count
+uint8 has_cheated (boolean)
+uint32 gametime [in seconds]
+uint8 name_length
+char avatar_name[name_length]
+uint16 map
+sint32 avatar_x,avatar_y,avatar_z
+sint16 str, int, dex
+uint16 hits, maxhits
+sint16 mana, maxmana
+uint16 armour, weight
+(uint32 shape,frame)[6] avatar_equipment (shield,arm,head,body,legs,weapon)
+
+APP: (v2)
+uint8 avatarInStasis (boolean)
+sint32 timeOffset (FIXME!)
+uint16 avatarMoverProcess (pid)
+sint16 palette_transform_matrix[12]
+uint16 inversion
+uint32 save_count
+uint8 has_cheated (boolean)
+
+KERNEL: (v2)
+uint32 framenum
+idMan pids
+uint32 processcount
+[processcount processes, from front to back of list]
+
+see below for individual process descriptions
+
+idMan: (v2)
+uint16 begin
+uint16 end
+uint16 max_end
+uint16 startcount
+uint16 usedcount
+uint16 unused[]
+uint16 terminator (0)
+
+OBJECTS: (v2)
+idMan objIDs
+idMan actorIDs
+[...objects...]
+uint16 terminator (0)
+
+see below for individual object descriptions
+
+
+WORLD: (v2)
+uint32 mapnum
+uint16 egghatcher
+uint32 etherealcount
+[etherealcount uint16s, bottom of the stack first]
+
+
+MAPS: (v2)
+uint32 mapcount
+[mapcount maps, stored in order from 0-<mapcount-1>]
+
+each map:
+uint32 itemcount
+[itemcount items]
+
+
+CURRENTMAP: (v2)
+uint32[MAP_NUM_CHUNKS][MAP_NUM_CHUNKS/32] fast
+
+
+UCSTRINGS: (v2)
+idMan stringIDs
+uint32 stringcount
+[stringcount strings]
+
+each string:
+uint16 id
+uint32 length
+char str[length]	the actual string (not NULL terminated)
+
+
+UCGLOBALS: (v2)
+uint32 size		size in bits
+uint8 data[bytes]	"bytes" = size/8, rounded up
+
+
+UCLISTS: (v2)
+idMan listIDs
+uint32 listcount
+[listcount lists]
+
+each list:
+uint16 id
+uint32 elementsize
+uint32 size
+uint8 data[size*elementsize]
+
+
+Individual Objects:
+--------------------
+
+each object: (v2)
+uint16 classlen			size of classname
+char classname[classlen]	class name of this Object
+[data for this object (see below)]
+
+
+
+Object: (v2)
+uint16 objid
+
+Item: (v2)
+<Object>
+uint16 extendedflags
+uint16 flags
+uint16 shape, frame
+uint16 x,y,z
+uint16 quality, npcnum, mapnum
+if (objid != 0xFFFF) uint16 gump, gravity_pid
+if (ETHEREAL && (CONTAINED || EQUIPPED)) uint16 parent
+
+Container: (v2)
+<Item>
+uint32 contentcount
+[contentcount Objects]
+
+
+Actor: (v2)
+<Container>
+sint16 str, dex, int
+uint16 hp
+sint16 mana
+uint16 alignment, enemyalignment
+uint16 lastanim, animframe, direction
+sint32 fallstart
+uint32 actorflags
+uint8 unk0C
+
+MainActor: (v2)
+<Actor>
+uint8 justTeleported (boolean)
+sint32 accumStr, accumDex, accumInt
+uint8 name_length
+char name[name_length]
+
+
+Egg: (v2)
+<Item>
+uint16 hatched (boolean)
+
+MonsterEgg: (v2)
+<Item>
+
+TeleportEgg: (v2)
+<Egg>
+
+GlobEgg: (v2)
+<Item>
+
+
+Gump: (v2)
+<Object>
+uint16 owner
+sint32 x
+sint32 y
+sint32 dims.x
+sint32 dims.y
+sint32 dims.w
+sint32 dims.h
+uint32 flags
+sint32 layer
+sint32 index
+uint16 shapeFlexId
+uint32 shapenum
+uint32 framenum
+uint16 focus_child.objid
+uint16 notifier
+uint32 process_result
+uint32 childcount
+[childcount gumps, in order]
+
+
+DesktopGump: (v2)
+(not saved)
+
+GameMapGump: (v2)
+(not saved)
+
+ConsoleGump: (v2)
+(not saved)
+
+
+ItemRelativeGump: (v2)
+<Gump>
+
+
+AskGump: (v2)
+uint16 version
+<ItemRelativeGump>
+UCList list
+
+
+BarkGump: (v2)
+<ItemRelativeGump>
+sint32 counter
+uint16 textwidget
+uint32 speechshapenum
+uint32 speechlength
+uint32 totaltextheight
+uint32 textsize
+char barked[textsize]
+
+
+ContainerGump: (v2)
+<ItemRelativeGump>
+sint32 itemarea.x
+sint32 itemarea.y
+sint32 itemarea.w
+sint32 itemarea.h
+
+
+PaperdollGump: (v2)
+<ContainerGump>
+uint16 statbuttongump
+
+
+MiniStatsGump: (v2)
+<Gump>
+
+
+MiniMapGump: (v2)
+<Gump>
+
+
+TextWidget: (v2)
+<Gump>
+uint8 gamefont (boolean)
+sint32 fontnum
+uint32 blendColour
+sint32 current_start
+sint32 current_end
+sint32 targetwidth
+sint32 targetheight
+sint16 textalign
+uint32 strlen
+char text[strlen]
+
+
+ButtonWidget: (v2)
+<Gump>
+uint16 shape_upFlexId
+uint32 shape_upNum
+uint32 framenum_up
+uint16 shape_downFlexId
+uint32 shape_downNum
+uint32 framenum_down
+uint16 textwidget
+uint32 mouseOverBlendCol
+uint8 mouseOver (boolean)
+
+
+SlidingWidget: (v2)
+<Gump>
+
+
+Individual Processes:
+-----------------------
+each process: (v2)
+uint16 classlen			size of classname
+char classname[classlen]	class name of this Process
+[saved data from this process]
+
+
+
+Process (v2)
+uint16 pid
+uint32 flags
+uint16 item_num
+uint16 type
+uint32 result
+uint32 waitingcount
+uint16 waiting[waitingcount]
+
+
+ActorAnimProcess: Process (v2)
+<Process>
+uint8 firstframe (boolean)
+uint8 animAborted (boolean)
+uint8 attackedSomething (boolean)
+uint8 dir [0-7]
+uint16 action
+uint16 steps
+uint16 repeatcounter
+uint16 currentstep
+uint8 hasTracker (boolean)
+if (hasTracker) AnimationTracker tracker
+
+ActorAnimProcess: Process (v3)
+<Process>
+uint8 firstframe (boolean)
+uint8 animAborted (boolean)
+uint8 attackedSomething (boolean)
+uint8 dir [0-8]
+uint16 action
+uint16 steps
+uint16 repeatcounter
+uint16 currentstep
+uint8 hasTracker (boolean)
+if (hasTracker) AnimationTracker tracker
+
+AnimationTracker (v2)
+uint32 startframe, endframe
+uint8 firstframe (boolean)
+uint32 currentframe
+uint16 actor
+uint8 dir
+uint32 shapenum
+uint32 action
+uint32 prevx, prevy, prevz
+uint32 x,y,z
+uint16 mode
+if (mode == TargetMode) uint32 target_dx, target_dy
+uint8 firststep (boolean)
+uint8 flipped (boolean)
+uint32 shapeframe
+uint8 done (boolean)
+uint8 blocked (boolean)
+uint8 supported (boolean)
+
+
+TargetedAnimProcess: Process (v2)
+<ActorAnimProcess>
+uint32 x,y,z
+
+
+CameraProcess: Process (v2)
+<Process>
+sint32 sx, sy, sz
+sint32 ex, ey, ez
+sint32 time, elapsed
+uint16 itemnum
+uint32 last_framenum
+static sint32 earthquake
+static sint32 eq_x, eq_y
+
+
+MusicProcess: Process (v2)
+<Process>
+sint32 wanted_track
+
+MusicProcess: Process (v3)
+<Process>
+sint32 wanted_track
+sint32 last_request
+sint32 queued_track
+
+
+AudioProcess: Process (v2)
+<Process>
+uint8 samplecount
+followed by, per sample:
+	 uint16 sfxnum
+	 uint16 priority
+	 uint16 objid
+	 uint16 loops
+	 uint32 pitch_shift
+	 uint16 volume
+	 if (sfxnum == -1) uint32 strlen; char text[strlen]
+
+
+UCProcess: Process (v2)
+<Process>
+uint16 bp
+uint16 classid
+uint16 ip
+uint32 temp32
+uint32 freecount
+(uint16,sint32) freeonterminate[freecount]
+UCStack stack
+
+UCStack: (v2)
+uint32 size
+uint32 SP
+uint8 data[size-SP]
+
+
+
+GumpNotifyProcess: Process (v2)
+<Process>
+uint16 gump
+
+
+ActorBarkNotifyProcess: GumpNotifyProcess (v2)
+<GumpNotifyProcess>
+
+DelayProcess: Process (v2)
+<Process>
+sint32 count
+
+
+GravityProcess: Process (v2)
+<Process>
+sint32 gravity
+sint32 xspeed, yspeed, zspeed
+
+AvatarGravityProcess: Process (v3)
+<GravityProcess>
+
+
+MissileProcess: Process (v2)
+<Process>
+sint32 from_x, from_y, from_z
+sint32 to_x, to_y, to_z
+sint32 speed, currentpos
+uint8 curve (boolean)
+
+
+SpriteProcess: Process (v2)
+<Process>
+sint32 frame
+sint32 first_frame, last_frame
+sint32 repeats
+sint32 delay, delay_counter
+
+
+TeleportToEggProcess: Process (v2)
+<Process>
+sint32 mapnum
+sint32 teleport_id
+
+
+PaletteFaderProcess: Process (v2)
+<Process>
+sint32 priority
+sint32 counter, max_counter
+sint16 old_matrix[12]
+sint16 new_matrix[12]
+
+
+AvatarMoverProcess: Process (v2)
+<Process>
+uint32 lastAttack
+uint32 idleTime
+uint16 lastHeadShakeAnim
+
+QuickAvatarMoverProcess: Process (v2)		terminates after loading
+<Process>
+sint32 dir
+
+
+ResurrectionProcess: Process (v2)
+<Process>
+
+
+DeleteItemProcess: Process (v2)
+<Process>
+
+
+ClearFeignDeathProcess: Process (v2)
+<Process>
+
+
+SplitItemProcess: Process (v2)
+<Process>
+uint16 target
+
+
+PathfinderProcess: Process (v2)
+<Process>
+uint16 targetitem
+uint16 targetx, targety, targetz
+uint8 hitmode (boolean)
+uint16 currentstep
+uint16 pathsize
+(uint16 action,uint16 direction) path[pathsize]
+
+
+Pathfinder (v2)
+uint16 actor_objid
+sint32 targetx, targety, targetz
+uint16 target_objid
+uint8 hitmode (boolean)
+uint32 nodecount
+PathNode nodelist[nodecount]
+uint32 activenodes
+uint32 visitedcount
+PathfindingState visited[visitedcount]
+
+PathNode (v2)
+uint32 parentid
+PathfindingState state
+uint32 depth
+uint32 cost,heuristicTotalCost
+uint32 stepfromparent
+
+PathfindingState (v2)
+sint32 x,y,z
+uint16 lastanim
+uint8 direction
+uint8 flipped, firststep, combat (boolean)
+
+LoiterProcess: Process (v2)
+<Process>
+
+LoiterProcess: Process (v3)
+<Process>
+sint32 count
+
+
+AvatarDeathProcess: Process (v2)
+<Process>
+
+
+CombatProcess: Process (v2)
+<Process>
+uint16 target
+uint16 fixedtarget
+uint8 combatmode (CombatMode)
+
+
+GrantPeaceProcess: Process (v2)
+<Process>
+uint8 havetarget (boolean)
+
+
+FireballProcess: Process (v2)
+<Process>
+sint32 xspeed, yspeed
+uint16 target
+uint16 tail[3]
+uint16 age
+
+
+HealProcess: Process (v2)
+<Process>
+uint16 healCounter
+uint16 hungerCounter
+
+
+InverterProcess: Process (v2)
+<Process>
+uint16 targetstate
+
+
+EggHatcherProcess: Process (v2)
+<Process>
+
+
+AmbushProcess: Process (v3)
+<Process>
+uint32 delaycount

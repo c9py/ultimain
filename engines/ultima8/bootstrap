@@ -1,0 +1,56 @@
+#!/bin/sh
+
+#set -e
+echo "Initial preparation...this can take awhile, so sit tight..."
+
+aclocalincludes=""
+if test -d "/usr/local/share/aclocal"; then
+  if test "/usr/local/share/aclocal" != `aclocal --print-ac-dir`; then
+    aclocalincludes="$aclocalincludes -I /usr/local/share/aclocal"
+  fi
+fi
+
+#if test -d "$HOME/share/aclocal"; then
+#  if test "$HOME/share/aclocal" != `aclocal --print-ac-dir`; then
+#    aclocalincludes="$aclocalincludes -I $HOME/share/aclocal"
+#  fi
+#fi
+
+aclocal $aclocalincludes || exit
+
+# Create config.h
+autoheader || exit
+
+# Create configure script
+autoconf || exit
+
+echo "Writing Makefiles:"
+
+# Note: do _NOT_ include '.' here
+MODULES="tools tools/disasm tools/compile tools/shapeconv tools/fold tools/flexpack tools/aseprite_plugin tools/gimp-plugin tools/data2c misc convert convert/u8 convert/crusader filesys filesys/zip kernel games graphics graphics/fonts graphics/scalers audio audio/midi audio/midi/timidity world world/actors usecode gumps gumps/widgets conf system system/macosx"
+
+for subdir in $MODULES; do
+  rm -f $subdir/Makefile
+  echo "# This file is generated automatically by bootstrap. Do not edit!" > $subdir/Makefile
+  echo "" >> $subdir/Makefile
+  echo "" >> $subdir/Makefile
+  echo "LPATH := $subdir" >> $subdir/Makefile
+  echo "" >> $subdir/Makefile
+  cat >> $subdir/Makefile <<'EOF'
+all: all-$(LPATH) ;
+clean: clean-$(LPATH) ;
+
+# Catch all rule - call Makefile in parent dir
+%::
+	cd .. && $(MAKE) $@
+
+.PHONY: all clean
+
+EOF
+
+  echo "  $subdir/Makefile"
+
+done
+
+echo ""
+echo "You are now ready to run ./configure ..."

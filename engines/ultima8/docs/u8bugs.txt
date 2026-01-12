@@ -1,0 +1,217 @@
+USECODE BUGS:
+--------------
+
+Ancient Ones, second speech:
+
+class 048B (ANCTONES) uses a mutex flag 'startedConvo' [0000 01] to
+(try to) make sure that only one conversation with the Ancient Ones is started.
+This is necessary because there are two eggs which trigger this conversation
+to cover the entire area.
+
+However, for the second speech, this flag is only set _after_ waiting for a
+Camera::scrollTo to finish, which gives a second process enough time to
+pass the !startedConvo check.
+
+Note: this is fixed in the German and French CD versions of U8.
+
+FIX:
+Set startedConvo flag to 1 at offset 0949 instead of at 09A5.
+
+WORKAROUND:
+Serious hack in UCMachine which sets startedConvo to true as soon as
+setAvatarInStasis is called. This makes sure the flag is set at the right time.
+
+
+
+Ethereal spell Monster Summoning:
+
+class 0585 (ETHRSPEL) doesn't set FAST_ONLY on the summoned monster. This
+means that Item::callUsecodeEvent erroneously thinks the monster is a full
+NPC with its own usecode and calls usecode function 1024+ObjId instead of
+the usecode belonging to the monster's shape/type.
+
+Confirmed with the original: summoning a monster and then clicking on it
+does not produce the monster's name. Setting the FAST_ONLY flag (0x0080)
+in the savegame manually makes the monster's name appear.
+
+There are more cases of usecode calling Npc::create() without setting
+the FAST_ONLY flag. Need to investigate this further.
+
+FIX:
+Unknown
+
+WORKAROUND:
+Added a new extended item flag EXT_PERMANENT_NPC which is set on all
+NPCs with a fixed ObjId (i.e., those loaded in World::loadItemCachNPCData).
+This is used to determine if an item's usecode class is (1024+ObjId).
+To improve compatibility with the original, callUsecodeEvent doesn't call any
+usecode when EXT_PERMANENT_NPC and FLG_FAST_ONLY are both unset.
+
+
+
+Mythran conversation global size:
+
+The global 0x0129 ('paganLore') has a size of 1 bit. At MYTHRAN::5B3B it is
+set to 0x2, which doesn't fit.
+
+FIX:
+unknown
+
+WORKAROUND:
+unknown
+
+
+
+Tenebrae gate guard initial conversation:
+
+When you approach the Tenebrae gate guard for the first time while
+he is in the middle of a turn, the turn will continue while the
+guard is pathfinding towards you. The reason is that the 'Halt, stranger'
+process only kills the patrol process, and leaves its child turn process.
+
+FIX:
+Kill the turn process as well when killing the patrol process?
+
+WORKAROUND:
+unknown
+
+
+
+[German 2.12] Wrong sorcery candle placement not properly detected:
+
+Pentagram can crash when the sorcery candles are places incorrectly.
+This is a bug in the German 2.12 usecode, where it uses the strings
+" Irgendetwas stimmt nicht!" and " Irgendetwas stimmt nicht."
+(note the punctuation).
+
+FIX:
+Patch usecode to make the strings equal
+
+WORKAROUND:
+Serious hack in UCMachine changes the '!' to a '.' (only in the string
+" Irgendetwas stimmt nicht!" in usecode class 0x7C).
+
+
+
+TYPOS:
+-------
+
+class 0181 (STRATOS)
+"It's location is known only to Honorable Stellos." (s/it's/its/)
+(duplicated in speech pack)
+
+class 02C3 (PESANT1)
+"It is a quick way to loose your money and your life" (s/loose/lose/)
+
+class 0401 (AVATAR)
+"Restortation" (Restoration, 2x)
+"Etherial Travel" (Ethereal Travel, 2x)
+
+class 041D (BANE)
+"adress" (address)
+
+class 0420 (BEREN)
+"adress" (address, 4x)
+
+class 056F (VARDION2)
+"adress" (address)
+
+class 0572 (STEVBOOK)
+"it carried in it's arms", "driven to it's knees", "it begged for it's life"
+(s/it's/its/, three times)
+
+class 0574 (GUARDMAN)
+"Nice taling with you. " (talking)
+
+class 0575 (SORCERER)
+"...caught within it's range. " (s/it's/its/)
+
+class 0593 (BOOK1)
+"Perhaps it's most important purpose is it's capability"
+(s/it's/its/, two times)
+"It's path is broad and its lure is sweet." (s/it's/its/)
+
+
+
+MAP BUGS:
+----------
+
+Map 62: (Ancient Necromancers)
+
+There are many missing ground/wall tiles in the region from
+around (16555,6075,48) to the lava in the west, and around (19999,6758,48)
+
+FIX:
+Add the tiles listed below to the map in fixed.dat after checking
+that this doesn't leave any holes.
+
+WORKAROUND:
+Adding tiles to the map manually in Map::loadFixed.
+These seems to cover up the most easily reachable holes:
+Ground at: (16255,6143,48), (16639,6143,48), (16511,6143,48),
+           (15999,6015,48), (15871,6015,48), (15743,6015,48), (15615,6015,48),
+           (15999,6143,48), (15871,6143,48), (15743,6143,48), (15615,6143,48),
+           (20095,6911,48), (20223,6911,48), (20095,6783,48), (20223,6783,48),
+           (19839,6655,48), (19967,6655,48), (19839,6527,48), (19967,6527,48),
+           (20095,6527,48), (19967,6399,48), (19839,6399,48), (19711,6399,48)
+Walls at: (15487, 6271, 48), (15359, 6271, 48)
+Lava at: (14975, 6399, 0), (14975, 6015, 0),(15103, 6015, 0) 
+(Ground: shape 301/1, Wall: shape 497/0, Lava: shape 409/32)
+
+
+Map 49: (Upper Catacombs 2)
+
+Three water tiles have z == 96 instead of 40 while visually being in the right
+location.
+(23007,21343,96), (23135,21471,96), (23135,21343,96)
+
+WORKAROUND:
+We manually shift them to z == 40 in Map::loadFixed while keeping them in
+the same on-screen position.
+
+
+Map 25: (Lava river, after Carthax lake)
+
+Missing ground/wall tiles around the entire southern wall, e.g.,
+(21920,29736,8).
+
+WORKAROUND:
+None yet.
+
+
+Map 21: (Stone Cove)
+
+Two ground and two wall tiles have z == 8 instead of z == 16.
+Ground: shape 301 at (6783,15615,8), (6783,15743,8)
+Wall: shapes 31, 32 at resp. (6755,15615,8), (6755,15743,8)
+
+WORKAROUND:
+We manually shift them to z == 16 in Map::loadFixed while keeping them in
+the same on-screen position.
+
+
+Map 5: (East Road)
+
+Misplaced ground tiles at z == 0 instead of z == 48:
+Shape 71/8 at (9151,24127,0), (9279,23999,0), (9535,23615,0), (9151,23487,0),
+(9919,23487,0), (10303,23487,0), (10559,23487,0)
+
+
+WORKAROUND:
+We manually shift them to z == 48 in Map::loadFixed while keeping them in
+the same on-screen position.
+
+
+MISC BUGS:
+-----------
+
+Items 459 to 464 are "moss curtains" used extensively in the catacombs.
+Some, but not all, include the SI_SOLID flag.  This makes some bodies in
+some alcoves inaccessible.  Described in Pentagram bug tracker ID 1640075.
+
+FIX:
+None yet - would require patching the data files directly somehow, similar
+to what is done for map bugs.
+
+WORKAROUND:
+Clear the SI_SOLID flag for shapes 459 to 464 in TypeFlags::load (U8 only)

@@ -1,0 +1,71 @@
+The earlier releases of Ultima 8 had a file u8shapes.cmp which had to
+be uncompressed into u8shapes.flx.
+
+Format of u8shapes.cmp:
+------------------------
+
+u8shapes.cmp is a standard U8 flex file.
+Each object is a shape, formatted as follows:
+
+Header:
+uint8 special[5]     5 'special' colour indices. See below.
+uint32 unk1
+uint16 numframes     the number of frames in this shape
+
+numframes times 6 bytes:
+uint32 frameoffset   offset of the (compressed) frame data relative to 'unk1'
+uint16 framesize     size of the (compressed) frame data
+
+This is followed by the actual frame data.
+
+The frames are stored using a form of RLE. Each frame can also 'copy'
+sequences of pixels from the previous frame in this shape.
+(See below for details.)
+
+Each frame has the following format:
+
+Frame header:
+uint16 compression   (boolean)
+uint16 xsize         dimensions of this frame
+uint16 ysize
+sint16 xoffset       (x,y) of the origin of this frame
+sint16 yoffset
+
+The image data is stored line-by-line in ysize lines.
+Each line contains alternating gaps and runs.
+A gap is a uint8 indicating a number of transparent pixels. (Can be zero.)
+A run is a number of pixels. See below for the format of a run.
+A line ends when the total size of the gaps and runs reaches xsize. If the
+next gap to be read makes the line longer than xsize, then this gap should
+not be read and the line is ended.
+
+The format of a run depends on if the 'compression' boolean is 1 (true) or
+0 (false).
+If false, the first byte of a run is the length in bytes of this run.
+It is followed by this number of bytes. Each byte is a pixel, unless the
+current frame is not the first frame, and the byte is one of the 'special' 
+colour indices from the shape header or 0xFF.
+
+The special bytes mean, in order, "copy 2 pixels from previous frame",
+"copy 3 pixels from previous frame", ..., "copy 7 pixels from previous frame".
+
+A 0xFF byte is also used to copy pixels from the previous frame. It is
+followed by a uint8 that indicates the number of pixels to copy.
+
+Pixels are copied from the current position in the previous frame, if
+the origins of the two frames overlap.
+This means that, if (x,y) are the current coordinates in the current frame
+relative to the top-left corner, then pixels are copied from the previous
+frame at (x - xoffset + previous_xoffset, y - yoffset + previous_yoffset).
+
+
+
+If 'compression' is true, the least significant bit of the first byte
+determines the encoding of this run: if 0, the following bytes are to be
+copied literally; if 1, the following byte should be repeated.
+The remaining 7 bits give the number of bytes to copy or the number of 
+times to repeat.
+
+If copying a series of bytes, interpret the 5 special colour values and 0xFF
+as in the previous case.
+No special interpreting takes places when repeating a single byte.
