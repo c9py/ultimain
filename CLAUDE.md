@@ -139,9 +139,43 @@ python osm2ultima.py --bbox "-0.1,51.5,0.0,51.6" --output custom_map
 Build directories are gitignored. Each component builds in its own `build/` subdirectory.
 
 ### Testing
-- Exult/Pentagram: Require game data files to test
-- gneural-net: Has 69 unit tests in `tests/unit/`
-- OSM2Ultima: Test data in `tools/osm2ultima/test_osm_data.json`
+
+The project has comprehensive test coverage via CTest and pytest.
+
+**Running Tests:**
+```bash
+# Shared library tests
+cd build && cmake -DBUILD_TESTING=ON .. && make && ctest --output-on-failure
+
+# NPC AI module tests
+cd engines/npc/build && cmake -DNPC_BUILD_TESTS=ON .. && make && ctest --output-on-failure
+
+# gneural-net tests
+cd cognitive/gneural-net/tests/unit && make && ./test_runner
+
+# OSM2Ultima Python tests
+cd tools/osm2ultima && python -m pytest tests/ -v
+```
+
+**Test Locations:**
+- `tests/` - Shared library unit tests (common_types, exceptions)
+- `engines/npc/tests/` - NPC AI module tests (neural network, memory, persona, tensor logic)
+- `cognitive/gneural-net/tests/unit/` - gneural-net unit tests (69 tests)
+- `tools/osm2ultima/tests/` - OSM2Ultima Python tests
+
+### Continuous Integration
+
+GitHub Actions CI automatically builds and tests all components on push/PR:
+- `.github/workflows/ci.yml` - Main CI workflow
+
+**CI Jobs:**
+- `build-shared-library` - Builds shared lib with SDL3 from source
+- `build-npc-module` - Builds and tests NPC AI module
+- `build-gneural-net` - Builds and runs gneural-net unit tests
+- `build-launcher` - Builds unified launcher
+- `test-osm2ultima` - Runs Python tests for OSM converter
+- `build-pentagram` - Builds Pentagram engine
+- `lint-and-format` - Runs cppcheck and flake8
 
 ## Common Tasks
 

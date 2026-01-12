@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(BUILD_ULTIMA8 "Build Ultima VIII (Pagan) engine" ON)
 option(BUILD_EXULT "Build Exult (Ultima VII) engine" ON)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+option(BUILD_TESTING "Build unit tests" OFF)
 
 # Find SDL3 using pkg-config
 find_package(PkgConfig REQUIRED)
@@ -107,6 +108,12 @@ install(DIRECTORY shared/
     FILES_MATCHING PATTERN "*.h"
 )
 
+# Testing
+if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
 # Summary
 message(STATUS "")
 message(STATUS "Ultima Engines Integration Configuration:")
@@ -114,4 +121,5 @@ message(STATUS "  Ultima VIII (Pagan): ${BUILD_ULTIMA8}")
 message(STATUS "  Exult (Ultima VII):  ${BUILD_EXULT}")
 message(STATUS "  SDL3 Version:        ${SDL3_VERSION}")
 message(STATUS "  Shared library:      ultima_shared")
+message(STATUS "  Build Tests:         ${BUILD_TESTING}")
 message(STATUS "")
