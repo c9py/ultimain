@@ -18,3 +18,10 @@ research/ultima_collection/
 # OS
 .DS_Store
 Thumbs.db
+
+# Exult build directory
+engines/exult/build/
+
+# Downloaded archives
+*.rar
+wget-log
