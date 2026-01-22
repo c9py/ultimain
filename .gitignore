@@ -33,8 +33,9 @@ engines/ultima8/build/
 wget-log
 
 # Web launcher disk images (generated from rootfs)
+# Keep compressed disk image, exclude uncompressed
 web/assets/*.ext2
-web/assets/*.ext2.gz
+!web/assets/*.ext2.gz
 web/assets/rootfs/lib/
 web/assets/rootfs/lib64/
 web/assets/rootfs/usr/bin/exult

@@ -113,10 +113,30 @@ Open `web/index.html` in a modern web browser. The web launcher uses CheerpX to 
 ```
 web/
 ├── index.html              # Main launcher interface
-└── js/
-    ├── cheerpx-engine.js   # CheerpX integration module
-    └── data-manager.js     # IndexedDB game data manager
+├── js/
+│   ├── cheerpx-engine.js   # CheerpX integration module
+│   └── data-manager.js     # IndexedDB game data manager
+└── assets/
+    ├── build-diskimage.sh      # Script to build Linux disk image
+    ├── ultima-engines.ext2.gz  # Compressed Linux filesystem (11MB)
+    └── rootfs/                 # Template filesystem structure
+        └── usr/bin/
+            ├── run-exult       # Exult launcher script
+            └── run-pentagram   # Pentagram launcher script
 ```
+
+**Building the Disk Image:**
+
+The Linux disk image contains the Exult and Pentagram binaries along with SDL3 and required system libraries. To rebuild the disk image after updating the engines:
+
+```bash
+cd web/assets
+./build-diskimage.sh
+```
+
+This creates:
+- `ultima-engines.ext2` - 64MB ext2 filesystem
+- `ultima-engines.ext2.gz` - 11MB compressed version (used by web launcher)
 
 ## Reference Data
 
@@ -155,7 +175,7 @@ ultimain/
 2. ~~**Integrate ScummVM Ultima8**: Extract the Ultima 8 engine from the ScummVM codebase and integrate it with the unified launcher.~~ ✅ **DONE** (using original Pentagram codebase)
 3. ~~**CheerpX Integration**: Fully implement the CheerpX integration to run the C++ engines (Exult, ScummVM) in the browser via WebAssembly.~~ ✅ **DONE** (web launcher with CheerpX engine module)
 4. ~~**Data File Management**: Create a system for managing and locating the required game data files for all engines.~~ ✅ **DONE** (IndexedDB-based data manager)
-5. **Create Linux Disk Images**: Build ext2 disk images containing Exult/Pentagram binaries and SDL3 runtime for CheerpX Linux.
+5. ~~**Create Linux Disk Images**: Build ext2 disk images containing Exult/Pentagram binaries and SDL3 runtime for CheerpX Linux.~~ ✅ **DONE** (64MB ext2 image, 11MB compressed)
 6. **Expand OSM2Ultima**: Add support for more OSM features and improve the map generation quality.
 7. **NPC AI Integration**: Complete integration of cognitive NPC system with game engines.
 
