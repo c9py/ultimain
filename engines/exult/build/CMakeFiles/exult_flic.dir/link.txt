@@ -1,2 +1,0 @@
-/usr/bin/ar qc libexult_flic.a CMakeFiles/exult_flic.dir/flic/playfli.cc.o
-/usr/bin/ranlib libexult_flic.a
