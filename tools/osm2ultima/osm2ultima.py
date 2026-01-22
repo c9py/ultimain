@@ -51,6 +51,32 @@ class UltimaObject:
     lift: int = 0  # height/z level
     quality: int = 0
     flags: int = 0
+
+
+@dataclass
+class NPCProfile:
+    """NPC profile for AI system integration."""
+    id: str
+    name: str
+    profession: str
+    building_type: str
+    location: Tuple[int, int]  # (tile_x, tile_y)
+    shape: int
+
+    # Big Five personality traits (0.0 - 1.0)
+    openness: float = 0.5
+    conscientiousness: float = 0.5
+    extraversion: float = 0.5
+    agreeableness: float = 0.5
+    neuroticism: float = 0.5
+
+    # Dialogue and behavior
+    dialogues: List[str] = field(default_factory=list)
+    schedule: str = "daytime"
+    knowledge_domains: List[str] = field(default_factory=list)
+
+    # Relationships (npc_id -> initial relationship value)
+    relationships: Dict[str, float] = field(default_factory=dict)
     
     def to_ireg_bytes(self) -> bytes:
         """Convert to IREG format bytes."""
@@ -254,6 +280,10 @@ class MapGenerator:
 
         # Track bridges for proper rendering
         self.bridges: List[Dict] = []
+
+        # Track NPCs for AI profile export
+        self.npc_profiles: List[NPCProfile] = []
+        self.npc_counter = 0
 
         # Statistics
         self.stats = {
@@ -689,6 +719,7 @@ class MapGenerator:
 
         num_npcs = random.randint(1, max_npcs)
         placed_positions = set()
+        building_npcs = []  # Track NPCs in this building for relationships
 
         for _ in range(num_npcs):
             npc_type = random.choice(npc_types)
@@ -704,17 +735,116 @@ class MapGenerator:
                 y = random.randint(min_y, max_y)
 
                 if (x, y) not in placed_positions:
+                    shape = random.choice(npc_data["shapes"])
                     npc = UltimaObject(
-                        shape=random.choice(npc_data["shapes"]),
+                        shape=shape,
                         x=x, y=y, lift=0,
                         quality=hash(npc_type) % 256  # Store NPC type info
                     )
                     self.ultima_map.add_object(npc)
                     placed_positions.add((x, y))
                     self.stats["npcs_placed"] += 1
+
+                    # Create NPC profile for AI integration
+                    profile = self._create_npc_profile(
+                        npc_type, building_type, x, y, shape, npc_data
+                    )
+                    self.npc_profiles.append(profile)
+                    building_npcs.append(profile.id)
                     break
 
                 attempts += 1
+
+        # Create relationships between NPCs in the same building
+        self._create_building_relationships(building_npcs)
+
+    def _create_npc_profile(self, npc_type: str, building_type: str,
+                            x: int, y: int, shape: int, npc_data: Dict) -> NPCProfile:
+        """Create an NPC profile with personality traits based on profession."""
+        self.npc_counter += 1
+        npc_id = f"npc_{self.npc_counter:04d}"
+
+        # Generate name (simple procedural names)
+        first_names_male = ["Gareth", "Aldric", "Cedric", "Edmund", "Roland",
+                           "Geoffrey", "Wilfred", "Oswald", "Reginald", "Bernard"]
+        first_names_female = ["Elara", "Beatrice", "Gwyneth", "Isolde", "Rowena",
+                             "Millicent", "Cordelia", "Elowen", "Rosalind", "Lysandra"]
+
+        is_female = npc_type in ["townswoman", "noble_female"]
+        names = first_names_female if is_female else first_names_male
+        name = random.choice(names)
+
+        # Personality traits based on profession
+        personality_profiles = {
+            "townsman": {"o": 0.4, "c": 0.5, "e": 0.5, "a": 0.6, "n": 0.4},
+            "townswoman": {"o": 0.5, "c": 0.6, "e": 0.5, "a": 0.7, "n": 0.4},
+            "child": {"o": 0.8, "c": 0.3, "e": 0.8, "a": 0.6, "n": 0.5},
+            "guard": {"o": 0.3, "c": 0.8, "e": 0.4, "a": 0.4, "n": 0.3},
+            "shopkeeper": {"o": 0.5, "c": 0.7, "e": 0.7, "a": 0.6, "n": 0.3},
+            "blacksmith": {"o": 0.4, "c": 0.8, "e": 0.4, "a": 0.5, "n": 0.3},
+            "farmer": {"o": 0.3, "c": 0.7, "e": 0.4, "a": 0.6, "n": 0.4},
+            "mage": {"o": 0.9, "c": 0.6, "e": 0.3, "a": 0.4, "n": 0.5},
+            "sage": {"o": 0.8, "c": 0.7, "e": 0.3, "a": 0.6, "n": 0.3},
+            "noble_male": {"o": 0.5, "c": 0.6, "e": 0.6, "a": 0.3, "n": 0.4},
+            "noble_female": {"o": 0.6, "c": 0.6, "e": 0.5, "a": 0.4, "n": 0.5},
+            "entertainer": {"o": 0.8, "c": 0.4, "e": 0.9, "a": 0.7, "n": 0.5},
+            "beggar": {"o": 0.4, "c": 0.3, "e": 0.4, "a": 0.5, "n": 0.7},
+            "fighter": {"o": 0.4, "c": 0.6, "e": 0.5, "a": 0.3, "n": 0.4},
+            "ranger": {"o": 0.6, "c": 0.6, "e": 0.3, "a": 0.5, "n": 0.3},
+        }
+
+        base_traits = personality_profiles.get(npc_type, {"o": 0.5, "c": 0.5, "e": 0.5, "a": 0.5, "n": 0.5})
+
+        # Add some random variation (+/- 0.15)
+        def vary(base: float) -> float:
+            return max(0.0, min(1.0, base + random.uniform(-0.15, 0.15)))
+
+        # Knowledge domains based on profession
+        knowledge_mapping = {
+            "townsman": ["local_gossip", "town_history"],
+            "townswoman": ["local_gossip", "town_history", "cooking"],
+            "child": ["games", "local_secrets"],
+            "guard": ["combat", "law", "town_security"],
+            "shopkeeper": ["commerce", "goods", "local_economy"],
+            "blacksmith": ["smithing", "weapons", "armor", "metallurgy"],
+            "farmer": ["agriculture", "weather", "animals"],
+            "mage": ["magic", "arcana", "history", "alchemy"],
+            "sage": ["history", "lore", "religion", "medicine"],
+            "noble_male": ["politics", "heraldry", "etiquette"],
+            "noble_female": ["politics", "heraldry", "etiquette", "fashion"],
+            "entertainer": ["music", "stories", "gossip", "performance"],
+            "fighter": ["combat", "weapons", "tactics"],
+            "ranger": ["nature", "tracking", "survival", "beasts"],
+        }
+
+        return NPCProfile(
+            id=npc_id,
+            name=name,
+            profession=npc_type,
+            building_type=building_type,
+            location=(x, y),
+            shape=shape,
+            openness=vary(base_traits["o"]),
+            conscientiousness=vary(base_traits["c"]),
+            extraversion=vary(base_traits["e"]),
+            agreeableness=vary(base_traits["a"]),
+            neuroticism=vary(base_traits["n"]),
+            dialogues=npc_data.get("dialogues", []),
+            schedule=npc_data.get("schedule", "daytime"),
+            knowledge_domains=knowledge_mapping.get(npc_type, ["general"]),
+        )
+
+    def _create_building_relationships(self, npc_ids: List[str]):
+        """Create positive relationships between NPCs in the same building."""
+        if len(npc_ids) < 2:
+            return
+
+        for profile in self.npc_profiles:
+            if profile.id in npc_ids:
+                for other_id in npc_ids:
+                    if other_id != profile.id:
+                        # Positive relationship for building-mates (0.3-0.7)
+                        profile.relationships[other_id] = random.uniform(0.3, 0.7)
     
     def _process_area(self, tags: dict, coords: List[Tuple[float, float]], is_polygon: bool):
         """Process a landuse or natural area."""
@@ -863,9 +993,10 @@ class MapGenerator:
 
 class MapExporter:
     """Exports Ultima map to various formats."""
-    
-    def __init__(self, ultima_map: UltimaMap):
+
+    def __init__(self, ultima_map: UltimaMap, npc_profiles: List[NPCProfile] = None):
         self.ultima_map = ultima_map
+        self.npc_profiles = npc_profiles or []
     
     def export_geojson(self, output_path: str):
         """Export map as GeoJSON for visualization."""
@@ -1021,6 +1152,58 @@ class MapExporter:
 
         print(f"Exported summary to {output_path}")
 
+    def export_npc_profiles(self, output_path: str):
+        """Export NPC profiles for AI system integration.
+
+        Generates JSON compatible with the Ultima NPC AI system's NPCProfile format.
+        """
+        if not self.npc_profiles:
+            print("No NPCs to export")
+            return
+
+        profiles_data = {
+            "version": "1.0",
+            "generator": "osm2ultima",
+            "npc_count": len(self.npc_profiles),
+            "npcs": []
+        }
+
+        for profile in self.npc_profiles:
+            npc_data = {
+                "id": profile.id,
+                "name": profile.name,
+                "profession": profile.profession,
+                "building_type": profile.building_type,
+                "location": {
+                    "tile_x": profile.location[0],
+                    "tile_y": profile.location[1]
+                },
+                "shape": profile.shape,
+                "personality": {
+                    "openness": round(profile.openness, 3),
+                    "conscientiousness": round(profile.conscientiousness, 3),
+                    "extraversion": round(profile.extraversion, 3),
+                    "agreeableness": round(profile.agreeableness, 3),
+                    "neuroticism": round(profile.neuroticism, 3)
+                },
+                "dialogues": profile.dialogues,
+                "schedule": profile.schedule,
+                "knowledge_domains": profile.knowledge_domains,
+                "relationships": {
+                    k: round(v, 3) for k, v in profile.relationships.items()
+                }
+            }
+            profiles_data["npcs"].append(npc_data)
+
+        # Generate relationship graph summary
+        total_relationships = sum(len(p.relationships) for p in self.npc_profiles)
+        profiles_data["relationship_count"] = total_relationships
+
+        with open(output_path, "w") as f:
+            json.dump(profiles_data, f, indent=2)
+
+        print(f"Exported {len(self.npc_profiles)} NPC profiles to {output_path}")
+
 
 # =============================================================================
 # MAIN
@@ -1081,7 +1264,7 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
     
     # Export
-    exporter = MapExporter(generator.ultima_map)
+    exporter = MapExporter(generator.ultima_map, generator.npc_profiles)
 
     if args.format in ["all", "geojson"]:
         exporter.export_geojson(os.path.join(output_dir, "map.geojson"))
@@ -1091,6 +1274,9 @@ def main():
 
     if args.format in ["all", "text"]:
         exporter.export_terrain_map(os.path.join(output_dir, "terrain.txt"))
+
+    # Export NPC profiles for AI system
+    exporter.export_npc_profiles(os.path.join(output_dir, "npc_profiles.json"))
 
     exporter.export_summary(
         os.path.join(output_dir, "summary.json"),

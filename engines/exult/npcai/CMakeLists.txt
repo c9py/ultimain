@@ -16,6 +16,8 @@ set(NPCAI_HEADERS
     ExultNPCBridge.h
     DialogueHooks.h
     ScheduleIntegration.h
+    NPCProfileLoader.h
+    ExultAIIntegration.h
 )
 
 # Create the library
