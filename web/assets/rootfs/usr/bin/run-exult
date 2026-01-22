@@ -1,0 +1,17 @@
+#!/bin/sh
+# Exult (Ultima VII) launcher script for CheerpX
+
+export HOME=/root
+export PATH=/usr/bin:/bin
+export LD_LIBRARY_PATH=/lib:/usr/lib
+export SDL_VIDEODRIVER=x11
+
+# Set game data path if provided
+if [ -n "$EXULT_GAME_PATH" ]; then
+    cd "$EXULT_GAME_PATH"
+else
+    cd /game
+fi
+
+# Run Exult with any passed arguments
+exec /usr/bin/exult "$@"

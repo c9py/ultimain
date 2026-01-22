@@ -14,6 +14,25 @@ const CheerpXEngine = (function() {
         freedos: 'assets/freedos.img'
     };
 
+    // Linux engine disk image
+    const LINUX_ASSETS = {
+        diskImage: 'assets/ultima-engines.ext2',
+        engines: {
+            exult: {
+                name: 'Exult',
+                binary: '/usr/bin/exult',
+                launcher: '/usr/bin/run-exult',
+                game: 'Ultima VII'
+            },
+            pentagram: {
+                name: 'Pentagram',
+                binary: '/usr/bin/pentagram',
+                launcher: '/usr/bin/run-pentagram',
+                game: 'Ultima VIII'
+            }
+        }
+    };
+
     // State
     let cxInstance = null;
     let isLoaded = false;
@@ -108,13 +127,38 @@ const CheerpXEngine = (function() {
         // Create overlay filesystem with game data
         const overlay = await CheerpX.OverlayDevice.create(
             await CheerpX.IDBDevice.create('game-data'),
-            await CheerpX.HttpBytesDevice.create('base-image.ext2')
+            await CheerpX.HttpBytesDevice.create(LINUX_ASSETS.diskImage)
         );
 
         // Mount the overlay
         await cxInstance.mount(mountPoint, overlay);
 
         console.log(`[CheerpX] Game data mounted at ${mountPoint}`);
+    }
+
+    /**
+     * Get engine configuration
+     * @param {string} engineId - Engine identifier ('exult' or 'pentagram')
+     * @returns {Object} Engine configuration
+     */
+    function getEngineConfig(engineId) {
+        return LINUX_ASSETS.engines[engineId] || null;
+    }
+
+    /**
+     * Launch a game engine
+     * @param {string} engineId - Engine identifier ('exult' or 'pentagram')
+     * @param {string[]} args - Additional command line arguments
+     * @param {Object} env - Additional environment variables
+     */
+    async function launchEngine(engineId, args = [], env = {}) {
+        const engine = getEngineConfig(engineId);
+        if (!engine) {
+            throw new Error(`Unknown engine: ${engineId}`);
+        }
+
+        console.log(`[CheerpX] Launching ${engine.name} (${engine.game})`);
+        return run(engine.launcher, args, env);
     }
 
     /**
@@ -241,7 +285,12 @@ const CheerpXEngine = (function() {
         destroy,
         isSupported,
         getInstance: () => cxInstance,
-        isReady: () => cxInstance !== null
+        isReady: () => cxInstance !== null,
+        // New engine-specific functions
+        getEngineConfig,
+        launchEngine,
+        getAvailableEngines: () => Object.keys(LINUX_ASSETS.engines),
+        getDiskImagePath: () => LINUX_ASSETS.diskImage
     };
 })();
 
