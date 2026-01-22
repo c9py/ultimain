@@ -19,8 +19,9 @@ research/ultima_collection/
 .DS_Store
 Thumbs.db
 
-# Exult build directory
+# Engine build directories
 engines/exult/build/
+engines/ultima8/build/
 
 # Downloaded archives
 *.rar
