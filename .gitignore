@@ -7,6 +7,11 @@
 build/
 *.internal
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
 # Large downloaded files
 research/ultima_collection.iso
 research/ultima_collection/
@@ -19,9 +24,18 @@ research/ultima_collection/
 .DS_Store
 Thumbs.db
 
-# Exult build directory
+# Engine build directories
 engines/exult/build/
+engines/ultima8/build/
 
 # Downloaded archives
 *.rar
 wget-log
+
+# Web launcher disk images (generated from rootfs)
+web/assets/*.ext2
+web/assets/*.ext2.gz
+web/assets/rootfs/lib/
+web/assets/rootfs/lib64/
+web/assets/rootfs/usr/bin/exult
+web/assets/rootfs/usr/bin/pentagram

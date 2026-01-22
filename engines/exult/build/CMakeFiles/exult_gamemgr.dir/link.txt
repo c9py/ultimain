@@ -1,2 +1,0 @@
-/usr/bin/ar qc libexult_gamemgr.a CMakeFiles/exult_gamemgr.dir/gamemgr/bggame.cc.o CMakeFiles/exult_gamemgr.dir/gamemgr/devgame.cc.o CMakeFiles/exult_gamemgr.dir/gamemgr/modmgr.cc.o CMakeFiles/exult_gamemgr.dir/gamemgr/sigame.cc.o
-/usr/bin/ranlib libexult_gamemgr.a

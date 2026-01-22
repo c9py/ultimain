@@ -488,13 +488,270 @@ def get_npc_for_building(building_type):
         "farm": ["farmer"],
         "barn": ["farmer"],
     }
-    
+
     npc_types = npc_mapping.get(building_type, ["townsman"])
     shapes = []
     for npc_type in npc_types:
         if npc_type in NPC_SHAPES:
             shapes.extend(NPC_SHAPES[npc_type])
     return shapes
+
+
+# =============================================================================
+# INTERIOR FURNITURE MAPPING (for building interiors)
+# =============================================================================
+
+INTERIOR_FURNITURE = {
+    # Residential interiors
+    "house": {
+        "bedroom": ["bed", "nightstand", "drawers", "rug"],
+        "living": ["table", "seat", "rug", "fireplace"],
+        "kitchen": ["table", "seat", "cask"],
+    },
+    "residential": {
+        "bedroom": ["bed", "nightstand", "drawers"],
+        "living": ["table", "seat", "rug"],
+    },
+    "apartments": {
+        "bedroom": ["bed", "drawers"],
+        "living": ["table", "seat"],
+    },
+
+    # Commercial interiors
+    "shop": {
+        "showroom": ["table", "chest", "stand"],
+        "storage": ["cask", "chest", "drawers"],
+    },
+    "retail": {
+        "showroom": ["table", "stand", "chest"],
+        "storage": ["cask", "chest"],
+    },
+    "tavern": {
+        "main": ["table", "seat", "cask", "keg"],
+        "kitchen": ["table", "cask"],
+        "bedroom": ["bed"],
+    },
+
+    # Industrial interiors
+    "warehouse": {
+        "storage": ["cask", "chest", "keg"],
+    },
+    "barn": {
+        "main": ["crops", "cask"],
+    },
+    "industrial": {
+        "workshop": ["blacksmith", "bellows", "table"],
+        "storage": ["cask", "chest"],
+    },
+
+    # Civic interiors
+    "church": {
+        "nave": ["seat", "rug", "statue"],
+        "altar": ["table", "sconce", "tapestry"],
+    },
+    "castle": {
+        "throne": ["seat", "rug", "tapestry", "banner"],
+        "hall": ["table", "seat", "fireplace", "tapestry"],
+        "bedroom": ["bed", "drawers", "rug", "mirror"],
+        "armory": ["chest", "trophy"],
+    },
+    "government": {
+        "office": ["desk", "seat", "drawers", "painting"],
+        "hall": ["table", "seat", "banner"],
+    },
+    "school": {
+        "classroom": ["desk", "seat"],
+        "library": ["desk", "drawers"],
+    },
+
+    # Default for unknown building types
+    "default": {
+        "main": ["table", "seat"],
+    },
+}
+
+
+# =============================================================================
+# ADVANCED NPC DATA (professions, dialogues, behaviors)
+# =============================================================================
+
+NPC_PROFESSIONS = {
+    "townsman": {
+        "shapes": [265, 319, 452],
+        "dialogues": [
+            "Good day to thee, traveler.",
+            "The weather has been fair of late.",
+            "Have ye visited the marketplace?",
+            "I hear strange rumors from the north.",
+        ],
+        "schedule": "daytime",  # active during day
+    },
+    "townswoman": {
+        "shapes": [459],
+        "dialogues": [
+            "Welcome to our humble town.",
+            "The baker makes fine bread.",
+            "Mind thyself on the roads at night.",
+            "Have ye need of directions?",
+        ],
+        "schedule": "daytime",
+    },
+    "child": {
+        "shapes": [471, 472],
+        "dialogues": [
+            "Want to play?",
+            "My father is very strong!",
+            "I found a shiny rock!",
+        ],
+        "schedule": "daytime",
+    },
+    "guard": {
+        "shapes": [394],
+        "dialogues": [
+            "Move along, citizen.",
+            "All is well within these walls.",
+            "Report any suspicious activity.",
+            "The lord's peace must be kept.",
+        ],
+        "schedule": "always",
+    },
+    "shopkeeper": {
+        "shapes": [454, 455],
+        "dialogues": [
+            "Welcome! Browse my wares.",
+            "I have the finest goods in town.",
+            "A fair price for quality merchandise.",
+            "Come back anytime!",
+        ],
+        "schedule": "daytime",
+    },
+    "blacksmith": {
+        "shapes": [304],
+        "dialogues": [
+            "Need something forged?",
+            "The finest steel in the land.",
+            "I can repair that armor.",
+            "A warrior needs good equipment.",
+        ],
+        "schedule": "daytime",
+    },
+    "farmer": {
+        "shapes": [319, 452],
+        "dialogues": [
+            "The harvest looks promising.",
+            "Rain would be welcome.",
+            "These fields feed the whole town.",
+            "Hard work, but honest.",
+        ],
+        "schedule": "daytime",
+    },
+    "mage": {
+        "shapes": [154, 445, 446],
+        "dialogues": [
+            "The arcane arts require dedication.",
+            "I sense magical potential in thee.",
+            "Reagents are costly these days.",
+            "Knowledge is the true power.",
+        ],
+        "schedule": "always",
+    },
+    "sage": {
+        "shapes": [318, 448],
+        "dialogues": [
+            "Wisdom comes with patience.",
+            "The ancient texts speak of this.",
+            "I have studied for many years.",
+            "Ask, and I shall share what I know.",
+        ],
+        "schedule": "always",
+    },
+    "noble_male": {
+        "shapes": [451, 456],
+        "dialogues": [
+            "I trust thou knowest thy place.",
+            "The affairs of state weigh heavily.",
+            "My lineage is most distinguished.",
+            "Speak quickly, I am quite busy.",
+        ],
+        "schedule": "daytime",
+    },
+    "noble_female": {
+        "shapes": [451, 456],
+        "dialogues": [
+            "How quaint.",
+            "The court has been most tedious.",
+            "I do hope the festival proceeds.",
+            "One must maintain appearances.",
+        ],
+        "schedule": "daytime",
+    },
+    "entertainer": {
+        "shapes": [468, 469],
+        "dialogues": [
+            "A song for a coin?",
+            "The tavern is lively tonight!",
+            "I know tales from distant lands.",
+            "Music soothes the weary soul.",
+        ],
+        "schedule": "evening",
+    },
+    "beggar": {
+        "shapes": [449, 450],
+        "dialogues": [
+            "Spare a coin, kind traveler?",
+            "Times have been hard.",
+            "The gods bless the generous.",
+            "I was not always thus...",
+        ],
+        "schedule": "always",
+    },
+    "fighter": {
+        "shapes": [259, 462, 463],
+        "dialogues": [
+            "Looking for a sparring partner?",
+            "My blade has seen many battles.",
+            "Strength and skill win the day.",
+            "Stay sharp, traveler.",
+        ],
+        "schedule": "always",
+    },
+    "ranger": {
+        "shapes": [460, 461],
+        "dialogues": [
+            "The wilderness calls to me.",
+            "I know these lands well.",
+            "Beware the creatures of the night.",
+            "Nature provides for those who respect her.",
+        ],
+        "schedule": "always",
+    },
+}
+
+
+def get_furniture_for_room(building_type: str, room_type: str):
+    """
+    Get furniture shapes appropriate for a room in a building.
+    Returns a list of furniture shape names.
+    """
+    building_furniture = INTERIOR_FURNITURE.get(building_type, INTERIOR_FURNITURE["default"])
+    room_furniture = building_furniture.get(room_type, building_furniture.get("main", []))
+    return room_furniture
+
+
+def get_furniture_shapes(furniture_name: str):
+    """
+    Get shape numbers for a furniture item.
+    Returns a list of shape numbers.
+    """
+    return OBJECT_SHAPES.get(furniture_name, [])
+
+
+def get_npc_with_dialogue(npc_type: str):
+    """
+    Get NPC data including shapes and dialogue options.
+    Returns dict with 'shapes', 'dialogues', 'schedule'.
+    """
+    return NPC_PROFESSIONS.get(npc_type, NPC_PROFESSIONS["townsman"])
 
 
 # =============================================================================

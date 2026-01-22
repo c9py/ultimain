@@ -1,2 +1,0 @@
-/usr/bin/ar qc libexult_pathfinder.a CMakeFiles/exult_pathfinder.dir/pathfinder/Astar.cc.o CMakeFiles/exult_pathfinder.dir/pathfinder/PathFinder.cc.o CMakeFiles/exult_pathfinder.dir/pathfinder/Zombie.cc.o CMakeFiles/exult_pathfinder.dir/pathfinder/path.cc.o
-/usr/bin/ranlib libexult_pathfinder.a
