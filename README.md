@@ -20,7 +20,7 @@ This repository contains an integrated codebase for the ScummVM Ultima VIII (Pag
 - **Exult Engine**: ✅ **Successfully builds** with SDL3 3.5.0 (15.8 MB binary).
 - **Pentagram (Ultima 8)**: ✅ **Successfully builds** with SDL3 3.5.0 (3.0 MB binary).
 - **Unified Launcher**: Compiles and runs, but requires a display environment.
-- **Web Launcher**: Ready for deployment.
+- **Web Launcher**: ✅ **Enhanced** with CheerpX integration, IndexedDB data management, and file upload support.
 - **NPC AI System**: ~7,400 lines of C++ code across 12 source files.
 
 ## How to Build and Run
@@ -91,7 +91,32 @@ python osm2ultima.py --bbox "-0.1,51.5,0.0,51.6" --output custom_map
 
 ### 6. Web Launcher
 
-Open `web/index.html` in a modern web browser. The web launcher uses CheerpX to run DOS-based Ultima games and provides a unified interface for all supported titles.
+Open `web/index.html` in a modern web browser. The web launcher uses CheerpX to run games directly in the browser via WebAssembly virtualization.
+
+**Features:**
+- **Game Data Management**: Upload and store game files using IndexedDB
+- **File Upload**: Drag-and-drop or browse for game directories
+- **Settings Persistence**: Display and audio settings saved locally
+- **CheerpX Integration**: x86-to-WebAssembly virtualization for running native binaries
+- **Browser Compatibility Check**: Validates SharedArrayBuffer and WebAssembly support
+
+**Important Notes:**
+- For SharedArrayBuffer support, the server must set these headers:
+  ```
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  ```
+- Ultima IV is available as a free DOS game via CheerpX
+- Ultima VII/VIII require original game files to be uploaded
+
+**Web Files:**
+```
+web/
+├── index.html              # Main launcher interface
+└── js/
+    ├── cheerpx-engine.js   # CheerpX integration module
+    └── data-manager.js     # IndexedDB game data manager
+```
 
 ## Reference Data
 
@@ -128,9 +153,11 @@ ultimain/
 
 1. ~~**Complete Exult Build**: Obtain the necessary game data files to generate the remaining FLX data and complete the Exult engine build.~~ ✅ **DONE**
 2. ~~**Integrate ScummVM Ultima8**: Extract the Ultima 8 engine from the ScummVM codebase and integrate it with the unified launcher.~~ ✅ **DONE** (using original Pentagram codebase)
-3. **CheerpX Integration**: Fully implement the CheerpX integration to run the C++ engines (Exult, ScummVM) in the browser via WebAssembly.
-4. **Data File Management**: Create a system for managing and locating the required game data files for all engines.
-5. **Expand OSM2Ultima**: Add support for more OSM features and improve the map generation quality.
+3. ~~**CheerpX Integration**: Fully implement the CheerpX integration to run the C++ engines (Exult, ScummVM) in the browser via WebAssembly.~~ ✅ **DONE** (web launcher with CheerpX engine module)
+4. ~~**Data File Management**: Create a system for managing and locating the required game data files for all engines.~~ ✅ **DONE** (IndexedDB-based data manager)
+5. **Create Linux Disk Images**: Build ext2 disk images containing Exult/Pentagram binaries and SDL3 runtime for CheerpX Linux.
+6. **Expand OSM2Ultima**: Add support for more OSM features and improve the map generation quality.
+7. **NPC AI Integration**: Complete integration of cognitive NPC system with game engines.
 
 ## License
 
