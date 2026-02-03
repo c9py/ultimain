@@ -37,6 +37,25 @@ TERRAIN_SHAPES = {
     "rut": [16, 25],  # cart tracks/road
 }
 
+# Terrain transition mappings (for blending between terrain types)
+TERRAIN_TRANSITIONS = {
+    # grass -> water transitions
+    ("grass", "water"): "muddy_bank",
+    ("water", "grass"): "muddy_bank",
+    
+    # grass -> sand transitions
+    ("grass", "sand"): "sandy_grass",
+    ("sand", "grass"): "sandy_grass",
+    
+    # grass -> dirt transitions
+    ("grass", "dirt"): "grassy_mud",
+    ("dirt", "grass"): "grassy_mud",
+    
+    # grass -> cobblestone transitions (grass edges near roads)
+    ("grass", "cobblestone"): "grass",
+    ("cobblestone", "grass"): "grass",
+}
+
 # =============================================================================
 # OSM TAG TO TERRAIN MAPPING
 # =============================================================================
@@ -797,6 +816,52 @@ INTERIOR_FURNITURE = {
     "school": {
         "classroom": ["desk", "seat"],
         "library": ["desk", "drawers"],
+    },
+    
+    # Shop interiors (new)
+    "bakery": {
+        "main": ["oven", "table", "bread", "crate"],
+        "storage": ["crate", "barrel"],
+    },
+    "butcher": {
+        "main": ["table", "meat", "knife"],
+        "storage": ["meat", "barrel"],
+    },
+    "bookshop": {
+        "main": ["bookshelf", "desk", "seat"],
+        "storage": ["bookshelf", "chest"],
+    },
+    "pharmacy": {
+        "main": ["potions_shelf", "table", "mortar_pestle"],
+        "storage": ["potions_shelf", "chest"],
+    },
+    "weaponsmith": {
+        "main": ["anvil", "sword", "hammer", "forge"],
+        "storage": ["chest", "rack"],
+    },
+    
+    # Hospitality interiors (new)
+    "hotel": {
+        "bedroom": ["bed", "nightstand", "drawers", "mirror"],
+        "reception": ["desk", "seat", "painting"],
+    },
+    "restaurant": {
+        "dining": ["table", "seat", "candelabra"],
+        "kitchen": ["oven", "table", "crate"],
+    },
+    
+    # Public facilities (new)
+    "library": {
+        "reading": ["bookshelf", "desk", "seat"],
+        "archive": ["bookshelf", "chest"],
+    },
+    "museum": {
+        "gallery": ["statue", "painting", "easel"],
+        "storage": ["chest", "crate"],
+    },
+    "hospital": {
+        "ward": ["bed", "nightstand", "seat"],
+        "office": ["desk", "seat", "potions_shelf"],
     },
 
     # Default for unknown building types
