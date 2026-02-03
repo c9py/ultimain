@@ -234,6 +234,7 @@ OBJECT_SHAPES = {
 # =============================================================================
 
 OSM_AMENITY_TO_SHAPE = {
+    # Basic amenities
     "fountain": "well",
     "bench": "seat",
     "waste_basket": "garbage",
@@ -243,6 +244,150 @@ OSM_AMENITY_TO_SHAPE = {
     "shelter": "roof_wood",
     "marketplace": "stand",
     "place_of_worship": "statue",
+    
+    # Food & Dining
+    "restaurant": "table",
+    "cafe": "table",
+    "pub": "table",
+    "bar": "table",
+    "fast_food": "table",
+    "food_court": "table",
+    
+    # Shops & Services
+    "bank": "chest",
+    "post_office": "chest",
+    "library": "bookshelf",
+    "pharmacy": "potions_shelf",
+    "police": "chair",
+    "fire_station": "barrel",
+    
+    # Recreation & Leisure
+    "cinema": "chair",
+    "theatre": "chair",
+    "arts_centre": "easel",
+    "nightclub": "table",
+    "gambling": "table",
+    
+    # Transportation
+    "parking": "wagon_floor",
+    "bicycle_parking": "stand",
+    "fuel": "keg",
+    "charging_station": "small_rock",
+    "bus_station": "seat",
+    "ferry_terminal": "ferry",
+    
+    # Healthcare
+    "hospital": "bed",
+    "clinic": "chair",
+    "doctors": "chair",
+    "dentist": "chair",
+    "veterinary": "chair",
+    
+    # Education
+    "school": "chair",
+    "university": "chair",
+    "college": "chair",
+    "kindergarten": "chair",
+    
+    # Tourism
+    "hotel": "bed",
+    "motel": "bed",
+    "hostel": "bed",
+    "guest_house": "bed",
+    "museum": "statue",
+    "gallery": "easel",
+    "viewpoint": "statue",
+    "information": "sign",
+    
+    # Public Services
+    "community_centre": "table",
+    "townhall": "throne",
+    "courthouse": "chair",
+    "prison": "chair",
+    "social_facility": "chair",
+    
+    # Other
+    "toilet": "chair",
+    "telephone": "small_rock",
+    "atm": "small_rock",
+    "vending_machine": "stand",
+    "recycling": "garbage",
+}
+
+# Shop types mapping (for shop= tag)
+OSM_SHOP_TO_SHAPE = {
+    # Food & Beverages
+    "supermarket": "crate",
+    "bakery": "bread",
+    "butcher": "meat",
+    "cheese": "cheese",
+    "greengrocer": "fruit",
+    "seafood": "fish",
+    "confectionery": "food",
+    "wine": "bottle",
+    "alcohol": "bottle",
+    "beverages": "bottle",
+    "deli": "food",
+    
+    # General Merchandise
+    "convenience": "crate",
+    "department_store": "chest",
+    "general": "crate",
+    "kiosk": "stand",
+    "mall": "stand",
+    
+    # Clothing & Accessories
+    "clothes": "folded_blanket",
+    "shoes": "boots",
+    "jewelry": "necklace",
+    "bag": "backpack",
+    "fabric": "banner",
+    
+    # Health & Beauty
+    "chemist": "potions_shelf",
+    "cosmetics": "bottles_cosmetic",
+    "hairdresser": "chair",
+    "optician": "eyeglasses",
+    
+    # Household & DIY
+    "furniture": "chair",
+    "interior_decoration": "easel",
+    "doityourself": "hammer",
+    "hardware": "tools",
+    "garden_centre": "potted_plant",
+    "florist": "flowers",
+    
+    # Specialized Retail
+    "books": "bookshelf",
+    "stationery": "scroll",
+    "gift": "chest",
+    "newsagent": "scroll",
+    "art": "easel",
+    "music": "harp",
+    "sports": "javelin",
+    "toys": "doll",
+    "antiques": "statue",
+    "computer": "small_rock",
+    "mobile_phone": "small_rock",
+    
+    # Services
+    "travel_agency": "map",
+    "estate_agent": "scroll",
+    "laundry": "barrel",
+    "dry_cleaning": "barrel",
+    "tailor": "folded_blanket",
+    "locksmith": "lock",
+    
+    # Food Preparation
+    "bakehouse": "oven",
+    "brewery": "keg",
+    "winery": "bottle",
+    
+    # Other
+    "pet": "dog",
+    "veterinary": "chair",
+    "weapons": "sword",
+    "hunting": "crossbow",
 }
 
 OSM_BUILDING_TO_SHAPES = {
@@ -335,6 +480,72 @@ OSM_MAN_MADE_TO_SHAPE = {
     "lighthouse": "fortress",
     "well": "well",
     "storage_tank": "keg",
+}
+
+# Leisure features mapping
+OSM_LEISURE_TO_SHAPE = {
+    # Recreation areas
+    "park": "tree",
+    "garden": "flowers",
+    "playground": "chair",
+    "pitch": "grass",  # sports field (will use terrain)
+    "sports_centre": "chair",
+    "stadium": "seat",
+    "track": "rut",
+    
+    # Water recreation
+    "swimming_pool": "water",
+    "water_park": "water",
+    "beach_resort": "sand",
+    "marina": "ferry",
+    
+    # Entertainment
+    "amusement_arcade": "chair",
+    "dance": "chair",
+    "escape_game": "chair",
+    "hackerspace": "chair",
+    "adult_gaming_centre": "table",
+    
+    # Outdoor
+    "nature_reserve": "tree",
+    "dog_park": "dog",
+    "fishing": "water",
+    "horse_riding": "horse",
+    "golf_course": "grass",
+    "miniature_golf": "grass",
+    
+    # Indoor
+    "fitness_centre": "chair",
+    "fitness_station": "chair",
+    "ice_rink": "water",
+    "sauna": "firepit",
+}
+
+# Tourism features mapping
+OSM_TOURISM_TO_SHAPE = {
+    # Accommodation
+    "hotel": "bed",
+    "motel": "bed",
+    "hostel": "bed",
+    "guest_house": "bed",
+    "apartment": "bed",
+    "camp_site": "tent",
+    "caravan_site": "tent",
+    "chalet": "bed",
+    
+    # Attractions
+    "attraction": "statue",
+    "artwork": "statue",
+    "gallery": "easel",
+    "museum": "statue",
+    "theme_park": "chair",
+    "zoo": "dog",
+    "aquarium": "fish",
+    
+    # Information
+    "information": "sign",
+    "viewpoint": "statue",
+    "picnic_site": "table",
 }
 
 OSM_WATERWAY_TO_TERRAIN = {
@@ -432,10 +643,34 @@ def get_object_shapes(osm_tags):
                 result[component] = OBJECT_SHAPES[shape_name]
         return result
     
+    # Check shop
+    shop = osm_tags.get("shop")
+    if shop and shop in OSM_SHOP_TO_SHAPE:
+        shape_name = OSM_SHOP_TO_SHAPE[shop]
+        if shape_name in OBJECT_SHAPES:
+            result["main"] = OBJECT_SHAPES[shape_name]
+        return result
+    
     # Check amenity
     amenity = osm_tags.get("amenity")
     if amenity and amenity in OSM_AMENITY_TO_SHAPE:
         shape_name = OSM_AMENITY_TO_SHAPE[amenity]
+        if shape_name in OBJECT_SHAPES:
+            result["main"] = OBJECT_SHAPES[shape_name]
+        return result
+    
+    # Check leisure
+    leisure = osm_tags.get("leisure")
+    if leisure and leisure in OSM_LEISURE_TO_SHAPE:
+        shape_name = OSM_LEISURE_TO_SHAPE[leisure]
+        if shape_name in OBJECT_SHAPES:
+            result["main"] = OBJECT_SHAPES[shape_name]
+        return result
+    
+    # Check tourism
+    tourism = osm_tags.get("tourism")
+    if tourism and tourism in OSM_TOURISM_TO_SHAPE:
+        shape_name = OSM_TOURISM_TO_SHAPE[tourism]
         if shape_name in OBJECT_SHAPES:
             result["main"] = OBJECT_SHAPES[shape_name]
         return result

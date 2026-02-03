@@ -33,6 +33,9 @@ from osm_shape_mapping import (
     TERRAIN_SHAPES,
     OBJECT_SHAPES,
     OSM_HIGHWAY_TO_TERRAIN,
+    OSM_SHOP_TO_SHAPE,
+    OSM_LEISURE_TO_SHAPE,
+    OSM_TOURISM_TO_SHAPE,
     NPC_PROFESSIONS,
 )
 
