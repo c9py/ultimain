@@ -55,6 +55,10 @@ jobs:
         sudo cmake --install build
         sudo ldconfig
 
+    - name: Clean stale build cache
+      run: |
+        rm -rf build/CMakeCache.txt build/CMakeFiles
+
     - name: Configure shared library
       run: |
         cmake -B build -G Ninja \
@@ -186,6 +190,11 @@ jobs:
         cmake --build build
         sudo cmake --install build
         sudo ldconfig
+
+    - name: Clean stale build cache
+      run: |
+        cd launcher
+        rm -rf build/CMakeCache.txt build/CMakeFiles
 
     - name: Configure launcher
       run: |
