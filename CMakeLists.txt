@@ -52,6 +52,13 @@ add_library(ultima_shared STATIC
     shared/scalers/scale_xbr.cc
 )
 
+# NPC AI System
+option(BUILD_NPC_AI "Build NPC AI system" ON)
+if(BUILD_NPC_AI)
+    add_subdirectory(engines/npc)
+    message(STATUS "NPC AI system enabled")
+endif()
+
 target_include_directories(ultima_shared PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/shared
     ${CMAKE_CURRENT_SOURCE_DIR}/shared/audio

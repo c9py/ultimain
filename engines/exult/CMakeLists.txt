@@ -244,6 +244,14 @@ target_link_libraries(exult PRIVATE
     pthread
 )
 
+# Link NPC AI if enabled
+if(ENABLE_NPC_AI)
+    target_link_libraries(exult PRIVATE
+        exult_npcai
+        ultima_npc_ai
+    )
+endif()
+
 if(VORBIS_FOUND)
     target_link_libraries(exult PRIVATE ${VORBIS_LIBRARIES} ${OGG_LIBRARIES})
 endif()
@@ -254,6 +262,25 @@ endif()
 
 if(PNG_FOUND)
     target_link_libraries(exult PRIVATE PNG::PNG)
+endif()
+
+# ============================================================================
+# NPC AI Integration (Optional)
+# ============================================================================
+
+option(ENABLE_NPC_AI "Enable advanced NPC AI integration" ON)
+
+if(ENABLE_NPC_AI)
+    # Add npcai subdirectory
+    add_subdirectory(npcai)
+    
+    # Add NPC AI include directory
+    list(APPEND EXULT_INCLUDE_DIRS
+        ${CMAKE_CURRENT_SOURCE_DIR}/npcai
+        ${CMAKE_CURRENT_SOURCE_DIR}/../npc/include
+    )
+    
+    message(STATUS "NPC AI integration enabled")
 endif()
 
 # ============================================================================

@@ -40,3 +40,6 @@ web/assets/rootfs/lib/
 web/assets/rootfs/lib64/
 web/assets/rootfs/usr/bin/exult
 web/assets/rootfs/usr/bin/pentagram
+
+# OSM2Ultima test output directories
+tools/osm2ultima/test_*/
