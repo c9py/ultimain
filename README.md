@@ -21,7 +21,8 @@ This repository contains an integrated codebase for the ScummVM Ultima VIII (Pag
 - **Pentagram (Ultima 8)**: ✅ **Successfully builds** with SDL3 3.5.0 (3.0 MB binary).
 - **Unified Launcher**: Compiles and runs, but requires a display environment.
 - **Web Launcher**: ✅ **Enhanced** with CheerpX integration, IndexedDB data management, and file upload support.
-- **NPC AI System**: ~7,400 lines of C++ code across 12 source files.
+- **NPC AI System**: ✅ **Integrated** with Exult - ~7,400 lines of C++ code across 12 source files.
+- **OSM2Ultima**: ✅ **Enhanced** with 158+ feature types, improved interiors, and terrain transitions.
 
 ## How to Build and Run
 
@@ -56,6 +57,25 @@ make -j$(nproc)
 # Binary: engines/exult/build/exult
 ```
 
+**Optional: Enable NPC AI Integration**
+
+To build Exult with the advanced NPC AI system:
+
+```bash
+cd engines/exult
+mkdir build && cd build
+cmake .. -DENABLE_NPC_AI=ON
+make -j$(nproc)
+```
+
+This enables:
+- AI-driven NPC dialogue with AIML and TinyLLM
+- Dynamic NPC schedules based on personality and goals
+- Social relationship simulation
+- Economic agent behaviors
+
+See [NPC AI Integration Guide](docs/npc_ai_integration_guide.md) for details.
+
 ### 3. Build the Pentagram Engine (Ultima VIII)
 
 ```bash
@@ -79,6 +99,8 @@ make
 
 ### 5. Generate Maps from OpenStreetMap
 
+The OSM2Ultima tool now supports **158+ feature types** including amenities, shops, leisure facilities, and tourism sites.
+
 ```bash
 cd tools/osm2ultima
 
@@ -88,6 +110,14 @@ python osm2ultima.py --place "London, UK" --radius 500 --output london_map
 # Generate a map from a bounding box
 python osm2ultima.py --bbox "-0.1,51.5,0.0,51.6" --output custom_map
 ```
+
+**Latest Features (v1.1):**
+- **59 amenity types**: restaurants, cafes, hotels, hospitals, banks, libraries, police stations
+- **55 shop types**: bakery, butcher, pharmacy, bookstore, clothing, hardware stores
+- **26 leisure types**: parks, playgrounds, sports facilities, swimming pools
+- **18 tourism types**: hotels, museums, viewpoints, attractions
+- **Improved interiors**: Specialized furniture for bakeries, restaurants, libraries, museums
+- **Terrain transitions**: Smooth blending between grass/water, grass/sand, grass/dirt
 
 ### 6. Web Launcher
 
@@ -176,8 +206,10 @@ ultimain/
 3. ~~**CheerpX Integration**: Fully implement the CheerpX integration to run the C++ engines (Exult, ScummVM) in the browser via WebAssembly.~~ ✅ **DONE** (web launcher with CheerpX engine module)
 4. ~~**Data File Management**: Create a system for managing and locating the required game data files for all engines.~~ ✅ **DONE** (IndexedDB-based data manager)
 5. ~~**Create Linux Disk Images**: Build ext2 disk images containing Exult/Pentagram binaries and SDL3 runtime for CheerpX Linux.~~ ✅ **DONE** (64MB ext2 image, 11MB compressed)
-6. **Expand OSM2Ultima**: Add support for more OSM features and improve the map generation quality.
-7. **NPC AI Integration**: Complete integration of cognitive NPC system with game engines.
+6. ~~**Expand OSM2Ultima**: Add support for more OSM features and improve the map generation quality.~~ ✅ **DONE** (158+ new feature types, improved interiors, terrain transitions)
+7. ~~**NPC AI Integration**: Complete integration of cognitive NPC system with game engines.~~ ✅ **DONE** (integrated with Exult build system, documentation complete)
+
+**All major development tasks completed!** 🎉
 
 ## License
 
