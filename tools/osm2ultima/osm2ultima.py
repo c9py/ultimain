@@ -679,6 +679,10 @@ class MapGenerator:
     def _place_building_npcs(self, building_type: str, min_x: int, min_y: int,
                              max_x: int, max_y: int):
         """Place NPCs appropriate to building type with dialogue data."""
+        # Skip if building is too small
+        if min_x >= max_x or min_y >= max_y:
+            return
+            
         # Determine NPC types for this building
         npc_mapping = {
             "house": ["townsman", "townswoman"],

@@ -1,0 +1,45 @@
+{
+  "map_size": {
+    "chunks": [
+      2,
+      2
+    ],
+    "tiles": [
+      32,
+      32
+    ]
+  },
+  "statistics": {
+    "total_chunks": 4,
+    "total_objects": 3519,
+    "unique_shapes": 52
+  },
+  "shape_counts": {
+    "167": 355,
+    "166": 343,
+    "164": 326,
+    "165": 319,
+    "169": 305,
+    "156": 287,
+    "333": 62,
+    "366": 57,
+    "152": 52,
+    "374": 52,
+    "266": 52,
+    "393": 50,
+    "206": 50,
+    "346": 50,
+    "344": 50,
+    "359": 49,
+    "218": 48,
+    "355": 48,
+    "151": 48,
+    "351": 48
+  },
+  "generation_stats": {
+    "buildings_processed": 115,
+    "roads_processed": 221,
+    "npcs_placed": 17,
+    "interiors_generated": 19
+  }
+}
