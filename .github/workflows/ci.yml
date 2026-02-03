@@ -29,7 +29,18 @@ jobs:
           zlib1g-dev \
           libpng-dev \
           libfreetype-dev \
-          ninja-build
+          ninja-build \
+          libx11-dev \
+          libxext-dev \
+          libxrandr-dev \
+          libxcursor-dev \
+          libxfixes-dev \
+          libxi-dev \
+          libxss-dev \
+          libwayland-dev \
+          libxkbcommon-dev \
+          libegl1-mesa-dev \
+          libibus-1.0-dev
 
     - name: Build SDL3 from source
       run: |
@@ -43,6 +54,10 @@ jobs:
         cmake --build build
         sudo cmake --install build
         sudo ldconfig
+
+    - name: Clean stale build cache
+      run: |
+        rm -rf build/CMakeCache.txt build/CMakeFiles
 
     - name: Configure shared library
       run: |
@@ -72,6 +87,11 @@ jobs:
           build-essential \
           cmake \
           ninja-build
+
+    - name: Clean stale build cache
+      run: |
+        cd engines/npc
+        rm -rf build/CMakeCache.txt build/CMakeFiles
 
     - name: Configure NPC module
       run: |
@@ -145,7 +165,18 @@ jobs:
           build-essential \
           cmake \
           pkg-config \
-          ninja-build
+          ninja-build \
+          libx11-dev \
+          libxext-dev \
+          libxrandr-dev \
+          libxcursor-dev \
+          libxfixes-dev \
+          libxi-dev \
+          libxss-dev \
+          libwayland-dev \
+          libxkbcommon-dev \
+          libegl1-mesa-dev \
+          libibus-1.0-dev
 
     - name: Build SDL3 from source
       run: |
@@ -159,6 +190,11 @@ jobs:
         cmake --build build
         sudo cmake --install build
         sudo ldconfig
+
+    - name: Clean stale build cache
+      run: |
+        cd launcher
+        rm -rf build/CMakeCache.txt build/CMakeFiles
 
     - name: Configure launcher
       run: |
@@ -213,7 +249,18 @@ jobs:
           zlib1g-dev \
           libpng-dev \
           libfreetype-dev \
-          ninja-build
+          ninja-build \
+          libx11-dev \
+          libxext-dev \
+          libxrandr-dev \
+          libxcursor-dev \
+          libxfixes-dev \
+          libxi-dev \
+          libxss-dev \
+          libwayland-dev \
+          libxkbcommon-dev \
+          libegl1-mesa-dev \
+          libibus-1.0-dev
 
     - name: Build SDL3 from source
       run: |
