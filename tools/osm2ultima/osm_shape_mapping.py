@@ -38,16 +38,17 @@ TERRAIN_SHAPES = {
 }
 
 # Terrain transition mappings (for blending between terrain types)
+# Each value corresponds to a key in TERRAIN_SHAPES above
 TERRAIN_TRANSITIONS = {
-    # grass -> water transitions
+    # grass -> water transitions (use muddy_bank)
     ("grass", "water"): "muddy_bank",
     ("water", "grass"): "muddy_bank",
     
-    # grass -> sand transitions
+    # grass -> sand transitions (use sandy_grass)
     ("grass", "sand"): "sandy_grass",
     ("sand", "grass"): "sandy_grass",
     
-    # grass -> dirt transitions
+    # grass -> dirt transitions (use grassy_mud)
     ("grass", "dirt"): "grassy_mud",
     ("dirt", "grass"): "grassy_mud",
     
