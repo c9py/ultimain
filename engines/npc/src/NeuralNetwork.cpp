@@ -44,6 +44,8 @@ double Layer::activate(double x) const {
             return x;
         case ActivationFunction::Polynomial2:
             return x * x;
+        case ActivationFunction::Softmax:
+            return x; // Softmax is applied to entire vector, not individual values
         default:
             return std::tanh(x);
     }
@@ -75,6 +77,20 @@ std::vector<double> Layer::forward(const std::vector<double>& inputs) {
         }
         outputs[i] = activate(sum);
     }
+    
+    // Apply Softmax if needed (requires full output vector)
+    if (activation_ == ActivationFunction::Softmax) {
+        double maxVal = *std::max_element(outputs.begin(), outputs.end());
+        double sum = 0.0;
+        for (auto& output : outputs) {
+            output = std::exp(output - maxVal); // Subtract max for numerical stability
+            sum += output;
+        }
+        for (auto& output : outputs) {
+            output /= sum;
+        }
+    }
+    
     return outputs;
 }
 
@@ -477,23 +493,23 @@ void NPCLearningNetwork::initializeNetwork() {
     switch (context_) {
         case LearningContext::DecisionMaking:
             inputSize_ = 16;
-            numActions_ = 8;
+            // numActions_ is already set by setNumActions() or defaults to 4
             break;
         case LearningContext::SocialBehavior:
             inputSize_ = 12;
-            numActions_ = 6;
+            // numActions_ is already set by setNumActions() or defaults to 4
             break;
         case LearningContext::CombatTactics:
             inputSize_ = 20;
-            numActions_ = 10;
+            // numActions_ is already set by setNumActions() or defaults to 4
             break;
         case LearningContext::EconomicDecisions:
             inputSize_ = 14;
-            numActions_ = 5;
+            // numActions_ is already set by setNumActions() or defaults to 4
             break;
         case LearningContext::EmotionalResponse:
             inputSize_ = 10;
-            numActions_ = 8;
+            // numActions_ is already set by setNumActions() or defaults to 4
             break;
     }
 
@@ -510,7 +526,7 @@ void NPCLearningNetwork::initializeNetwork() {
 
     LayerConfig output;
     output.numNeurons = numActions_;
-    output.activation = ActivationFunction::Tanh;
+    output.activation = ActivationFunction::Softmax;  // Use Softmax for probability distribution
     network_->addLayer(output);
 
     network_->build();
@@ -559,7 +575,16 @@ std::vector<double> NPCLearningNetwork::getActionProbabilities(
 {
     std::vector<double> input = situation;
     input.resize(inputSize_, 0.0);
-    return network_->predict(input);
+    std::vector<double> probs = network_->predict(input);
+    
+    // Ensure we return exactly numActions_ probabilities
+    if (probs.size() > numActions_) {
+        probs.resize(numActions_);
+    } else if (probs.size() < numActions_) {
+        probs.resize(numActions_, 0.0);
+    }
+    
+    return probs;
 }
 
 void NPCLearningNetwork::setNumActions(uint32_t numActions) {

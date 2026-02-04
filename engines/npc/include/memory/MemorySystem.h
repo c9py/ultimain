@@ -519,6 +519,7 @@ private:
         std::string id;
         double baseActivation;
         double currentActivation;
+        double directActivation; // Track direct activation separately
         std::map<std::string, double> connections;
     };
 

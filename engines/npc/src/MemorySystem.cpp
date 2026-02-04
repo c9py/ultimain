@@ -231,7 +231,7 @@ MemoryNetwork::MemoryNetwork() = default;
 MemoryNetwork::~MemoryNetwork() = default;
 
 void MemoryNetwork::addNode(const std::string& nodeId, double baseActivation) {
-    nodes_[nodeId] = {nodeId, baseActivation, baseActivation, {}};
+    nodes_[nodeId] = {nodeId, baseActivation, baseActivation, 0.0, {}};
 }
 
 void MemoryNetwork::addAssociation(const std::string& from, const std::string& to,
@@ -244,6 +244,7 @@ void MemoryNetwork::addAssociation(const std::string& from, const std::string& t
 void MemoryNetwork::activate(const std::string& nodeId, double amount) {
     if (nodes_.count(nodeId)) {
         nodes_[nodeId].currentActivation += amount;
+        nodes_[nodeId].directActivation += amount; // Track direct activation
     }
 }
 
@@ -255,11 +256,15 @@ void MemoryNetwork::spreadActivation(int iterations, double decayFactor) {
             double incoming = 0.0;
             for (const auto& [otherId, otherNode] : nodes_) {
                 if (otherNode.connections.count(id)) {
-                    incoming += otherNode.currentActivation *
-                               otherNode.connections.at(id) * decayFactor;
+                    // Only spread the non-direct activation portion
+                    // This prevents direct activation from being diluted
+                    double spreadable = otherNode.currentActivation - otherNode.directActivation;
+                    incoming += spreadable * otherNode.connections.at(id) * decayFactor;
                 }
             }
-            newActivations[id] = node.currentActivation * decayFactor + incoming;
+            // Direct activation is preserved, only non-direct activation decays and spreads
+            double decayedSpread = (node.currentActivation - node.directActivation) * decayFactor;
+            newActivations[id] = node.directActivation + decayedSpread + incoming;
         }
 
         for (auto& [id, node] : nodes_) {
@@ -284,6 +289,7 @@ std::vector<std::pair<std::string, double>> MemoryNetwork::getMostActive(int cou
 void MemoryNetwork::reset() {
     for (auto& [id, node] : nodes_) {
         node.currentActivation = node.baseActivation;
+        node.directActivation = 0.0; // Reset direct activation
     }
 }
 
