@@ -36,7 +36,10 @@ bool test_quit_exception() {
 
 // Test file_open_exception
 bool test_file_open_exception() {
+    #pragma push_macro("file_open_exception")
+    #undef file_open_exception
     file_open_exception ex("missing_file.txt", __FILE__, __LINE__);
+    #pragma pop_macro("file_open_exception")
     std::string msg = ex.what();
     TEST_ASSERT(msg.find("missing_file.txt") != std::string::npos);
     TEST_ASSERT(msg.find("Error opening") != std::string::npos);
@@ -45,7 +48,10 @@ bool test_file_open_exception() {
 
 // Test file_write_exception
 bool test_file_write_exception() {
+    #pragma push_macro("file_write_exception")
+    #undef file_write_exception
     file_write_exception ex("readonly.txt", __FILE__, __LINE__);
+    #pragma pop_macro("file_write_exception")
     std::string msg = ex.what();
     TEST_ASSERT(msg.find("readonly.txt") != std::string::npos);
     TEST_ASSERT(msg.find("Error writing") != std::string::npos);
@@ -54,7 +60,10 @@ bool test_file_write_exception() {
 
 // Test file_read_exception
 bool test_file_read_exception() {
+    #pragma push_macro("file_read_exception")
+    #undef file_read_exception
     file_read_exception ex("corrupt.dat", __FILE__, __LINE__);
+    #pragma pop_macro("file_read_exception")
     std::string msg = ex.what();
     TEST_ASSERT(msg.find("corrupt.dat") != std::string::npos);
     TEST_ASSERT(msg.find("Error reading") != std::string::npos);
@@ -63,7 +72,10 @@ bool test_file_read_exception() {
 
 // Test wrong_file_type_exception
 bool test_wrong_file_type_exception() {
+    #pragma push_macro("wrong_file_type_exception")
+    #undef wrong_file_type_exception
     wrong_file_type_exception ex("data.bin", "FLEX", __FILE__, __LINE__);
+    #pragma pop_macro("wrong_file_type_exception")
     std::string msg = ex.what();
     TEST_ASSERT(msg.find("data.bin") != std::string::npos);
     TEST_ASSERT(msg.find("FLEX") != std::string::npos);
@@ -72,6 +84,12 @@ bool test_wrong_file_type_exception() {
 
 // Test exception inheritance
 bool test_exception_inheritance() {
+    // Save and undef macros to allow direct constructor calls
+    #pragma push_macro("file_open_exception")
+    #pragma push_macro("file_read_exception")
+    #undef file_open_exception
+    #undef file_read_exception
+    
     // All file exceptions should derive from file_exception
     try {
         throw file_open_exception("test.txt", __FILE__, __LINE__);
@@ -91,6 +109,10 @@ bool test_exception_inheritance() {
     } catch (...) {
         TEST_ASSERT(false);
     }
+    
+    // Restore macros
+    #pragma pop_macro("file_read_exception")
+    #pragma pop_macro("file_open_exception")
 
     return true;
 }

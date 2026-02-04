@@ -273,7 +273,7 @@ public:
      */
     std::vector<SemanticMemory> queryFacts(const std::string& subject = "*",
                                             const std::string& predicate = "*",
-                                            const std::string& object = "*");
+                                            const std::string& object = "*") const;
 
     /**
      * Get skill proficiency
