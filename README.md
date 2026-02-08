@@ -24,6 +24,16 @@ This repository contains an integrated codebase for the ScummVM Ultima VIII (Pag
 - **NPC AI System**: ✅ **Integrated** with Exult - ~7,400 lines of C++ code across 12 source files.
 - **OSM2Ultima**: ✅ **Enhanced** with 158+ feature types, improved interiors, and terrain transitions.
 
+## Releases
+
+Pre-built releases are available on the [GitHub Releases](https://github.com/c9py/ultimain/releases) page. Each release includes:
+
+- **Linux binaries** (x86_64) - All engines, launcher, and libraries
+- **Web launcher package** - Browser-based version with CheerpX
+- **Documentation** - Complete build and usage guides
+
+For information on creating releases, see [docs/release_process.md](docs/release_process.md).
+
 ## How to Build and Run
 
 ### 1. Dependencies
