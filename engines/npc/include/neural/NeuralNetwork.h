@@ -28,7 +28,8 @@ enum class ActivationFunction {
     Exp,        // Exponential
     Identity,   // Linear
     Polynomial1,// First order polynomial
-    Polynomial2 // Second order polynomial
+    Polynomial2,// Second order polynomial
+    Softmax     // Softmax for probability distributions
 };
 
 /**
