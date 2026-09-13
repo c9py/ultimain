@@ -55,6 +55,27 @@ class UltimaObject:
     quality: int = 0
     flags: int = 0
 
+    def to_ireg_bytes(self) -> bytes:
+        """Convert to IREG format bytes (Ultima VII)."""
+        chunk_x = self.x // 16
+        chunk_y = self.y // 16
+        local_x = self.x % 16
+        local_y = self.y % 16
+        
+        buf = bytearray(10)
+        buf[0] = 10  # length
+        buf[1] = ((chunk_x % 16) << 4) | local_x
+        buf[2] = ((chunk_y % 16) << 4) | local_y
+        buf[3] = self.shape & 0xff
+        buf[4] = ((self.shape >> 8) & 3) | (self.frame << 2)
+        buf[5] = (self.lift & 0x0f)
+        buf[6] = self.quality & 0xff
+        buf[7] = self.flags & 0xff
+        buf[8] = 0  # filler
+        buf[9] = 0  # filler
+        
+        return bytes(buf)
+
 
 @dataclass
 class NPCProfile:
@@ -83,21 +104,21 @@ class NPCProfile:
     
     def to_ireg_bytes(self) -> bytes:
         """Convert to IREG format bytes."""
-        # Simplified IREG format (10 bytes)
-        chunk_x = self.x // 16
-        chunk_y = self.y // 16
-        local_x = self.x % 16
-        local_y = self.y % 16
+        x, y = self.location
+        chunk_x = x // 16
+        chunk_y = y // 16
+        local_x = x % 16
+        local_y = y % 16
         
         buf = bytearray(10)
         buf[0] = 10  # length
         buf[1] = ((chunk_x % 16) << 4) | local_x
         buf[2] = ((chunk_y % 16) << 4) | local_y
         buf[3] = self.shape & 0xff
-        buf[4] = ((self.shape >> 8) & 3) | (self.frame << 2)
-        buf[5] = (self.lift & 0x0f)  # nibble swap
-        buf[6] = self.quality & 0xff
-        buf[7] = 0  # temporary flag
+        buf[4] = ((self.shape >> 8) & 3)  # frame 0, high shape bits
+        buf[5] = 0  # lift 0
+        buf[6] = 0  # quality
+        buf[7] = 0  # flags
         buf[8] = 0  # filler
         buf[9] = 0  # filler
         
@@ -1217,7 +1238,21 @@ class MapExporter:
 # =============================================================================
 
 def main():
-    parser = argparse.ArgumentParser(description="Convert OpenStreetMap data to Ultima VII maps")
+    parser = argparse.ArgumentParser(
+        description="Convert OpenStreetMap data to Ultima VII/VIII maps",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Ultima VII (default):
+  python osm2ultima.py --place "London, UK" --radius 500 --output london_u7
+  
+  # Ultima VIII:
+  python osm2ultima.py --game u8 --place "London, UK" --radius 500 --output london_u8
+  
+  # Or use the dedicated U8 CLI:
+  python osm2u8.py --place "London, UK" --radius 500 --output london_u8
+"""
+    )
     
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--bbox", type=str, help="Bounding box: min_lon,min_lat,max_lon,max_lat")
@@ -1227,8 +1262,11 @@ def main():
     parser.add_argument("--output", type=str, required=True, help="Output directory name")
     parser.add_argument("--size", type=str, default="16,16", help="Map size in chunks (width,height)")
     parser.add_argument("--format", type=str, default="all",
-                        choices=["all", "geojson", "ireg", "text"],
-                        help="Output format")
+                        choices=["all", "geojson", "ireg", "text", "u8"],
+                        help="Output format (u8 generates FIXED.DAT/NONFIXED.DAT)")
+    parser.add_argument("--game", type=str, default="u7",
+                        choices=["u7", "u8"],
+                        help="Target game: u7 (Ultima VII/Exult) or u8 (Ultima VIII/Pentagram)")
     parser.add_argument("--seed", type=str, default=None,
                         help="Random seed for reproducible generation (string or integer)")
 
@@ -1262,13 +1300,39 @@ def main():
     # Fetch OSM data
     osm_data = fetcher.fetch_osm_data(bbox)
     
-    # Generate map
-    generator = MapGenerator(bbox, map_size)
-    generator.process_osm_data(osm_data)
-    
     # Create output directory
     output_dir = os.path.join(os.getcwd(), args.output)
     os.makedirs(output_dir, exist_ok=True)
+    
+    # Handle U8 export
+    if args.game == "u8" or args.format == "u8":
+        # Import U8 modules
+        from osm2u8 import U8MapGenerator, U8MapExporter
+        
+        print(f"\n=== Generating Ultima VIII map ===")
+        generator = U8MapGenerator(bbox, map_size)
+        generator.process_osm_data(osm_data)
+        
+        exporter = U8MapExporter(generator)
+        exporter.export_fixed_dat(output_dir, map_number=0)
+        exporter.export_nonfixed_dat(output_dir, map_number=0)
+        exporter.export_geojson(os.path.join(output_dir, "map.geojson"))
+        exporter.export_summary(os.path.join(output_dir, "summary.json"), seed=args.seed)
+        
+        # Print U8 statistics
+        print(f"\n=== U8 Generation Statistics ===")
+        for key, value in generator.u8_stats.items():
+            print(f"  {key}: {value}")
+        print(f"\nU8 map generation complete! Output in: {output_dir}")
+        print(f"\nTo use with Pentagram:")
+        print(f"  1. Copy {output_dir}/fixed/FIXED.DAT to <U8_STATIC>/FIXED.DAT")
+        print(f"  2. Copy {output_dir}/nonfixed/NONFIXED.DAT to <GAMEDAT>/NONFIXED.DAT")
+        print(f"  (Backup originals first!)")
+        return
+    
+    # Default: U7 export
+    generator = MapGenerator(bbox, map_size)
+    generator.process_osm_data(osm_data)
     
     # Export
     exporter = MapExporter(generator.ultima_map, generator.npc_profiles)

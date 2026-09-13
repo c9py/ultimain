@@ -1,18 +1,27 @@
 # OSM to Ultima Map Converter (`osm2ultima`)
 
-This tool procedurally generates playable Ultima VII-style game maps from real-world OpenStreetMap (OSM) data. It allows you to transform any neighborhood, city, or region into a classic RPG world, complete with buildings, roads, forests, and even NPCs.
+This tool procedurally generates playable Ultima VII and VIII style game maps from real-world OpenStreetMap (OSM) data. It allows you to transform any neighborhood, city, or region into a classic RPG world, complete with buildings, roads, forests, and even NPCs.
 
 ## Features
 
 - **Real-World Map Generation**: Convert any location on Earth into an Ultima map.
-- **Feature-to-Shape Mapping**: Translates OSM features (buildings, roads, forests, rivers) into corresponding Ultima VII game objects and terrain tiles.
+- **Feature-to-Shape Mapping**: Translates OSM features (buildings, roads, forests, rivers) into corresponding Ultima VII/VIII game objects and terrain tiles.
 - **Procedural Generation**: Populates areas with appropriate details, such as placing trees in forests, furniture in houses, and NPCs in towns.
-- **Coordinate Transformation**: Accurately maps geographic coordinates (latitude/longitude) to Ultima's tile-based coordinate system.
+- **Coordinate Transformation**: Accurately maps geographic coordinates (latitude/longitude) to Ultima's coordinate systems.
 - **Multiple Output Formats**: Exports the generated map to several formats for different use cases:
     - **GeoJSON**: For visualization and analysis in GIS software (e.g., QGIS).
-    - **IREG files**: Binary object data compatible with the Exult engine.
+    - **IREG files**: Binary object data compatible with the Exult engine (Ultima VII).
+    - **FIXED.DAT/NONFIXED.DAT**: Binary map files compatible with Pentagram engine (Ultima VIII).
     - **Text Map**: A simple ASCII representation for quick previews.
     - **JSON Summary**: A summary of the generated map's statistics.
+
+## Supported Games
+
+| Game | Engine | Output Format | CLI |
+|------|--------|---------------|-----|
+| Ultima VII: The Black Gate | Exult | IREG files | `osm2ultima.py --game u7` |
+| Ultima VII: Serpent Isle | Exult | IREG files | `osm2ultima.py --game u7` |
+| Ultima VIII: Pagan | Pentagram | FIXED.DAT | `osm2u8.py` or `osm2ultima.py --game u8` |
 
 ## How It Works
 
@@ -66,12 +75,94 @@ python3 osm2ultima.py --bbox "-0.128,51.51,-0.120,51.515" --size 8,8 --output lo
 
 | Argument | Description |
 |---|---|
-| `--bbox "lon,lat,lon,lat"` | **Required**. The bounding box (min_lon, min_lat, max_lon, max_lat). |
-| `--place "Place Name"` | **Required**. A place name to geocode and use as the center. |
+| `--bbox "lon,lat,lon,lat"` | **Required** (or `--place`). The bounding box (min_lon, min_lat, max_lon, max_lat). |
+| `--place "Place Name"` | **Required** (or `--bbox`). A place name to geocode and use as the center. |
 | `--radius <meters>` | The radius in meters to use with `--place`. Default: `500`. |
 | `--output <name>` | **Required**. The name of the output directory for the generated files. |
 | `--size <w,h>` | The desired map size in chunks (1 chunk = 16x16 tiles). Default: `16,16`. |
-| `--format <format>` | The output format. Can be `all`, `geojson`, `ireg`, or `text`. Default: `all`. |
+| `--format <format>` | The output format. Can be `all`, `geojson`, `ireg`, `text`, or `u8`. Default: `all`. |
+| `--game <u7\|u8>` | Target game: `u7` (Ultima VII/Exult) or `u8` (Ultima VIII/Pentagram). Default: `u7`. |
+| `--seed <value>` | Random seed for reproducible generation. |
+
+---
+
+## Ultima VIII Export (`osm2u8`)
+
+The tool includes dedicated support for Ultima VIII (Pentagram engine) map generation.
+
+### Quick Start
+
+```bash
+# Using the dedicated U8 CLI:
+python3 osm2u8.py --place "London, UK" --radius 500 --output london_u8
+
+# Or using the main CLI with --game flag:
+python3 osm2ultima.py --game u8 --place "London, UK" --radius 500 --output london_u8
+```
+
+### U8 Output Files
+
+The U8 export generates:
+
+| File | Description |
+|------|-------------|
+| `fixed/FIXED.DAT` | Fixed objects (terrain, walls, immovable structures) |
+| `nonfixed/NONFIXED.DAT` | Non-fixed objects (items, movable objects) |
+| `map.geojson` | GeoJSON visualization for GIS tools |
+| `summary.json` | Generation statistics |
+
+### U8 Map Format
+
+Ultima VIII uses a 16-byte record format per object:
+
+| Offset | Size | Description |
+|--------|------|-------------|
+| 0 | 2 bytes | X position (world coordinates 0-65535) |
+| 2 | 2 bytes | Y position (world coordinates 0-65535) |
+| 4 | 1 byte | Z position (height 0-255) |
+| 5 | 2 bytes | Shape number |
+| 7 | 1 byte | Frame number |
+| 8 | 2 bytes | Flags |
+| 10 | 2 bytes | Quality |
+| 12 | 1 byte | NPC number |
+| 13 | 1 byte | Map number |
+| 14 | 2 bytes | Next object ID |
+
+### Using with Pentagram
+
+To use the generated map with the Pentagram engine:
+
+1. **Backup your original files** before making any changes.
+2. Copy `<output>/fixed/FIXED.DAT` to your U8 `STATIC` directory.
+3. Copy `<output>/nonfixed/NONFIXED.DAT` to your `GAMEDAT` directory.
+4. Start Pentagram.
+
+**Warning**: This will replace the original game map. Always keep backups!
+
+### U8 Shape Mapping Limitations
+
+U8 shapes are **different from U7 shapes**. The current mapping is approximate:
+
+- Basic terrain (ground, water, paths) maps to known U8 shapes
+- Buildings use U8 wall/floor shapes from Pentagram source code
+- Many OSM features map to placeholder shapes (shape 301)
+- NPC shapes are stubs that need verification against actual U8 data
+
+**TODO for better U8 support:**
+- Extract and document complete U8 shape list from `shapes.flx`
+- Create accurate OSM → U8 shape mapping table
+- Add support for U8 globs (pre-defined terrain sections)
+- Implement proper U8 terrain chunk system
+
+See `u8_shape_mapping.py` for the current mapping tables and TODOs.
+
+### U8-Specific Arguments
+
+| Argument | Description |
+|---|---|
+| `--map-number <n>` | U8 map number to populate (0-255). Default: `0`. |
+
+---
 
 ## Included Sample: Covent Garden
 
