@@ -61,6 +61,17 @@ jobs:
           -DBUILD_TESTING=OFF
         cmake --build build
         
+    - name: Build NPC AI Module
+      run: |
+        cd engines/npc
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DNPC_BUILD_TESTS=OFF \
+          -DNPC_USE_GNEURAL=OFF
+        cmake --build build
+        sudo cmake --install build
+        sudo ldconfig
+
     - name: Build Exult Engine
       run: |
         cd engines/exult
@@ -87,15 +98,6 @@ jobs:
         cmake --build build
         strip build/ultima-launcher
 
-    - name: Build NPC AI Module
-      run: |
-        cd engines/npc
-        cmake -B build -G Ninja \
-          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-          -DNPC_BUILD_TESTS=OFF \
-          -DNPC_USE_GNEURAL=OFF
-        cmake --build build
-
     - name: Package Linux Release
       run: |
         mkdir -p release/linux-x86_64/{bin,lib,tools,docs}
@@ -109,8 +111,8 @@ jobs:
         
         # Copy libraries
         cp build/libultima_shared.a release/linux-x86_64/lib/
-        if [ -f engines/npc/build/libnpc_ai.a ]; then
-          cp engines/npc/build/libnpc_ai.a release/linux-x86_64/lib/
+        if [ -f engines/npc/build/libultima_npc_ai.a ]; then
+          cp engines/npc/build/libultima_npc_ai.a release/linux-x86_64/lib/
         fi
         
         # Copy Python tools

@@ -230,6 +230,29 @@ option(ENABLE_NPC_AI "Enable advanced NPC AI integration" ON)
 if(ENABLE_NPC_AI)
     # Add npcai subdirectory
     add_subdirectory(npcai)
+
+    # When building Exult standalone, the ultima_npc_ai target is not part of
+    # this build tree, so import the pre-built NPC AI library.
+    if(NOT TARGET ultima_npc_ai)
+        find_library(ULTIMA_NPC_AI_LIBRARY
+            NAMES ultima_npc_ai
+            PATHS
+                ${CMAKE_CURRENT_SOURCE_DIR}/../npc/build
+            PATH_SUFFIXES lib lib64
+        )
+        if(NOT ULTIMA_NPC_AI_LIBRARY)
+            message(FATAL_ERROR
+                "ENABLE_NPC_AI is ON but the ultima_npc_ai library was not found. "
+                "Build and/or install the NPC AI module in engines/npc first, "
+                "or configure with -DENABLE_NPC_AI=OFF.")
+        endif()
+        message(STATUS "Found ultima_npc_ai: ${ULTIMA_NPC_AI_LIBRARY}")
+        add_library(ultima_npc_ai STATIC IMPORTED GLOBAL)
+        set_target_properties(ultima_npc_ai PROPERTIES
+            IMPORTED_LOCATION "${ULTIMA_NPC_AI_LIBRARY}"
+            INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/../npc/include"
+        )
+    endif()
     
     # Add NPC AI include directory
     list(APPEND EXULT_INCLUDE_DIRS
