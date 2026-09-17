@@ -61,7 +61,7 @@ jobs:
         cmake -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
-          -DCMAKE_PREFIX_PATH=/usr/local
+          -DSDLTTF_VENDORED=OFF
         cmake --build build
         sudo cmake --install build
         sudo ldconfig
