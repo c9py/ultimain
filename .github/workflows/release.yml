@@ -54,6 +54,18 @@ jobs:
         sudo cmake --install build
         sudo ldconfig
 
+    - name: Build SDL3_ttf from source
+      run: |
+        git clone --depth 1 --branch release-3.0.0 https://github.com/libsdl-org/SDL_ttf.git /tmp/SDL_ttf
+        cd /tmp/SDL_ttf
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
+          -DSDLTTF_VENDORED=OFF
+        cmake --build build
+        sudo cmake --install build
+        sudo ldconfig
+
     - name: Build Shared Library
       run: |
         cmake -B build -G Ninja \
