@@ -51,7 +51,8 @@ PipelineStages Pipeline::evaluateDetailed(const EchoDrive& drive, float dt) {
 }
 
 const MotionFrame& Pipeline::evaluate(const EchoDrive& drive, float dt) {
-    return evaluateDetailed(drive, dt).echoed;
+    evaluateDetailed(drive, dt);
+    return lastFrame_;
 }
 
 } // namespace Avatar
