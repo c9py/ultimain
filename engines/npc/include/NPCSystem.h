@@ -29,6 +29,10 @@
 // Phase 5: Urban Dynamics
 #include "urban/UrbanDynamics.h"
 
+#ifdef ULTIMA_NPC_HAS_AVATAR
+#include "avatar/Avatar.h"
+#endif
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -88,6 +92,16 @@ public:
     std::string serialize() const;
     bool deserialize(const std::string& data);
 
+#ifdef ULTIMA_NPC_HAS_AVATAR
+    /**
+     * Drive the composed avatar motion mesh from this NPC's persona:
+     * meshy3d(live2d-dtecho[meta-echo-dna<rig-logic+facs>]) /deltecho
+     */
+    const Avatar::MotionFrame& evaluateAvatar(double deltaTime);
+    const Avatar::MotionFrame& lastAvatarFrame() const;
+    const Avatar::MetaEchoDNA& avatarIdentity() const;
+#endif
+
 private:
     std::string id_;
     bool isAlive_ = true;
@@ -100,6 +114,9 @@ private:
     std::unique_ptr<Neural::NPCLearningNetwork> learning_;
     std::unique_ptr<Economy::EconomicAgent> economicAgent_;
     std::unique_ptr<AIML::SessionContext> dialogueContext_;
+#ifdef ULTIMA_NPC_HAS_AVATAR
+    std::unique_ptr<Avatar::Pipeline> avatar_;
+#endif
 };
 
 /**

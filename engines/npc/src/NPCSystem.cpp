@@ -20,6 +20,9 @@ NPCEntity::NPCEntity(const std::string& id)
     , learning_(std::make_unique<Neural::NPCLearningNetwork>(Neural::NPCLearningNetwork::LearningContext{}))
     , economicAgent_(std::make_unique<Economy::EconomicAgent>(id))
     , dialogueContext_(std::make_unique<AIML::SessionContext>())
+#ifdef ULTIMA_NPC_HAS_AVATAR
+    , avatar_(std::make_unique<Avatar::Pipeline>(id))
+#endif
 {
     persona_->id = id;
 }
@@ -33,6 +36,10 @@ void NPCEntity::update(double deltaTime) {
     
     // Mood tends toward neutral
     emotions.overallValence *= (1.0 - 0.05 * deltaTime);
+
+#ifdef ULTIMA_NPC_HAS_AVATAR
+    evaluateAvatar(deltaTime);
+#endif
 }
 
 std::string NPCEntity::respondToDialogue(const std::string& input) {
@@ -177,6 +184,50 @@ Persona::EmotionalState& NPCEntity::getEmotionalState() {
 const Persona::EmotionalState& NPCEntity::getEmotionalState() const {
     return persona_->emotionalState;
 }
+
+#ifdef ULTIMA_NPC_HAS_AVATAR
+namespace {
+
+Avatar::AffectSample affectFromPersona(const Persona::NPCPersona& persona) {
+    Avatar::AffectSample sample;
+    sample.identityName = persona.id;
+    const auto& e = persona.emotionalState;
+    auto get = [&](Persona::EmotionType t) {
+        auto it = e.emotions.find(t);
+        return it == e.emotions.end() ? 0.0 : it->second;
+    };
+    sample.happiness = static_cast<float>(get(Persona::EmotionType::Happiness));
+    sample.sadness = static_cast<float>(get(Persona::EmotionType::Sadness));
+    sample.anger = static_cast<float>(get(Persona::EmotionType::Anger));
+    sample.fear = static_cast<float>(get(Persona::EmotionType::Fear));
+    sample.surprise = static_cast<float>(get(Persona::EmotionType::Surprise));
+    sample.disgust = static_cast<float>(get(Persona::EmotionType::Disgust));
+    sample.valence = static_cast<float>(e.overallValence);
+    sample.arousal = static_cast<float>(e.arousal);
+    sample.dominance = static_cast<float>(e.dominance);
+    sample.openness = static_cast<float>(persona.traits.openness);
+    sample.conscientiousness = static_cast<float>(persona.traits.conscientiousness);
+    sample.extraversion = static_cast<float>(persona.traits.extraversion);
+    sample.agreeableness = static_cast<float>(persona.traits.agreeableness);
+    sample.neuroticism = static_cast<float>(persona.traits.neuroticism);
+    return sample;
+}
+
+} // namespace
+
+const Avatar::MotionFrame& NPCEntity::evaluateAvatar(double deltaTime) {
+    const Avatar::EchoDrive drive = Avatar::PersonaBridge::fromAffect(affectFromPersona(*persona_));
+    return avatar_->evaluate(drive, static_cast<float>(deltaTime));
+}
+
+const Avatar::MotionFrame& NPCEntity::lastAvatarFrame() const {
+    return avatar_->lastFrame();
+}
+
+const Avatar::MetaEchoDNA& NPCEntity::avatarIdentity() const {
+    return avatar_->identity();
+}
+#endif
 
 std::string NPCEntity::serialize() const {
     return "{}";  // Placeholder

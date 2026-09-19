@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avatar Motion Mesh — Deltecho</title>
+  <style>
+    :root {
+      --bg: #0e1117;
+      --panel: #161b22;
+      --line: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #3fb950;
+      --warm: #e94560;
+      --cyan: #58a6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, #1b2330, var(--bg));
+      color: var(--text);
+    }
+    header {
+      padding: 20px 24px 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    h1 { margin: 0 0 6px; font-size: 1.4rem; }
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--cyan);
+      font-size: 0.82rem;
+      word-break: break-word;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr 280px;
+      gap: 16px;
+      padding: 16px;
+    }
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    canvas {
+      width: 100%;
+      height: 460px;
+      background: #0a0d12;
+      border-radius: 10px;
+      display: block;
+    }
+    .bar { margin: 7px 0; }
+    .bar label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .track {
+      height: 7px;
+      background: #21262d;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 3px;
+    }
+    .fill { height: 100%; background: var(--accent); width: 0%; }
+    .fill.warm { background: var(--warm); }
+    .fill.cyan { background: var(--cyan); }
+    .emotions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    button {
+      background: #21262d;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    button.active { border-color: var(--accent); color: var(--accent); }
+    .meta { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+    .meta strong { color: var(--text); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Avatar motion mesh</h1>
+    <div class="formula">{ /meshy3d ( /live2d-dtecho [ /meta-echo-dna &lt; /rig-logic + /facs &gt; ] ) =&gt; avatar motion mesh /deltecho }</div>
+  </header>
+  <div class="layout">
+    <section class="panel">
+      <h2>FACS + Rig Logic</h2>
+      <div class="emotions" id="emotions"></div>
+      <div id="facs"></div>
+    </section>
+    <section class="panel">
+      <h2>Meshy3D motion mesh</h2>
+      <canvas id="stage" width="720" height="460"></canvas>
+      <p class="meta" id="meshMeta"></p>
+    </section>
+    <section class="panel">
+      <h2>Live2D-DTECHO / Deltecho</h2>
+      <div id="live2d"></div>
+      <p class="meta" id="dnaMeta"></p>
+    </section>
+  </div>
+  <script>
+    const emotions = ["neutral","happiness","surprise","fear","anger","sadness","disgust"];
+    const auNames = ["AU1","AU2","AU4","AU5","AU6","AU7","AU9","AU10","AU12","AU15","AU17","AU20","AU23","AU24","AU25","AU26","AU27","AU43"];
+    const liveNames = ["AngleX","AngleY","EyeLOpen","EyeROpen","BrowLY","MouthOpenY","MouthForm","Cheek","Breath"];
+    let current = "happiness";
+    let t = 0;
+    let reservoir = new Array(16).fill(0);
+    let prevMouth = 0;
+
+    const recipes = {
+      neutral: {},
+      happiness: {AU6:0.60, AU12:0.85},
+      sadness: {AU1:0.65, AU4:0.40, AU15:0.75},
+      anger: {AU4:0.80, AU5:0.35, AU7:0.55, AU23:0.60},
+      fear: {AU1:0.50, AU2:0.50, AU4:0.30, AU5:0.60, AU20:0.50, AU26:0.25},
+      surprise: {AU1:0.70, AU2:0.70, AU5:0.70, AU26:0.60},
+      disgust: {AU9:0.70, AU10:0.50, AU17:0.40}
+    };
+
+    function facsOf(name, intensity) {
+      const out = {};
+      auNames.forEach(k => out[k] = 0);
+      const rec = recipes[name] || {};
+      Object.keys(rec).forEach(k => { out[k] = rec[k] * intensity; });
+      return out;
+    }
+
+    function live2dOf(facs) {
+      const mouthForm = (facs.AU12 || 0) - (facs.AU15 || 0);
+      const mouthOpen = (facs.AU25 || 0) * 0.4 + (facs.AU26 || 0) * 0.7;
+      const eyeClose = (facs.AU43 || 0) + (facs.AU7 || 0) * 0.3;
+      const brow = (facs.AU1 || 0) + (facs.AU2 || 0) * 0.5 - (facs.AU4 || 0);
+      return {
+        AngleX: Math.sin(t * 0.7) * 0.15,
+        AngleY: Math.cos(t * 0.5) * 0.08,
+        EyeLOpen: Math.max(0, 1 - eyeClose),
+        EyeROpen: Math.max(0, 1 - eyeClose * 0.98),
+        BrowLY: brow,
+        MouthOpenY: Math.max(0, Math.min(1, mouthOpen)),
+        MouthForm: Math.max(-1, Math.min(1, mouthForm)),
+        Cheek: facs.AU6 || 0,
+        Breath: 0.35 + 0.15 * Math.sin(t * 2.1)
+      };
+    }
+
+    function fingerprint(facs) {
+      let h = 2166136261;
+      auNames.forEach((k, i) => {
+        h ^= Math.round((facs[k] || 0) * 1000) + i * 17;
+        h = Math.imul(h, 16777619);
+      });
+      return (h >>> 0).toString(16);
+    }
+
+    const verts = [];
+    const faces = [];
+    (function buildHead() {
+      const stacks = 10, slices = 14;
+      for (let i = 0; i <= stacks; i++) {
+        const phi = Math.PI * i / stacks;
+        for (let j = 0; j <= slices; j++) {
+          const th = 2 * Math.PI * j / slices;
+          const x = Math.cos(th) * Math.sin(phi);
+          const y = Math.cos(phi);
+          const z = Math.sin(th) * Math.sin(phi);
+          let region = 0;
+          if (y > 0.35 && z > 0.1) region = 1;
+          else if (Math.abs(x) > 0.15 && y > 0.05 && y < 0.35 && z > 0.35) region = 2;
+          else if (y < -0.1 && y > -0.4 && z > 0.25) region = 3;
+          else if (y < -0.4) region = 4;
+          else if (Math.abs(x) > 0.4 && y < 0.15 && z > 0) region = 5;
+          verts.push({x, y, z, region});
+        }
+      }
+      const ring = slices + 1;
+      for (let i = 0; i < stacks; i++) {
+        for (let j = 0; j < slices; j++) {
+          const a = i * ring + j, b = a + 1, c = a + ring, d = c + 1;
+          faces.push([a, c, b], [b, c, d]);
+        }
+      }
+    })();
+
+    function deform(v, facs, live) {
+      const p = {x: v.x, y: v.y, z: v.z};
+      const smile = facs.AU12 || 0, frown = facs.AU15 || 0, jaw = facs.AU26 || 0;
+      const blink = 1 - live.EyeLOpen, brow = live.BrowLY, cheek = live.Cheek, open = live.MouthOpenY;
+      if (v.region === 1) p.y += brow * 0.08;
+      if (v.region === 2) p.y -= blink * 0.07;
+      if (v.region === 3) {
+        p.x += (v.x < 0 ? -1 : 1) * (smile * 0.12 + frown * 0.05);
+        p.y += smile * 0.06 - frown * 0.07 - open * 0.04;
+      }
+      if (v.region === 4) p.y -= (jaw + open) * 0.14;
+      if (v.region === 5) p.x += (v.x < 0 ? -1 : 1) * cheek * 0.05;
+      const yaw = live.AngleX * 0.6, pitch = live.AngleY * 0.4;
+      const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+      let x = p.x * cy + p.z * sy;
+      let z = -p.x * sy + p.z * cy;
+      let y = p.y * cp - z * sp;
+      z = p.y * sp + z * cp;
+      return {x, y, z};
+    }
+
+    function project(p, w, h) {
+      const scale = 150;
+      return {x: w * 0.5 + p.x * scale, y: h * 0.52 - p.y * scale - p.z * 12};
+    }
+
+    const facsBox = document.getElementById("facs");
+    const liveBox = document.getElementById("live2d");
+    const emoBox = document.getElementById("emotions");
+    emotions.forEach(name => {
+      const b = document.createElement("button");
+      b.textContent = name;
+      b.dataset.emo = name;
+      b.addEventListener("click", () => { current = name; });
+      emoBox.appendChild(b);
+    });
+    auNames.forEach(name => {
+      const d = document.createElement("div");
+      d.className = "bar";
+      d.innerHTML = `<label><span>${name}</span><span id="v-${name}">0.00</span></label><div class="track"><div class="fill" id="f-${name}"></div></div>`;
+      facsBox.appendChild(d);
+    });
+    liveNames.forEach(name => {
+      const d = document.createElement("div");
+      d.className = "bar";
+      d.innerHTML = `<label><span>${name}</span><span id="lv-${name}">0.00</span></label><div class="track"><div class="fill cyan" id="lf-${name}"></div></div>`;
+      liveBox.appendChild(d);
+    });
+
+    const canvas = document.getElementById("stage");
+    const ctx = canvas.getContext("2d");
+
+    function tick() {
+      t += 0.016;
+      const intensity = current === "neutral" ? 0.05 : 0.9;
+      const facs = facsOf(current, intensity);
+      const live = live2dOf(facs);
+      const mouth = live.MouthOpenY;
+      const residual = Math.abs(mouth - prevMouth);
+      prevMouth = mouth;
+      reservoir = reservoir.map((v, i) => v * 0.86 + residual * (0.2 + (i % 5) * 0.03) + live.Breath * 0.02);
+
+      document.querySelectorAll("#emotions button").forEach(b => b.classList.toggle("active", b.dataset.emo === current));
+      auNames.forEach(name => {
+        const v = facs[name] || 0;
+        document.getElementById("v-" + name).textContent = v.toFixed(2);
+        const fill = document.getElementById("f-" + name);
+        fill.style.width = (Math.min(1, v) * 100) + "%";
+        fill.classList.toggle("warm", name === "AU12" || name === "AU26");
+      });
+      liveNames.forEach(name => {
+        const v = live[name] || 0;
+        document.getElementById("lv-" + name).textContent = v.toFixed(2);
+        document.getElementById("lf-" + name).style.width = (Math.min(1, Math.abs(v)) * 100) + "%";
+      });
+      document.getElementById("dnaMeta").innerHTML =
+        `<strong>Meta-Echo DNA</strong> fingerprint 0x${fingerprint(facs)}<br>` +
+        `Deltecho residual ${residual.toFixed(3)} · reservoir ${reservoir[0].toFixed(3)}`;
+      document.getElementById("meshMeta").textContent =
+        `${verts.length} verts · ${faces.length} tris · Mixamo-style head bind · emotion ${current}`;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "rgba(88,166,255,0.35)";
+      ctx.lineWidth = 0.8;
+      const posed = verts.map(v => deform(v, facs, live));
+      faces.forEach(f => {
+        const a = project(posed[f[0]], canvas.width, canvas.height);
+        const b = project(posed[f[1]], canvas.width, canvas.height);
+        const c = project(posed[f[2]], canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.lineTo(c.x, c.y);
+        ctx.closePath();
+        ctx.stroke();
+      });
+      requestAnimationFrame(tick);
+    }
+
+    setInterval(() => {
+      const i = emotions.indexOf(current);
+      current = emotions[(i + 1) % emotions.length];
+    }, 2200);
+    tick();
+  </script>
+</body>
+</html>
