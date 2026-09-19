@@ -3,8 +3,8 @@
 # Cloud Agent environment bootstrap for the Ultima Engines Integration repo.
 #
 # Idempotent: safe to re-run. Installs system packages, builds and installs
-# SDL3 from source (skipped if already present), then builds the C/C++
-# components and installs Python deps for the OSM2Ultima tool.
+# SDL3 and SDL3_ttf from source (skipped if already present), then builds the
+# C/C++ components and installs Python deps for the OSM2Ultima tool.
 #
 # Mirrors the recipe in .github/workflows/ci.yml, which is the source of truth
 # for how these components are known to build.
@@ -13,7 +13,9 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
-SDL_VERSION="release-3.2.0"
+# Match the CI launcher job: SDL3_ttf 3.2.2 needs SDL3 3.2.6+.
+SDL_VERSION="release-3.2.6"
+SDL_TTF_VERSION="release-3.2.2"
 JOBS="$(nproc)"
 
 log() { printf '\n=== %s ===\n' "$1"; }
@@ -30,14 +32,14 @@ sudo apt-get install -y --no-install-recommends \
   cppcheck \
   git ca-certificates \
   python3 python3-pip \
-  libvorbis-dev libogg-dev zlib1g-dev libpng-dev libfreetype-dev \
+  libvorbis-dev libogg-dev zlib1g-dev libpng-dev libfreetype-dev libharfbuzz-dev \
   libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev \
   libxi-dev libxss-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev \
   libibus-1.0-dev \
   xvfb x11-xserver-utils ffmpeg xdotool
 
 # --- 2. SDL3 from source (idempotent) -------------------------------------
-if pkg-config --atleast-version=3.2.0 sdl3 2>/dev/null; then
+if pkg-config --atleast-version=3.2.6 sdl3 2>/dev/null; then
   log "SDL3 already installed ($(pkg-config --modversion sdl3)); skipping build"
 else
   log "Building SDL3 ${SDL_VERSION} from source"
@@ -51,6 +53,26 @@ else
     -DSDL_STATIC=ON
   cmake --build "$SDL_SRC/build" -j "$JOBS"
   sudo cmake --install "$SDL_SRC/build"
+  sudo ldconfig
+fi
+
+# --- 2b. SDL3_ttf from source (idempotent) --------------------------------
+# The unified launcher requires sdl3-ttf>=3.0.0 (see launcher/CMakeLists.txt).
+# CI builds this from source in the build-launcher job; a system package is
+# not available for SDL3_ttf on the Cloud Agent image.
+if pkg-config --atleast-version=3.0.0 sdl3-ttf 2>/dev/null; then
+  log "SDL3_ttf already installed ($(pkg-config --modversion sdl3-ttf)); skipping build"
+else
+  log "Building SDL3_ttf ${SDL_TTF_VERSION} from source"
+  TTF_SRC="/tmp/SDL3_ttf"
+  rm -rf "$TTF_SRC"
+  git clone --depth 1 --branch "$SDL_TTF_VERSION" https://github.com/libsdl-org/SDL_ttf.git "$TTF_SRC"
+  cmake -S "$TTF_SRC" -B "$TTF_SRC/build" -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DSDLTTF_VENDORED=OFF
+  cmake --build "$TTF_SRC/build" -j "$JOBS"
+  sudo cmake --install "$TTF_SRC/build"
   sudo ldconfig
 fi
 
@@ -77,9 +99,31 @@ log "Building gneural-net"
 )
 
 # --- 6. Unified launcher --------------------------------------------------
+# Wipe any stale cache (CI does the same). Then require the binary to actually
+# link libSDL3_ttf — a first-pass link has been observed to drop it under
+# --as-needed even when cmake found the package.
+build_launcher() {
+  rm -rf launcher/build/CMakeCache.txt launcher/build/CMakeFiles
+  cmake -S launcher -B launcher/build -G Ninja -DCMAKE_BUILD_TYPE=Release
+  cmake --build launcher/build -j "$JOBS"
+}
+
+launcher_links_ttf() {
+  ldd launcher/build/ultima-launcher 2>/dev/null | grep -q 'libSDL3_ttf'
+}
+
 log "Building unified launcher"
-cmake -S launcher -B launcher/build -G Ninja -DCMAKE_BUILD_TYPE=Release
-cmake --build launcher/build -j "$JOBS"
+build_launcher
+if ! launcher_links_ttf; then
+  log "Launcher missing libSDL3_ttf; performing a clean rebuild"
+  rm -rf launcher/build
+  build_launcher
+fi
+if ! launcher_links_ttf; then
+  echo "ERROR: ultima-launcher did not link libSDL3_ttf" >&2
+  ldd launcher/build/ultima-launcher >&2 || true
+  exit 1
+fi
 
 # --- 7. Pentagram engine (best-effort) ------------------------------------
 # The Pentagram (Ultima VIII) engine currently fails to compile under C++17
