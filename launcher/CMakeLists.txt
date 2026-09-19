@@ -4,29 +4,21 @@ project(UltimaLauncher VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find SDL3 and SDL3_ttf
+# Find SDL3 and SDL3_ttf. IMPORTED_TARGET keeps include dirs, -L paths, and
+# library names together. Passing only ${SDL3_TTF_LIBRARIES} can drop
+# libSDL3_ttf under --as-needed when the linker search path is incomplete.
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(SDL3 REQUIRED sdl3>=3.2.0)
-pkg_check_modules(SDL3_TTF REQUIRED sdl3-ttf>=3.0.0)
+pkg_check_modules(SDL3 REQUIRED IMPORTED_TARGET sdl3>=3.2.0)
+pkg_check_modules(SDL3_TTF REQUIRED IMPORTED_TARGET sdl3-ttf>=3.0.0)
 
 # Launcher executable
 add_executable(ultima-launcher
     main.cpp
 )
 
-target_include_directories(ultima-launcher PRIVATE
-    ${SDL3_INCLUDE_DIRS}
-    ${SDL3_TTF_INCLUDE_DIRS}
-)
-
 target_link_libraries(ultima-launcher PRIVATE
-    ${SDL3_LIBRARIES}
-    ${SDL3_TTF_LIBRARIES}
-)
-
-target_compile_options(ultima-launcher PRIVATE
-    ${SDL3_CFLAGS_OTHER}
-    ${SDL3_TTF_CFLAGS_OTHER}
+    PkgConfig::SDL3
+    PkgConfig::SDL3_TTF
 )
 
 # Define asset paths for the executable
