@@ -31,6 +31,9 @@ cd engines/ultima8 && mkdir build && cd build && cmake .. && make -j$(nproc)
 # NPC AI system
 cd engines/npc && mkdir build && cd build && cmake .. && make
 
+# Avatar motion mesh pipeline
+cd engines/avatar && mkdir build && cd build && cmake -DAVATAR_BUILD_TESTS=ON -DAVATAR_BUILD_EXAMPLES=ON .. && make && ctest --output-on-failure
+
 # Unified launcher
 cd launcher && mkdir build && cd build && cmake .. && make
 ```
@@ -55,7 +58,8 @@ ultimain/
 ├── engines/
 │   ├── exult/          # Exult engine - full source (~15.8 MB binary)
 │   ├── ultima8/        # Pentagram engine - full source (~3.0 MB binary)
-│   └── npc/            # NPC AI integration library
+│   ├── npc/            # NPC AI integration library
+│   └── avatar/         # Avatar motion mesh pipeline
 ├── launcher/           # SDL3-based unified desktop launcher
 ├── reference/          # Reference game data files for format analysis
 │   ├── u7_static/      # Ultima VII static data (~18 MB)
@@ -79,6 +83,7 @@ ultimain/
 | `engines/exult/CMakeLists.txt` | Exult engine build |
 | `engines/ultima8/CMakeLists.txt` | Pentagram engine build |
 | `engines/npc/CMakeLists.txt` | NPC AI library build |
+| `engines/avatar/CMakeLists.txt` | Avatar motion mesh pipeline |
 | `shared/config.h` | Shared library configuration |
 | `tools/osm2ultima/osm2ultima.py` | Main OSM converter script |
 
@@ -101,6 +106,13 @@ ultimain/
 - ~7,400 lines of C++ across 12 source files
 - Headers in `engines/npc/include/`
 - Integrates TinyLLM and hybrid dialogue systems
+
+### Avatar Motion Mesh
+- Location: `engines/avatar/`
+- Composition: `meshy3d(live2d-dtecho[meta-echo-dna<rig-logic+facs>]) /deltecho`
+- Binary/demo: `engines/avatar/build/examples/avatar_pipeline_demo`
+- Inspector: `web/avatar/index.html`
+- See `docs/avatar_motion_mesh.md`
 
 ## Cognitive Subsystem
 
@@ -150,6 +162,9 @@ cd build && cmake -DBUILD_TESTING=ON .. && make && ctest --output-on-failure
 # NPC AI module tests
 cd engines/npc/build && cmake -DNPC_BUILD_TESTS=ON .. && make && ctest --output-on-failure
 
+# Avatar motion mesh tests
+cd engines/avatar && cmake -B build -DAVATAR_BUILD_TESTS=ON .. && cmake --build build && cd build && ctest --output-on-failure
+
 # gneural-net tests
 cd cognitive/gneural-net/tests/unit && make && ./test_runner
 
@@ -160,6 +175,7 @@ cd tools/osm2ultima && python -m pytest tests/ -v
 **Test Locations:**
 - `tests/` - Shared library unit tests (common_types, exceptions)
 - `engines/npc/tests/` - NPC AI module tests (neural network, memory, persona, tensor logic)
+- `engines/avatar/tests/` - Avatar motion mesh tests (FACS, Rig Logic, DNA, Live2D, Meshy, Deltecho)
 - `cognitive/gneural-net/tests/unit/` - gneural-net unit tests (69 tests)
 - `tools/osm2ultima/tests/` - OSM2Ultima Python tests
 
@@ -171,6 +187,7 @@ GitHub Actions CI automatically builds and tests all components on push/PR:
 **CI Jobs:**
 - `build-shared-library` - Builds shared lib with SDL3 from source
 - `build-npc-module` - Builds and tests NPC AI module
+- `build-avatar-pipeline` - Builds and tests avatar motion mesh composition
 - `build-gneural-net` - Builds and runs gneural-net unit tests
 - `build-launcher` - Builds unified launcher
 - `test-osm2ultima` - Runs Python tests for OSM converter
@@ -195,6 +212,7 @@ GitHub Actions CI automatically builds and tests all components on push/PR:
 ## Documentation
 
 - `docs/cognitive_npc_architecture.md` - NPC AI system design
+- `docs/avatar_motion_mesh.md` - Avatar motion mesh composition (FACS / Rig Logic / DNA / Live2D / Meshy / Deltecho)
 - `docs/world_map_structure.md` - Ultima map format documentation
 - `docs/gis_format_comparison.md` - GIS format analysis for OSM2Ultima
 - `docs/exult_build_report.md` - Exult build process notes
