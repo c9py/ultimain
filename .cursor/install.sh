@@ -99,9 +99,31 @@ log "Building gneural-net"
 )
 
 # --- 6. Unified launcher --------------------------------------------------
+# Wipe any stale cache (CI does the same). Then require the binary to actually
+# link libSDL3_ttf — a first-pass link has been observed to drop it under
+# --as-needed even when cmake found the package.
+build_launcher() {
+  rm -rf launcher/build/CMakeCache.txt launcher/build/CMakeFiles
+  cmake -S launcher -B launcher/build -G Ninja -DCMAKE_BUILD_TYPE=Release
+  cmake --build launcher/build -j "$JOBS"
+}
+
+launcher_links_ttf() {
+  ldd launcher/build/ultima-launcher 2>/dev/null | grep -q 'libSDL3_ttf'
+}
+
 log "Building unified launcher"
-cmake -S launcher -B launcher/build -G Ninja -DCMAKE_BUILD_TYPE=Release
-cmake --build launcher/build -j "$JOBS"
+build_launcher
+if ! launcher_links_ttf; then
+  log "Launcher missing libSDL3_ttf; performing a clean rebuild"
+  rm -rf launcher/build
+  build_launcher
+fi
+if ! launcher_links_ttf; then
+  echo "ERROR: ultima-launcher did not link libSDL3_ttf" >&2
+  ldd launcher/build/ultima-launcher >&2 || true
+  exit 1
+fi
 
 # --- 7. Pentagram engine (best-effort) ------------------------------------
 # The Pentagram (Ultima VIII) engine currently fails to compile under C++17
