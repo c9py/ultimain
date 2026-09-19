@@ -51,10 +51,16 @@ int main(int argc, char** argv) {
     frames << "  \"frames\": [\n";
 
     MotionFrame last;
+    MotionFrame happyFrame;
+    EchoDrive happyDrive;
     for (size_t i = 0; i < sizeof(sequence) / sizeof(sequence[0]); ++i) {
         const EchoDrive drive = makeDrive(sequence[i], sequence[i] == Emotion::Neutral ? 0.0f : 0.9f, persona);
         const PipelineStages s = pipe.evaluateDetailed(drive, 0.08f);
         last = s.echoed;
+        if (sequence[i] == Emotion::Happiness) {
+            happyFrame = s.echoed;
+            happyDrive = drive;
+        }
         const float disp = MotionMesh::vertexDisplacement(s.echoed);
         std::cout << std::setw(10) << emotionName(sequence[i])
                   << "  AU12=" << std::fixed << std::setprecision(3) << s.facs.get(ActionUnit::AU12_LipCornerPuller)
@@ -82,12 +88,15 @@ int main(int argc, char** argv) {
 
     if (!jsonPath.empty()) {
         std::ofstream out(jsonPath);
-        out << MotionMesh::toJson(last, makeDrive(Emotion::Happiness, 0.9f, persona));
+        out << MotionMesh::toJson(happyFrame.deformed.empty() ? last : happyFrame,
+                                  happyFrame.deformed.empty()
+                                      ? makeDrive(Emotion::Happiness, 0.9f, persona)
+                                      : happyDrive);
         std::cout << "wrote " << jsonPath << "\n";
     }
     if (!objPath.empty()) {
         std::ofstream out(objPath);
-        out << MotionMesh::toObj(last);
+        out << MotionMesh::toObj(happyFrame.deformed.empty() ? last : happyFrame);
         std::cout << "wrote " << objPath << "\n";
     } else {
         std::cout << frames.str();

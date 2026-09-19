@@ -55,6 +55,11 @@
       text-transform: uppercase;
       color: var(--muted);
     }
+    .stage-wrap {
+      position: relative;
+      width: 100%;
+      height: 460px;
+    }
     canvas {
       width: 100%;
       height: 460px;
@@ -106,7 +111,7 @@
     </section>
     <section class="panel">
       <h2>Meshy3D motion mesh</h2>
-      <canvas id="stage" width="720" height="460"></canvas>
+      <div class="stage-wrap"><canvas id="stage" width="720" height="460"></canvas></div>
       <p class="meta" id="meshMeta"></p>
     </section>
     <section class="panel">
@@ -198,32 +203,6 @@
       }
     })();
 
-    function deform(v, facs, live) {
-      const p = {x: v.x, y: v.y, z: v.z};
-      const smile = facs.AU12 || 0, frown = facs.AU15 || 0, jaw = facs.AU26 || 0;
-      const blink = 1 - live.EyeLOpen, brow = live.BrowLY, cheek = live.Cheek, open = live.MouthOpenY;
-      if (v.region === 1) p.y += brow * 0.08;
-      if (v.region === 2) p.y -= blink * 0.07;
-      if (v.region === 3) {
-        p.x += (v.x < 0 ? -1 : 1) * (smile * 0.12 + frown * 0.05);
-        p.y += smile * 0.06 - frown * 0.07 - open * 0.04;
-      }
-      if (v.region === 4) p.y -= (jaw + open) * 0.14;
-      if (v.region === 5) p.x += (v.x < 0 ? -1 : 1) * cheek * 0.05;
-      const yaw = live.AngleX * 0.6, pitch = live.AngleY * 0.4;
-      const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
-      let x = p.x * cy + p.z * sy;
-      let z = -p.x * sy + p.z * cy;
-      let y = p.y * cp - z * sp;
-      z = p.y * sp + z * cp;
-      return {x, y, z};
-    }
-
-    function project(p, w, h) {
-      const scale = 150;
-      return {x: w * 0.5 + p.x * scale, y: h * 0.52 - p.y * scale - p.z * 12};
-    }
-
     const facsBox = document.getElementById("facs");
     const liveBox = document.getElementById("live2d");
     const emoBox = document.getElementById("emotions");
@@ -249,6 +228,46 @@
 
     const canvas = document.getElementById("stage");
     const ctx = canvas.getContext("2d");
+    function fitCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas._cssW = rect.width;
+      canvas._cssH = rect.height;
+    }
+    window.addEventListener("resize", fitCanvas);
+    fitCanvas();
+
+    function deform(v, facs, live) {
+      const p = {x: v.x * 0.78, y: v.y, z: v.z * 0.72};
+      const smile = facs.AU12 || 0, frown = facs.AU15 || 0, jaw = facs.AU26 || 0;
+      const blink = 1 - live.EyeLOpen, brow = live.BrowLY, cheek = live.Cheek, open = live.MouthOpenY;
+      if (v.region === 1) p.y += brow * 0.10;
+      if (v.region === 2) p.y -= blink * 0.08;
+      if (v.region === 3) {
+        p.x += (v.x < 0 ? -1 : 1) * (smile * 0.16 + frown * 0.08);
+        p.y += smile * 0.08 - frown * 0.10 - open * 0.06;
+        p.z += open * 0.04;
+      }
+      if (v.region === 4) p.y -= (jaw + open) * 0.22;
+      if (v.region === 5) p.x += (v.x < 0 ? -1 : 1) * cheek * 0.07;
+      const yaw = 0.55 + live.AngleX * 0.35;
+      const pitch = -0.18 + live.AngleY * 0.25;
+      const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+      let x = p.x * cy + p.z * sy;
+      let z = -p.x * sy + p.z * cy;
+      const y = p.y * cp - z * sp;
+      z = p.y * sp + z * cp;
+      return {x, y, z, region: v.region};
+    }
+
+    function project(p, w, h) {
+      const scale = Math.min(w, h) * 0.38;
+      const persp = 1.8 / (2.4 - p.z);
+      return {x: w * 0.5 + p.x * scale * persp, y: h * 0.52 - p.y * scale * persp};
+    }
 
     function tick() {
       t += 0.016;
@@ -266,7 +285,7 @@
         document.getElementById("v-" + name).textContent = v.toFixed(2);
         const fill = document.getElementById("f-" + name);
         fill.style.width = (Math.min(1, v) * 100) + "%";
-        fill.classList.toggle("warm", name === "AU12" || name === "AU26");
+        fill.classList.toggle("warm", name === "AU12" || name === "AU26" || name === "AU15");
       });
       liveNames.forEach(name => {
         const v = live[name] || 0;
@@ -279,14 +298,21 @@
       document.getElementById("meshMeta").textContent =
         `${verts.length} verts · ${faces.length} tris · Mixamo-style head bind · emotion ${current}`;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = "rgba(88,166,255,0.35)";
-      ctx.lineWidth = 0.8;
+      const w = canvas._cssW || canvas.getBoundingClientRect().width;
+      const h = canvas._cssH || canvas.getBoundingClientRect().height;
+      ctx.clearRect(0, 0, w, h);
       const posed = verts.map(v => deform(v, facs, live));
       faces.forEach(f => {
-        const a = project(posed[f[0]], canvas.width, canvas.height);
-        const b = project(posed[f[1]], canvas.width, canvas.height);
-        const c = project(posed[f[2]], canvas.width, canvas.height);
+        const pa = posed[f[0]], pb = posed[f[1]], pc = posed[f[2]];
+        const a = project(pa, w, h);
+        const b = project(pb, w, h);
+        const c = project(pc, w, h);
+        const region = pa.region;
+        ctx.strokeStyle = region === 3 ? "rgba(233,69,96,0.75)"
+          : region === 2 ? "rgba(88,166,255,0.8)"
+          : region === 4 ? "rgba(63,185,80,0.7)"
+          : "rgba(88,166,255,0.32)";
+        ctx.lineWidth = region ? 1.1 : 0.7;
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
@@ -297,10 +323,6 @@
       requestAnimationFrame(tick);
     }
 
-    setInterval(() => {
-      const i = emotions.indexOf(current);
-      current = emotions[(i + 1) % emotions.length];
-    }, 2200);
     tick();
   </script>
 </body>

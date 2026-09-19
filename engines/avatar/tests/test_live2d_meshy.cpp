@@ -1,5 +1,5 @@
 #include "test_framework.h"
-#include "avatar/Meshy3D.h"
+#include "avatar/MotionMesh.h"
 
 using namespace Ultima::Avatar;
 
