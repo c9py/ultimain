@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(NPC_BUILD_TESTS "Build NPC AI tests" OFF)
 option(NPC_BUILD_EXAMPLES "Build NPC AI examples" OFF)
 option(NPC_USE_GNEURAL "Use GNeural-Net library" ON)
+option(NPC_USE_AVATAR "Link avatar motion mesh pipeline" ON)
 
 # Include directories
 set(NPC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -94,6 +95,16 @@ target_include_directories(ultima_npc_ai PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../../cognitive/gneural-net/include
 )
 
+# Avatar motion mesh: meshy3d(live2d-dtecho[meta-echo-dna<rig-logic+facs>]) /deltecho
+if(NPC_USE_AVATAR AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../avatar/CMakeLists.txt")
+    if(NOT TARGET ultima_avatar)
+        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../avatar
+                         ${CMAKE_CURRENT_BINARY_DIR}/avatar)
+    endif()
+    target_link_libraries(ultima_npc_ai PUBLIC ultima_avatar)
+    target_compile_definitions(ultima_npc_ai PUBLIC ULTIMA_NPC_HAS_AVATAR=1)
+endif()
+
 # Link GNeural-Net if available
 if(NPC_USE_GNEURAL)
     # Add GNeural-Net as subdirectory if needed
@@ -150,4 +161,5 @@ message(STATUS "  Phase 3 - Social:        Relationship System, Emotional State 
 message(STATUS "  Phase 4 - Economy:       Economic Agents, Market Simulation")
 message(STATUS "  Phase 5 - Urban:         City Simulation, OSM Integration")
 message(STATUS "  Phase 6 - Dialogue:      TinyLLM, Hybrid AIML+LLM Dialogue")
+message(STATUS "  Avatar motion mesh:      ${NPC_USE_AVATAR}")
 message(STATUS "")

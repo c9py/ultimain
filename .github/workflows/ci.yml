@@ -111,6 +111,43 @@ jobs:
         cd engines/npc/build
         ctest --output-on-failure --verbose
 
+  build-avatar-pipeline:
+    name: Build Avatar Motion Mesh
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build
+
+    - name: Configure avatar pipeline
+      run: |
+        cd engines/avatar
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DAVATAR_BUILD_TESTS=ON \
+          -DAVATAR_BUILD_EXAMPLES=ON
+
+    - name: Build avatar pipeline
+      run: |
+        cd engines/avatar
+        cmake --build build
+
+    - name: Run avatar tests
+      run: |
+        cd engines/avatar/build
+        ctest --output-on-failure --verbose
+
+    - name: Run pipeline demo
+      run: |
+        engines/avatar/build/examples/avatar_pipeline_demo
+
   build-gneural-net:
     name: Build GNeural-Net
     runs-on: ubuntu-24.04
@@ -329,6 +366,13 @@ jobs:
           --suppress=missingIncludeSystem \
           --error-exitcode=0 \
           engines/npc/src/
+
+    - name: Run cppcheck on avatar pipeline
+      run: |
+        cppcheck --enable=warning,style,performance \
+          --suppress=missingIncludeSystem \
+          --error-exitcode=0 \
+          engines/avatar/src/
 
     - name: Check Python files
       run: |

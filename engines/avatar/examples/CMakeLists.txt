@@ -1,0 +1,3 @@
+add_executable(avatar_pipeline_demo avatar_pipeline_demo.cpp)
+target_link_libraries(avatar_pipeline_demo PRIVATE ultima_avatar)
+target_include_directories(avatar_pipeline_demo PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include)

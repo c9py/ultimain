@@ -13,6 +13,7 @@ This repository contains an integrated codebase for the ScummVM Ultima VIII (Pag
 | **Web Launcher** | An HTML/CSS/JS interface for launching games in the browser via CheerpX. |
 | **OSM2Ultima** | Tool to convert OpenStreetMap data to Ultima VII/VIII game maps. |
 | **NPC AI System** | Cognitive NPC system with TinyLLM and Hybrid Dialogue integration. |
+| **Avatar Motion Mesh** | FACS + Rig Logic identity DNA driving Live2D-DTECHO and a Meshy-bound mesh, post-processed by Deltecho. |
 
 ## Build Status
 
@@ -22,6 +23,7 @@ This repository contains an integrated codebase for the ScummVM Ultima VIII (Pag
 - **Unified Launcher**: Compiles and runs, but requires a display environment.
 - **Web Launcher**: ✅ **Enhanced** with CheerpX integration, IndexedDB data management, and file upload support.
 - **NPC AI System**: ✅ **Integrated** with Exult - ~7,400 lines of C++ code across 12 source files.
+- **Avatar Motion Mesh**: ✅ **Composed** as `meshy3d(live2d-dtecho[meta-echo-dna<rig-logic+facs>]) /deltecho`.
 - **OSM2Ultima**: ✅ **Enhanced** with 158+ feature types, improved interiors, and terrain transitions.
 
 ## Releases
@@ -86,7 +88,21 @@ This enables:
 
 See [NPC AI Integration Guide](docs/npc_ai_integration_guide.md) for details.
 
-### 3. Build the Pentagram Engine (Ultima VIII)
+### 3. Build the Avatar Motion Mesh Pipeline
+
+```bash
+cd engines/avatar
+cmake -B build -DAVATAR_BUILD_TESTS=ON -DAVATAR_BUILD_EXAMPLES=ON
+cmake --build build
+cd build && ctest --output-on-failure
+./examples/avatar_pipeline_demo
+```
+
+Composition: `meshy3d(live2d-dtecho[meta-echo-dna<rig-logic+facs>]) /deltecho`.
+
+See [Avatar Motion Mesh](docs/avatar_motion_mesh.md) and the inspector at `web/avatar/index.html`.
+
+### 4. Build the Pentagram Engine (Ultima VIII)
 
 ```bash
 cd engines/ultima8
@@ -97,7 +113,7 @@ make -j$(nproc)
 # Binary: engines/ultima8/build/pentagram
 ```
 
-### 4. Build the Unified Launcher
+### 5. Build the Unified Launcher
 
 ```bash
 cd launcher
@@ -107,7 +123,7 @@ make
 ./ultima-launcher
 ```
 
-### 5. Generate Maps from OpenStreetMap
+### 6. Generate Maps from OpenStreetMap
 
 The OSM2Ultima tool now supports **158+ feature types** including amenities, shops, leisure facilities, and tourism sites.
 
@@ -129,7 +145,7 @@ python osm2ultima.py --bbox "-0.1,51.5,0.0,51.6" --output custom_map
 - **Improved interiors**: Specialized furniture for bakeries, restaurants, libraries, museums
 - **Terrain transitions**: Smooth blending between grass/water, grass/sand, grass/dirt
 
-### 6. Web Launcher
+### 7. Web Launcher
 
 Open `web/index.html` in a modern web browser. The web launcher uses CheerpX to run games directly in the browser via WebAssembly virtualization.
 
@@ -153,6 +169,7 @@ Open `web/index.html` in a modern web browser. The web launcher uses CheerpX to 
 ```
 web/
 ├── index.html              # Main launcher interface
+├── avatar/index.html       # Avatar motion mesh inspector
 ├── js/
 │   ├── cheerpx-engine.js   # CheerpX integration module
 │   └── data-manager.js     # IndexedDB game data manager
@@ -199,6 +216,7 @@ ultimain/
 ├── engines/
 │   ├── exult/         # Exult engine (Ultima VII)
 │   ├── npc/           # NPC AI integration
+│   ├── avatar/        # Avatar motion mesh pipeline
 │   └── ultima8/       # ScummVM Ultima 8 engine
 ├── launcher/          # Unified desktop launcher
 ├── reference/         # Reference game data files

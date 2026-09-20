@@ -30,8 +30,14 @@ target_link_libraries(test_tensor_logic PRIVATE ultima_npc_ai npc_test_framework
 target_include_directories(test_tensor_logic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 add_test(NAME TensorLogicTests COMMAND test_tensor_logic)
 
+# Test: Avatar motion mesh (when linked)
+add_executable(test_avatar_pipeline test_avatar_pipeline.cpp)
+target_link_libraries(test_avatar_pipeline PRIVATE ultima_npc_ai npc_test_framework)
+target_include_directories(test_avatar_pipeline PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+add_test(NAME AvatarPipelineTests COMMAND test_avatar_pipeline)
+
 # All tests target
 add_custom_target(npc_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    DEPENDS test_neural_network test_memory_system test_persona test_tensor_logic
+    DEPENDS test_neural_network test_memory_system test_persona test_tensor_logic test_avatar_pipeline
 )
