@@ -13,10 +13,10 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
-SDL_VERSION="release-3.2.0"
-# SDL3_ttf 3.0.0 matches .github/workflows/release.yml and satisfies
-# launcher/CMakeLists.txt (sdl3-ttf>=3.0.0) against SDL3 3.2.0.
-SDL_TTF_VERSION="release-3.0.0"
+# Match the Build Launcher job in .github/workflows/ci.yml. SDL3_ttf
+# 3.2.2 requires SDL3 >= 3.2.6; there is no release-3.0.0 tag.
+SDL_VERSION="release-3.2.6"
+SDL_TTF_VERSION="release-3.2.2"
 JOBS="$(nproc)"
 
 log() { printf '\n=== %s ===\n' "$1"; }
@@ -41,7 +41,7 @@ sudo apt-get install -y --no-install-recommends \
   xvfb x11-xserver-utils ffmpeg xdotool
 
 # --- 2. SDL3 from source (idempotent) -------------------------------------
-if pkg-config --atleast-version=3.2.0 sdl3 2>/dev/null; then
+if pkg-config --atleast-version=3.2.6 sdl3 2>/dev/null; then
   log "SDL3 already installed ($(pkg-config --modversion sdl3)); skipping build"
 else
   log "Building SDL3 ${SDL_VERSION} from source"
@@ -61,7 +61,7 @@ fi
 # --- 2b. SDL3_ttf from source (idempotent) --------------------------------
 # The unified launcher requires sdl3-ttf>=3.0.0. Recurring Cloud Agent
 # builds failed at "Building unified launcher" because only SDL3 was
-# installed. Mirror the release workflow source build.
+# installed. Mirror the CI launcher source-build pair.
 if pkg-config --atleast-version=3.0.0 sdl3-ttf 2>/dev/null; then
   log "SDL3_ttf already installed ($(pkg-config --modversion sdl3-ttf)); skipping build"
 else
