@@ -24,9 +24,12 @@ research/ultima_collection/
 .DS_Store
 Thumbs.db
 
-# Engine build directories
+# Engine / launcher build directories
+# `build/` already ignores untracked trees, but launcher/build was committed
+# and checkout was overwriting the SDL3_ttf-linked binary after install.
 engines/exult/build/
 engines/ultima8/build/
+launcher/build/
 
 # Downloaded archives
 *.rar
