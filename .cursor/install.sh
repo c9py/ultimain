@@ -3,8 +3,8 @@
 # Cloud Agent environment bootstrap for the Ultima Engines Integration repo.
 #
 # Idempotent: safe to re-run. Installs system packages, builds and installs
-# SDL3 from source (skipped if already present), then builds the C/C++
-# components and installs Python deps for the OSM2Ultima tool.
+# SDL3 and SDL3_ttf from source (skipped if already present), then builds
+# the C/C++ components and installs Python deps for the OSM2Ultima tool.
 #
 # Mirrors the recipe in .github/workflows/ci.yml, which is the source of truth
 # for how these components are known to build.
@@ -14,6 +14,9 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
 SDL_VERSION="release-3.2.0"
+# SDL3_ttf 3.0.0 matches .github/workflows/release.yml and satisfies
+# launcher/CMakeLists.txt (sdl3-ttf>=3.0.0) against SDL3 3.2.0.
+SDL_TTF_VERSION="release-3.0.0"
 JOBS="$(nproc)"
 
 log() { printf '\n=== %s ===\n' "$1"; }
@@ -31,6 +34,7 @@ sudo apt-get install -y --no-install-recommends \
   git ca-certificates \
   python3 python3-pip \
   libvorbis-dev libogg-dev zlib1g-dev libpng-dev libfreetype-dev \
+  libharfbuzz-dev \
   libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev \
   libxi-dev libxss-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev \
   libibus-1.0-dev \
@@ -51,6 +55,26 @@ else
     -DSDL_STATIC=ON
   cmake --build "$SDL_SRC/build" -j "$JOBS"
   sudo cmake --install "$SDL_SRC/build"
+  sudo ldconfig
+fi
+
+# --- 2b. SDL3_ttf from source (idempotent) --------------------------------
+# The unified launcher requires sdl3-ttf>=3.0.0. Recurring Cloud Agent
+# builds failed at "Building unified launcher" because only SDL3 was
+# installed. Mirror the release workflow source build.
+if pkg-config --atleast-version=3.0.0 sdl3-ttf 2>/dev/null; then
+  log "SDL3_ttf already installed ($(pkg-config --modversion sdl3-ttf)); skipping build"
+else
+  log "Building SDL3_ttf ${SDL_TTF_VERSION} from source"
+  TTF_SRC="/tmp/SDL3_ttf"
+  rm -rf "$TTF_SRC"
+  git clone --depth 1 --branch "$SDL_TTF_VERSION" https://github.com/libsdl-org/SDL_ttf.git "$TTF_SRC"
+  cmake -S "$TTF_SRC" -B "$TTF_SRC/build" -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DSDLTTF_VENDORED=OFF
+  cmake --build "$TTF_SRC/build" -j "$JOBS"
+  sudo cmake --install "$TTF_SRC/build"
   sudo ldconfig
 fi
 
