@@ -43,7 +43,7 @@ jobs:
 
     - name: Build SDL3 from source
       run: |
-        git clone --depth 1 --branch release-3.2.0 https://github.com/libsdl-org/SDL.git /tmp/SDL3
+        git clone --depth 1 --branch release-3.2.6 https://github.com/libsdl-org/SDL.git /tmp/SDL3
         cd /tmp/SDL3
         cmake -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
@@ -56,7 +56,7 @@ jobs:
 
     - name: Build SDL3_ttf from source
       run: |
-        git clone --depth 1 --branch release-3.0.0 https://github.com/libsdl-org/SDL_ttf.git /tmp/SDL_ttf
+        git clone --depth 1 --branch release-3.2.2 https://github.com/libsdl-org/SDL_ttf.git /tmp/SDL_ttf
         cd /tmp/SDL_ttf
         cmake -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
