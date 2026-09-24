@@ -176,17 +176,35 @@ jobs:
           libwayland-dev \
           libxkbcommon-dev \
           libegl1-mesa-dev \
-          libibus-1.0-dev
+          libibus-1.0-dev \
+          libfreetype-dev \
+          libharfbuzz-dev \
+          libxtst-dev
 
     - name: Build SDL3 from source
       run: |
-        git clone --depth 1 --branch release-3.2.0 https://github.com/libsdl-org/SDL.git /tmp/SDL3
+        # SDL3_ttf 3.2.x requires SDL >= 3.2.6
+        git clone --depth 1 --branch release-3.2.8 https://github.com/libsdl-org/SDL.git /tmp/SDL3
         cd /tmp/SDL3
         cmake -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DSDL_SHARED=ON \
           -DSDL_STATIC=OFF
+        cmake --build build
+        sudo cmake --install build
+        sudo ldconfig
+
+    - name: Build SDL3_ttf from source
+      run: |
+        git clone --depth 1 --branch release-3.2.2 https://github.com/libsdl-org/SDL_ttf.git /tmp/SDL3_ttf
+        cd /tmp/SDL3_ttf
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
+          -DSDLTTF_VENDORED=OFF \
+          -DSDLTTF_SAMPLES=OFF \
+          -DSDLTTF_PLUTOSVG=OFF
         cmake --build build
         sudo cmake --install build
         sudo ldconfig
