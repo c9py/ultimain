@@ -28,6 +28,13 @@ from dataclasses import dataclass
 from typing import List, Optional, Tuple, BinaryIO, Dict
 import os
 
+from u8_engine_constants import (
+    FLEX_COUNT_OFFSET,
+    FLEX_INDEX_OFFSET,
+    FLEX_MAGIC,
+    FLEX_TITLE_LENGTH,
+)
+
 
 # U8 coordinate system constants
 # Playfield coordinates satisfy 0 <= coord < 32768 (64 chunks * 512).
@@ -39,8 +46,8 @@ U8_COORD_MAX = 32767
 U8_COORD_BITS = 16
 
 # Map file constants
-U8_HEADER_SIZE = 128  # Map info starts at offset 128
-U8_MAP_COUNT_OFFSET = 84  # Number of maps at offset 84
+U8_HEADER_SIZE = 128  # Map info starts at offset 128 (Flex index at 0x80)
+U8_MAP_COUNT_OFFSET = FLEX_COUNT_OFFSET  # uint32 map-slot count at 0x54
 U8_MAP_INFO_SIZE = 8  # Each map info chunk is 8 bytes
 U8_RECORD_SIZE = 16  # Each object record is 16 bytes
 U8_DEFAULT_MAP_COUNT = 256  # U8 has 256 maps
@@ -216,10 +223,12 @@ class U8FixedDatWriter:
             map_positions.append(current_pos)
             current_pos += len(data)
 
-        # Write header (128 bytes, mostly zeros)
+        # The DAT file is the Flex archive. Stamp 0x1A across the title
+        # field and write the map-slot count as a uint32 at 0x54. The index
+        # at 0x80 still points at raw 16-byte object records.
         header = bytearray(U8_HEADER_SIZE)
-        # Map count at offset 84 (2 bytes, little-endian)
-        struct.pack_into('<H', header, U8_MAP_COUNT_OFFSET, self.map_count)
+        header[:FLEX_TITLE_LENGTH] = bytes([FLEX_MAGIC]) * FLEX_TITLE_LENGTH
+        struct.pack_into('<I', header, U8_MAP_COUNT_OFFSET, self.map_count)
         f.write(header)
 
         # Write map info chunks (8 bytes each: 4 bytes position, 4 bytes size)
@@ -251,18 +260,16 @@ class U8FixedDatReader:
         self._read_header()
 
     def _read_header(self) -> None:
-        """Read and parse the file header."""
+        """Read the Flex count and the index at 0x80 + 8 * map."""
         with open(self.filepath, 'rb') as f:
-            # Read header
             header = f.read(U8_HEADER_SIZE)
             if len(header) < U8_HEADER_SIZE:
                 raise ValueError("File too small for U8 fixed format header")
 
-            # Get map count from offset 84
-            self.map_count = struct.unpack_from('<H', header, U8_MAP_COUNT_OFFSET)[0]
+            self.map_count = struct.unpack_from('<I', header, U8_MAP_COUNT_OFFSET)[0]
 
-            # Read map info chunks
             for i in range(self.map_count):
+                f.seek(FLEX_INDEX_OFFSET + U8_MAP_INFO_SIZE * i)
                 info_data = f.read(U8_MAP_INFO_SIZE)
                 if len(info_data) < U8_MAP_INFO_SIZE:
                     raise ValueError(f"Unexpected end of file reading map info {i}")
@@ -306,6 +313,24 @@ class U8FixedDatReader:
             if map_data.objects:  # Only include non-empty maps
                 maps[mapnum] = map_data
         return maps
+
+
+def is_flex_file(data: bytes) -> bool:
+    """Mirror FlexFile::isFlexFile: a 0x1A run through the first 0x52 bytes."""
+    if len(data) < FLEX_TITLE_LENGTH:
+        return False
+    title = data[:FLEX_TITLE_LENGTH]
+    start = title.find(bytes([FLEX_MAGIC]))
+    if start < 0:
+        return False
+    return title[start:] == bytes([FLEX_MAGIC]) * (FLEX_TITLE_LENGTH - start)
+
+
+def flex_entry_count(data: bytes) -> int:
+    """Little-endian uint32 map-slot count at offset 0x54."""
+    if len(data) < FLEX_COUNT_OFFSET + 4:
+        raise ValueError("buffer is shorter than the Flex count field")
+    return struct.unpack_from('<I', data, FLEX_COUNT_OFFSET)[0]
 
 
 def convert_osm_to_u8_coords(
