@@ -25,7 +25,10 @@ from u8_format import (
     U8_DEFAULT_MAP_COUNT,
     convert_osm_to_u8_coords,
     convert_u8_to_tile_coords,
+    flex_entry_count,
+    is_flex_file,
 )
+from u8_engine_constants import FLEX_INDEX_OFFSET, FLEX_MAGIC, FLEX_TITLE_LENGTH
 
 
 class TestU8Object(unittest.TestCase):
@@ -263,11 +266,13 @@ class TestU8FixedDatWriter(unittest.TestCase):
             expected_size = U8_HEADER_SIZE + (256 * 8)
             self.assertEqual(os.path.getsize(filepath), expected_size)
             
-            # Verify header
+            # Verify header. Empty object lists still record the map-slot count.
             with open(filepath, 'rb') as f:
                 header = f.read(U8_HEADER_SIZE)
-                map_count = struct.unpack_from('<H', header, U8_MAP_COUNT_OFFSET)[0]
+                map_count = struct.unpack_from('<I', header, U8_MAP_COUNT_OFFSET)[0]
                 self.assertEqual(map_count, 256)
+                self.assertTrue(is_flex_file(header))
+                self.assertEqual(flex_entry_count(header), 256)
         finally:
             os.unlink(filepath)
 
@@ -444,8 +449,8 @@ class TestCoordinateConversion(unittest.TestCase):
         """Test that coordinates are clamped to max value."""
         # Try to convert very large tile values
         world_x, world_y, world_z = convert_osm_to_u8_coords(1000, 1000, 50)
-        self.assertLessEqual(world_x, 65535)
-        self.assertLessEqual(world_y, 65535)
+        self.assertEqual(world_x, 32767)
+        self.assertEqual(world_y, 32767)
         self.assertLessEqual(world_z, 255)
 
     def test_u8_to_tile_coords(self):
@@ -532,6 +537,43 @@ class TestPentragramCompatibility(unittest.TestCase):
         # Check shape (0xABCD)
         self.assertEqual(data[5], 0xCD)
         self.assertEqual(data[6], 0xAB)
+
+
+class TestFlexHeader(unittest.TestCase):
+    """In-place Flex title on the existing 128-byte header."""
+
+    def test_zero_buffer_is_not_flex(self):
+        self.assertFalse(is_flex_file(bytes(256)))
+
+    def test_one_object_round_trip_is_raw_records(self):
+        obj = U8Object(x=512, y=8, z=3, shape=301, frame=2, flags=0)
+        writer = U8FixedDatWriter(map_count=256)
+        writer.add_map(0, [obj])
+
+        with tempfile.NamedTemporaryFile(delete=False) as handle:
+            filepath = handle.name
+        try:
+            writer.write(filepath)
+            blob = open(filepath, 'rb').read()
+            self.assertEqual(blob[:FLEX_TITLE_LENGTH], bytes([FLEX_MAGIC]) * FLEX_TITLE_LENGTH)
+            self.assertEqual(flex_entry_count(blob), 256)
+
+            offset, size = struct.unpack_from('<II', blob, FLEX_INDEX_OFFSET)
+            self.assertEqual(size, U8_RECORD_SIZE)
+            payload = blob[offset:offset + size]
+            self.assertEqual(payload, obj.to_bytes())
+            self.assertNotEqual(payload[:1], bytes([FLEX_MAGIC]))
+
+            reader = U8FixedDatReader(filepath)
+            loaded = reader.read_map(0).objects
+            self.assertEqual(len(loaded), 1)
+            self.assertEqual(loaded[0].shape, 301)
+            self.assertEqual(loaded[0].frame, 2)
+            self.assertEqual((loaded[0].x, loaded[0].y, loaded[0].z), (512, 8, 3))
+            for index in range(1, reader.map_count):
+                self.assertEqual(reader.read_map(index).objects, [])
+        finally:
+            os.unlink(filepath)
 
 
 if __name__ == '__main__':

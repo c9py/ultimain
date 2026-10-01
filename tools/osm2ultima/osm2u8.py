@@ -29,8 +29,9 @@ Output Format:
     - Next object ID (2 bytes)
 
 Coordinate System:
-    U8 uses world coordinates in range 0-65535 (16-bit integers).
-    OSM coordinates are scaled and mapped to this range.
+    U8 playfield coordinates satisfy 0 <= coord < 32768.
+    OSM coordinates are scaled and clamped into that span.
+    Records still store x and y as uint16.
 
 Shape Mapping:
     U8 shapes are DIFFERENT from U7 shapes. This tool uses approximate
@@ -62,6 +63,7 @@ from u8_format import (
     U8MapData,
     U8FixedDatWriter,
     U8_RECORD_SIZE,
+    U8_COORD_MAX,
     convert_osm_to_u8_coords,
 )
 
@@ -447,7 +449,7 @@ class U8MapExporter:
                 "total_fixed": len(self.generator.u8_fixed_objects),
                 "total_nonfixed": len(self.generator.u8_nonfixed_objects),
                 "coordinate_system": "u8_world",
-                "coordinate_range": [0, 65535]
+                "coordinate_range": [0, U8_COORD_MAX]
             }
         }
         

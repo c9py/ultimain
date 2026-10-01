@@ -88,7 +88,7 @@ python3 osm2ultima.py --bbox "-0.128,51.51,-0.120,51.515" --size 8,8 --output lo
 
 ## Ultima VIII Export (`osm2u8`)
 
-The tool includes dedicated support for Ultima VIII (Pentagram engine) map generation.
+The tool includes dedicated support for Ultima VIII (Pentagram engine) map generation. Requirements for sharing that map between an OSM index and a procedural stamp are recorded in [U8 map modularity](../../docs/u8_map_modularity.md).
 
 ### Quick Start
 
@@ -117,8 +117,8 @@ Ultima VIII uses a 16-byte record format per object:
 
 | Offset | Size | Description |
 |--------|------|-------------|
-| 0 | 2 bytes | X position (world coordinates 0-65535) |
-| 2 | 2 bytes | Y position (world coordinates 0-65535) |
+| 0 | 2 bytes | X position (uint16; playfield coordinate satisfies 0 <= x < 32768) |
+| 2 | 2 bytes | Y position (uint16; playfield coordinate satisfies 0 <= y < 32768) |
 | 4 | 1 byte | Z position (height 0-255) |
 | 5 | 2 bytes | Shape number |
 | 7 | 1 byte | Frame number |

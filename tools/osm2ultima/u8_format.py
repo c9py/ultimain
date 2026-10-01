@@ -28,18 +28,22 @@ from dataclasses import dataclass
 from typing import List, Optional, Tuple, BinaryIO, Dict
 import os
 
+from u8_engine_constants import (
+    FLEX_COUNT_OFFSET,
+    FLEX_INDEX_OFFSET,
+    FLEX_MAGIC,
+    FLEX_TITLE_LENGTH,
+    WORLD_SPAN,
+)
 
-# U8 coordinate system constants
-# U8 world coordinates are in the range 0-65535 (16-bit)
-# Screen conversion formulas from u8mapfmt.txt:
-#   ScreenX = (MapX - MapY) / 4
-#   ScreenY = (MapX + MapY) / 8 - MapZ
-U8_COORD_MAX = 65535
+
+# Inclusive playfield max. Records still store x and y as uint16.
+U8_COORD_MAX = WORLD_SPAN - 1
 U8_COORD_BITS = 16
 
-# Map file constants
-U8_HEADER_SIZE = 128  # Map info starts at offset 128
-U8_MAP_COUNT_OFFSET = 84  # Number of maps at offset 84
+# Map file constants. The preamble ends where the Flex index begins.
+U8_HEADER_SIZE = FLEX_INDEX_OFFSET
+U8_MAP_COUNT_OFFSET = FLEX_COUNT_OFFSET  # uint32 map-slot count at 0x54
 U8_MAP_INFO_SIZE = 8  # Each map info chunk is 8 bytes
 U8_RECORD_SIZE = 16  # Each object record is 16 bytes
 U8_DEFAULT_MAP_COUNT = 256  # U8 has 256 maps
@@ -48,8 +52,8 @@ U8_DEFAULT_MAP_COUNT = 256  # U8 has 256 maps
 @dataclass
 class U8Object:
     """Represents an object in Ultima VIII format."""
-    x: int  # X position (0-65535)
-    y: int  # Y position (0-65535)
+    x: int  # X position, stored as uint16; valid playfield is 0 <= x < 32768
+    y: int  # Y position, stored as uint16; valid playfield is 0 <= y < 32768
     z: int  # Z position (0-255)
     shape: int  # Shape/type number (0-65535)
     frame: int = 0  # Frame number (0-255)
@@ -215,10 +219,12 @@ class U8FixedDatWriter:
             map_positions.append(current_pos)
             current_pos += len(data)
 
-        # Write header (128 bytes, mostly zeros)
+        # The DAT file is the Flex archive. Stamp 0x1A across the title
+        # field and write the map-slot count as a uint32 at 0x54. The index
+        # at 0x80 still points at raw 16-byte object records.
         header = bytearray(U8_HEADER_SIZE)
-        # Map count at offset 84 (2 bytes, little-endian)
-        struct.pack_into('<H', header, U8_MAP_COUNT_OFFSET, self.map_count)
+        header[:FLEX_TITLE_LENGTH] = bytes([FLEX_MAGIC]) * FLEX_TITLE_LENGTH
+        struct.pack_into('<I', header, U8_MAP_COUNT_OFFSET, self.map_count)
         f.write(header)
 
         # Write map info chunks (8 bytes each: 4 bytes position, 4 bytes size)
@@ -250,22 +256,22 @@ class U8FixedDatReader:
         self._read_header()
 
     def _read_header(self) -> None:
-        """Read and parse the file header."""
+        """Read the Flex count and the index at 0x80 + 8 * map."""
         with open(self.filepath, 'rb') as f:
-            # Read header
             header = f.read(U8_HEADER_SIZE)
             if len(header) < U8_HEADER_SIZE:
                 raise ValueError("File too small for U8 fixed format header")
 
-            # Get map count from offset 84
-            self.map_count = struct.unpack_from('<H', header, U8_MAP_COUNT_OFFSET)[0]
+            self.map_count = flex_entry_count(header)
 
-            # Read map info chunks
+            f.seek(FLEX_INDEX_OFFSET)
+            index_bytes = f.read(self.map_count * U8_MAP_INFO_SIZE)
+            if len(index_bytes) < self.map_count * U8_MAP_INFO_SIZE:
+                raise ValueError("Unexpected end of file reading map info")
             for i in range(self.map_count):
-                info_data = f.read(U8_MAP_INFO_SIZE)
-                if len(info_data) < U8_MAP_INFO_SIZE:
-                    raise ValueError(f"Unexpected end of file reading map info {i}")
-                pos, size = struct.unpack('<II', info_data)
+                pos, size = struct.unpack_from(
+                    '<II', index_bytes, i * U8_MAP_INFO_SIZE
+                )
                 self.map_infos.append((pos, size))
 
     def read_map(self, mapnum: int) -> U8MapData:
@@ -307,6 +313,24 @@ class U8FixedDatReader:
         return maps
 
 
+def is_flex_file(data: bytes) -> bool:
+    """Mirror FlexFile::isFlexFile: a 0x1A run through the first 0x52 bytes."""
+    if len(data) < FLEX_TITLE_LENGTH:
+        return False
+    title = data[:FLEX_TITLE_LENGTH]
+    start = title.find(bytes([FLEX_MAGIC]))
+    if start < 0:
+        return False
+    return title[start:] == bytes([FLEX_MAGIC]) * (FLEX_TITLE_LENGTH - start)
+
+
+def flex_entry_count(data: bytes) -> int:
+    """Little-endian uint32 map-slot count at offset 0x54."""
+    if len(data) < FLEX_COUNT_OFFSET + 4:
+        raise ValueError("buffer is shorter than the Flex count field")
+    return struct.unpack_from('<I', data, FLEX_COUNT_OFFSET)[0]
+
+
 def convert_osm_to_u8_coords(
     tile_x: int, tile_y: int,
     tile_lift: int = 0,
@@ -316,15 +340,15 @@ def convert_osm_to_u8_coords(
     """
     Convert OSM-derived tile coordinates to U8 world coordinates.
     
-    U8 uses a world coordinate system ranging from 0-65535. This function
-    maps tile coordinates (typically from OSM conversion) into that range.
+    U8 playfield coordinates satisfy 0 <= coord <= world_max, with world_max
+    32767. This function maps tile coordinates into that range.
     
     Args:
         tile_x: Tile X coordinate
         tile_y: Tile Y coordinate
         tile_lift: Height/lift level (0-based)
-        tile_size: World units per tile (default 256 to fit 256 tiles in 65536 range)
-        world_max: Maximum world coordinate value
+        tile_size: World units per tile (default 256; OSM sample steps are unchanged)
+        world_max: Maximum world coordinate value, inclusive
         
     Returns:
         Tuple of (world_x, world_y, world_z)
