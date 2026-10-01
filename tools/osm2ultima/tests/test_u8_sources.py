@@ -9,7 +9,7 @@ from unittest.mock import patch
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import osm2u8
-from u8_engine_constants import DIR_EAST, world_in_range
+from u8_engine_constants import DIR_EAST, WORLD_SPAN, world_in_range
 from u8_sources import osm_to_placed, procedural_stamp
 from u8_walk import TERRAIN_LAND, TERRAIN_PATH, TERRAIN_SOLID, TERRAIN_WATER, Walker
 
@@ -20,8 +20,8 @@ def _node(node_id, world_x, world_y=0):
     return {
         "type": "node",
         "id": node_id,
-        "lon": world_x / 32767.0,
-        "lat": 1.0 - (world_y / 32767.0),
+        "lon": world_x / (WORLD_SPAN - 1),
+        "lat": 1.0 - (world_y / (WORLD_SPAN - 1)),
     }
 
 
@@ -136,6 +136,12 @@ class TestSources(unittest.TestCase):
                     "id": 1,
                     "nodes": [99, 99],
                     "tags": {"landuse": "grass"},
+                },
+                {
+                    "type": "way",
+                    "id": 3,
+                    "nodes": [1, 99],
+                    "tags": {"highway": "path"},
                 },
                 {
                     "type": "way",

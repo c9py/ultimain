@@ -63,6 +63,7 @@ from u8_format import (
     U8MapData,
     U8FixedDatWriter,
     U8_RECORD_SIZE,
+    U8_COORD_MAX,
     convert_osm_to_u8_coords,
 )
 
@@ -448,7 +449,7 @@ class U8MapExporter:
                 "total_fixed": len(self.generator.u8_fixed_objects),
                 "total_nonfixed": len(self.generator.u8_nonfixed_objects),
                 "coordinate_system": "u8_world",
-                "coordinate_range": [0, 32767]
+                "coordinate_range": [0, U8_COORD_MAX]
             }
         }
         

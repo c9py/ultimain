@@ -8,7 +8,7 @@ import random
 from typing import List, Sequence, Tuple, Union
 
 from osm2u8 import U8MapGenerator
-from u8_engine_constants import world_in_range
+from u8_engine_constants import SQUARE, world_in_range
 from u8_walk import (
     TERRAIN_LAND,
     TERRAIN_PATH,
@@ -17,7 +17,7 @@ from u8_walk import (
     PlacedObject,
 )
 
-STAMP_SPACING = 128
+STAMP_SPACING = SQUARE
 Cell = Union[str, Tuple[str, int]]
 
 
@@ -69,7 +69,8 @@ def osm_to_placed(
 ) -> List[PlacedObject]:
     """Adapt U8 fixed objects from an in-memory OSM dict.
 
-    Missing way node ids are skipped. No network fetch is performed.
+    A way that cites a missing node id is skipped entirely. No network
+    fetch is performed.
     """
     random.seed(0)
     generator = U8MapGenerator(bbox)
@@ -80,6 +81,9 @@ def osm_to_placed(
     placed: List[PlacedObject] = []
     for element in osm_data.get("elements", []):
         if element.get("type") != "way":
+            continue
+        node_ids = element.get("nodes") or []
+        if any(node_id not in generator.nodes for node_id in node_ids):
             continue
         before = len(generator.u8_fixed_objects)
         generator._process_way_u8(element)

@@ -24,6 +24,8 @@ TODO: These shape mappings are preliminary. For accurate results:
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
+from u8_engine_constants import WORLD_SPAN
+
 
 # =============================================================================
 # U8 TERRAIN / GROUND SHAPES
@@ -326,8 +328,8 @@ class U8CoordinateTransformer:
     min_lat: float
     max_lon: float
     max_lat: float
-    world_width: int = 32768
-    world_height: int = 32768
+    world_width: int = WORLD_SPAN
+    world_height: int = WORLD_SPAN
     
     def __post_init__(self):
         self.lon_range = self.max_lon - self.min_lon

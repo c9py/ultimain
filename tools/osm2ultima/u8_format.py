@@ -33,20 +33,16 @@ from u8_engine_constants import (
     FLEX_INDEX_OFFSET,
     FLEX_MAGIC,
     FLEX_TITLE_LENGTH,
+    WORLD_SPAN,
 )
 
 
-# U8 coordinate system constants
-# Playfield coordinates satisfy 0 <= coord < 32768 (64 chunks * 512).
-# Records still store x and y as uint16. See u8_engine_constants.WORLD_SPAN.
-# Screen conversion formulas from u8mapfmt.txt:
-#   ScreenX = (MapX - MapY) / 4
-#   ScreenY = (MapX + MapY) / 8 - MapZ
-U8_COORD_MAX = 32767
+# Inclusive playfield max. Records still store x and y as uint16.
+U8_COORD_MAX = WORLD_SPAN - 1
 U8_COORD_BITS = 16
 
-# Map file constants
-U8_HEADER_SIZE = 128  # Map info starts at offset 128 (Flex index at 0x80)
+# Map file constants. The preamble ends where the Flex index begins.
+U8_HEADER_SIZE = FLEX_INDEX_OFFSET
 U8_MAP_COUNT_OFFSET = FLEX_COUNT_OFFSET  # uint32 map-slot count at 0x54
 U8_MAP_INFO_SIZE = 8  # Each map info chunk is 8 bytes
 U8_RECORD_SIZE = 16  # Each object record is 16 bytes
@@ -266,14 +262,16 @@ class U8FixedDatReader:
             if len(header) < U8_HEADER_SIZE:
                 raise ValueError("File too small for U8 fixed format header")
 
-            self.map_count = struct.unpack_from('<I', header, U8_MAP_COUNT_OFFSET)[0]
+            self.map_count = flex_entry_count(header)
 
+            f.seek(FLEX_INDEX_OFFSET)
+            index_bytes = f.read(self.map_count * U8_MAP_INFO_SIZE)
+            if len(index_bytes) < self.map_count * U8_MAP_INFO_SIZE:
+                raise ValueError("Unexpected end of file reading map info")
             for i in range(self.map_count):
-                f.seek(FLEX_INDEX_OFFSET + U8_MAP_INFO_SIZE * i)
-                info_data = f.read(U8_MAP_INFO_SIZE)
-                if len(info_data) < U8_MAP_INFO_SIZE:
-                    raise ValueError(f"Unexpected end of file reading map info {i}")
-                pos, size = struct.unpack('<II', info_data)
+                pos, size = struct.unpack_from(
+                    '<II', index_bytes, i * U8_MAP_INFO_SIZE
+                )
                 self.map_infos.append((pos, size))
 
     def read_map(self, mapnum: int) -> U8MapData:

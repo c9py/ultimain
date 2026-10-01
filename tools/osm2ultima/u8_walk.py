@@ -28,7 +28,7 @@ SUPPORTING = (TERRAIN_LAND, TERRAIN_PATH)
 class PlacedObject:
     """One world item the walker can stand on.
 
-    The object owns the half-open square [x, x+128) by [y, y+128).
+    The object owns the half-open square [x, x + SQUARE) by [y, y + SQUARE).
     ``z`` is the top of that square. ``flags`` is stored so exporters can
     keep the record field at 0; the walker does not read it.
     """
@@ -46,10 +46,7 @@ def square_contains(obj: PlacedObject, x: int, y: int) -> bool:
 
 def object_at(objects: Iterable[PlacedObject], x: int, y: int) -> Optional[PlacedObject]:
     """Return the first object whose square contains the point."""
-    for obj in objects:
-        if square_contains(obj, x, y):
-            return obj
-    return None
+    return next((obj for obj in objects if square_contains(obj, x, y)), None)
 
 
 def terrain_supports(obj: PlacedObject, walker_z: int) -> bool:
@@ -60,9 +57,7 @@ def terrain_supports(obj: PlacedObject, walker_z: int) -> bool:
     """
     if obj.terrain == TERRAIN_WATER:
         return False
-    if obj.terrain == TERRAIN_SOLID:
-        return obj.z == walker_z
-    if obj.terrain in SUPPORTING:
+    if obj.terrain == TERRAIN_SOLID or obj.terrain in SUPPORTING:
         return obj.z == walker_z
     return False
 
