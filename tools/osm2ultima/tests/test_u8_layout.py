@@ -16,6 +16,8 @@ from u8_engine_constants import (
     screen_position,
     world_in_range,
 )
+from u8_format import convert_osm_to_u8_coords
+from u8_shape_mapping import U8CoordinateTransformer
 
 
 class TestU8Layout(unittest.TestCase):
@@ -66,6 +68,44 @@ class TestU8Layout(unittest.TestCase):
             require_world(32768, 0)
         with self.assertRaises(ValueError):
             require_world(-1, 0)
+
+
+class TestU8CoordinateSpan(unittest.TestCase):
+    def test_normalized_corners_use_engine_span(self):
+        transformer = U8CoordinateTransformer(0.0, 0.0, 1.0, 1.0)
+        # lat is flipped: max lat is world y 0, min lat is world y 32767.
+        self.assertEqual(transformer.osm_to_u8(0.0, 1.0), (0, 0))
+        self.assertEqual(transformer.osm_to_u8(1.0, 0.0), (32767, 32767))
+
+    def test_zero_longitude_span_stays_in_range(self):
+        transformer = U8CoordinateTransformer(5.0, 0.0, 5.0, 1.0)
+        world_x, world_y = transformer.osm_to_u8(5.0, 0.5)
+        self.assertTrue(world_in_range(world_x, world_y))
+
+    def test_former_65535_corner_clamps_to_32767(self):
+        transformer = U8CoordinateTransformer(0.0, 0.0, 1.0, 1.0)
+        world_x, world_y = transformer.osm_to_u8(1.0, 0.0)
+        self.assertEqual(world_x, 32767)
+        self.assertEqual(world_y, 32767)
+        self.assertLess(world_x, 32768)
+
+    def test_tile_conversion_uses_updated_cap(self):
+        world_x, world_y, world_z = convert_osm_to_u8_coords(1000, 1000, 0)
+        self.assertEqual(world_x, 32767)
+        self.assertEqual(world_y, 32767)
+        self.assertLessEqual(world_z, 255)
+
+    def test_tiny_osm_dict_stays_inside_playfield(self):
+        transformer = U8CoordinateTransformer(-0.1, 51.5, 0.0, 51.6)
+        elements = [
+            {"lon": -0.1, "lat": 51.5},
+            {"lon": 0.0, "lat": 51.6},
+            {"lon": -0.05, "lat": 51.55},
+            {"lon": -1.0, "lat": 40.0},
+        ]
+        for element in elements:
+            world_x, world_y = transformer.osm_to_u8(element["lon"], element["lat"])
+            self.assertTrue(world_in_range(world_x, world_y))
 
 
 if __name__ == "__main__":

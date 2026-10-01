@@ -30,11 +30,12 @@ import os
 
 
 # U8 coordinate system constants
-# U8 world coordinates are in the range 0-65535 (16-bit)
+# Playfield coordinates satisfy 0 <= coord < 32768 (64 chunks * 512).
+# Records still store x and y as uint16. See u8_engine_constants.WORLD_SPAN.
 # Screen conversion formulas from u8mapfmt.txt:
 #   ScreenX = (MapX - MapY) / 4
 #   ScreenY = (MapX + MapY) / 8 - MapZ
-U8_COORD_MAX = 65535
+U8_COORD_MAX = 32767
 U8_COORD_BITS = 16
 
 # Map file constants
@@ -48,8 +49,8 @@ U8_DEFAULT_MAP_COUNT = 256  # U8 has 256 maps
 @dataclass
 class U8Object:
     """Represents an object in Ultima VIII format."""
-    x: int  # X position (0-65535)
-    y: int  # Y position (0-65535)
+    x: int  # X position, stored as uint16; valid playfield is 0 <= x < 32768
+    y: int  # Y position, stored as uint16; valid playfield is 0 <= y < 32768
     z: int  # Z position (0-255)
     shape: int  # Shape/type number (0-65535)
     frame: int = 0  # Frame number (0-255)
@@ -316,15 +317,15 @@ def convert_osm_to_u8_coords(
     """
     Convert OSM-derived tile coordinates to U8 world coordinates.
     
-    U8 uses a world coordinate system ranging from 0-65535. This function
-    maps tile coordinates (typically from OSM conversion) into that range.
+    U8 playfield coordinates satisfy 0 <= coord <= world_max, with world_max
+    32767. This function maps tile coordinates into that range.
     
     Args:
         tile_x: Tile X coordinate
         tile_y: Tile Y coordinate
         tile_lift: Height/lift level (0-based)
-        tile_size: World units per tile (default 256 to fit 256 tiles in 65536 range)
-        world_max: Maximum world coordinate value
+        tile_size: World units per tile (default 256; OSM sample steps are unchanged)
+        world_max: Maximum world coordinate value, inclusive
         
     Returns:
         Tuple of (world_x, world_y, world_z)

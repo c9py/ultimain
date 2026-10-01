@@ -318,15 +318,16 @@ class U8CoordinateTransformer:
     """
     Transform OSM lat/lon coordinates to Ultima VIII world coordinates.
     
-    U8 uses world coordinates in the range 0-65535 (16-bit).
+    U8 playfield coordinates satisfy 0 <= coord < 32768
+    (64 chunks of 512). Records still store x and y as uint16.
     """
     
     min_lon: float
     min_lat: float
     max_lon: float
     max_lat: float
-    world_width: int = 65536
-    world_height: int = 65536
+    world_width: int = 32768
+    world_height: int = 32768
     
     def __post_init__(self):
         self.lon_range = self.max_lon - self.min_lon

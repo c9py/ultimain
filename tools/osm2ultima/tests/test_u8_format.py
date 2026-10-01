@@ -444,8 +444,8 @@ class TestCoordinateConversion(unittest.TestCase):
         """Test that coordinates are clamped to max value."""
         # Try to convert very large tile values
         world_x, world_y, world_z = convert_osm_to_u8_coords(1000, 1000, 50)
-        self.assertLessEqual(world_x, 65535)
-        self.assertLessEqual(world_y, 65535)
+        self.assertEqual(world_x, 32767)
+        self.assertEqual(world_y, 32767)
         self.assertLessEqual(world_z, 255)
 
     def test_u8_to_tile_coords(self):
