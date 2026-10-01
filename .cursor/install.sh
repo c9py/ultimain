@@ -35,7 +35,9 @@ sudo apt-get install -y --no-install-recommends \
   libvorbis-dev libogg-dev zlib1g-dev libpng-dev libfreetype-dev libharfbuzz-dev \
   libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev \
   libxi-dev libxss-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev \
+  libgl1-mesa-dri \
   libibus-1.0-dev \
+  fonts-dejavu-core \
   xvfb x11-xserver-utils ffmpeg xdotool
 
 # --- 2. SDL3 from source (idempotent) -------------------------------------
@@ -87,6 +89,15 @@ log "Building standalone NPC AI module"
 cmake -S engines/npc -B engines/npc/build -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DNPC_BUILD_TESTS=ON -DNPC_USE_GNEURAL=OFF
 cmake --build engines/npc/build -j "$JOBS"
+
+# --- 4b. Avatar motion mesh (tests + runnable demo) -----------------------
+# No game data required. The demo is the hello-world for this repo.
+log "Building avatar motion mesh pipeline"
+cmake -S engines/avatar -B engines/avatar/build -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DAVATAR_BUILD_TESTS=ON \
+  -DAVATAR_BUILD_EXAMPLES=ON
+cmake --build engines/avatar/build -j "$JOBS"
 
 # --- 5. gneural-net (autotools) -------------------------------------------
 log "Building gneural-net"
