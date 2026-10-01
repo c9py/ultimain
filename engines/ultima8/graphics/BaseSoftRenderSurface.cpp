@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "misc/sdl2_compat.h"
 
 #include "SoftRenderSurface.h"
+#include "RenderSurface.h"
 #include "Palette.h"
 #include "Texture.h"
 
@@ -270,7 +271,7 @@ ECode BaseSoftRenderSurface::BeginPainting()
 			if (SDL_MUSTLOCK(sdl_surf))
 			{
 				// Did the lock fail?
-				if (SDL_LockSurface(sdl_surf)!=0) {
+				if (!SDL_LockSurface(sdl_surf)) {
 					pixels = pixels00 = 0;
 					// TODO: SetLastError(GR_SOFT_ERROR_SDL_LOCK_FAILED, "SDL Surface Lock Failed!");
 					perr << "Error: SDL Surface Lock Failed!" << std::endl;
@@ -333,8 +334,8 @@ ECode BaseSoftRenderSurface::EndPainting()
 			// Clear pointers
 			pixels=pixels00=0;
 
-			// Present
-			SDL_Flip (sdl_surf);
+			// SDL3 removed SDL_Flip; present the window surface explicitly.
+			RenderSurface::UpdateWindowSurface();
 		}
 		else {
 			ECode ret = GenericUnlock();
