@@ -497,8 +497,11 @@ const std::string& FileSystem::getHomePath()
 	if (!home.empty()) return home;
 
 #ifdef HAVE_HOME
-	home = getenv("HOME");
-	home += "/.pentagram";
+	const char *envhome = getenv("HOME");
+	if (envhome && envhome[0])
+		home = std::string(envhome) + "/.pentagram";
+	else
+		home = ".";
 #elif defined(WIN32)
 	// Use the Pentagram sub directory of Application Data, under Windows NT4 and later
 	char configFilePath[MAX_PATH] = "";

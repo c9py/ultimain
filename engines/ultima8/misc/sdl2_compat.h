@@ -366,4 +366,30 @@ static inline void SDL2_GetSurfaceFormatMasks(SDL_Surface *surf,
 
 #define SDL_Flip(surface) /* No-op, use SDL_UpdateWindowSurface */
 
+/* ============================================
+ * Thread / mutex compatibility
+ * LowLevelMidiDriver still names the SDL2 types. Software MIDI
+ * (Timidity, FMOPL) feeds AudioMixer and does not start this thread.
+ * ============================================ */
+
+typedef SDL_Mutex SDL_mutex;
+typedef SDL_Condition SDL_cond;
+
+#define SDL_CreateCond SDL_CreateCondition
+#define SDL_DestroyCond SDL_DestroyCondition
+#define SDL_CondSignal SDL_SignalCondition
+#define SDL_CondBroadcast SDL_BroadcastCondition
+#define SDL_CondWait(cond, mutex) SDL_WaitCondition((cond), (mutex))
+#define SDL_CondWaitTimeout(cond, mutex, ms) SDL_WaitConditionTimeout((cond), (mutex), (ms))
+#define SDL_mutexP SDL_LockMutex
+#define SDL_mutexV SDL_UnlockMutex
+
+/* SDL3 has no thread-kill. Wait for the MIDI thread after it is asked to exit. */
+static inline void SDL2_KillThread(SDL_Thread *thread) {
+    if (!thread) return;
+    int status = 0;
+    SDL_WaitThread(thread, &status);
+}
+#define SDL_KillThread SDL2_KillThread
+
 #endif /* SDL2_COMPAT_H */

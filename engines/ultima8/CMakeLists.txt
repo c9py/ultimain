@@ -12,48 +12,51 @@ find_package(ZLIB REQUIRED)
 find_package(PNG REQUIRED)
 find_package(Freetype REQUIRED)
 
+option(PENTAGRAM_USE_TIMIDITY_MIDI "Link the Timidity software MIDI synth" ON)
+option(PENTAGRAM_USE_FMOPL_MIDI "Link the FMOPL software MIDI synth" ON)
+option(PENTAGRAM_USE_SDL_TTF "Compile SDL3_ttf fonts (off: bitmap fonts from u8fonts.flx)" OFF)
+
 # Collect source files using glob
 file(GLOB_RECURSE AUDIO_SOURCES "audio/*.cpp")
 
-# Exclude MIDI drivers that need SDL2 threading API (to be ported later)
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*LowLevelMidiDriver.*")
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*FMOplMidiDriver.*")
+# Software MIDI (Timidity, FMOPL, XMIDI) feeds AudioMixer. Platform drivers stay out.
+list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*XMidiStubs\\.cpp$")
 list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*FluidSynthMidiDriver.*")
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*TimidityMidiDriver.*")
 list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*UnixSeqMidiDriver.*")
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*timidity/.*")
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*MidiDriver.*")
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*XMidi.*")
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*fmopl.*")
+list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*CoreAudioMidiDriver.*")
+list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*CoreMidiDriver.*")
+list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*WindowsMidiDriver.*")
+list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*ALSAMidiDriver.*")
+if(NOT PENTAGRAM_USE_TIMIDITY_MIDI)
+    list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*/timidity/.*")
+    list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*TimidityMidiDriver.*")
+endif()
+if(NOT PENTAGRAM_USE_FMOPL_MIDI)
+    list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*FMOplMidiDriver.*")
+    list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*fmopl.*")
+endif()
 file(GLOB_RECURSE CONF_SOURCES "conf/*.cpp")
 file(GLOB_RECURSE CONVERT_SOURCES "convert/*.cpp")
 file(GLOB_RECURSE FILESYS_SOURCES "filesys/*.cpp" "filesys/*.c")
 file(GLOB_RECURSE GAMES_SOURCES "games/*.cpp")
 file(GLOB_RECURSE GRAPHICS_SOURCES "graphics/*.cpp")
-# Exclude TTF font support (requires SDL3_ttf which is not available)
-list(FILTER GRAPHICS_SOURCES EXCLUDE REGEX ".*TTFont.*")
-list(FILTER GRAPHICS_SOURCES EXCLUDE REGEX ".*TTFRenderedText.*")
+if(NOT PENTAGRAM_USE_SDL_TTF)
+    # Bitmap fonts are the operational path. TTFont.cpp still calls SDL2_ttf entry points.
+    list(FILTER GRAPHICS_SOURCES EXCLUDE REGEX ".*TTFont.*")
+    list(FILTER GRAPHICS_SOURCES EXCLUDE REGEX ".*TTFRenderedText.*")
+endif()
 file(GLOB_RECURSE GUMPS_SOURCES "gumps/*.cpp")
 file(GLOB_RECURSE KERNEL_SOURCES "kernel/*.cpp")
-# Exclude joystick support (needs SDL3 joystick API porting)
-list(FILTER KERNEL_SOURCES EXCLUDE REGEX ".*Joystick.*")
+list(FILTER KERNEL_SOURCES EXCLUDE REGEX ".*JoystickStubs\\.cpp$")
 file(GLOB_RECURSE MISC_SOURCES "misc/*.cpp")
 file(GLOB_RECURSE USECODE_SOURCES "usecode/*.cpp")
 file(GLOB_RECURSE WORLD_SOURCES "world/*.cpp")
 # Tools excluded - they have their own main() functions and are standalone utilities
 # file(GLOB_RECURSE TOOLS_SOURCES "tools/disasm/*.cpp" "tools/compile/*.cpp" "tools/fold/*.cpp")
 
-# Exclude tools and system-specific files
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*CoreAudioMidiDriver.*")
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*CoreMidiDriver.*")
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*WindowsMidiDriver.*")
-list(FILTER AUDIO_SOURCES EXCLUDE REGEX ".*ALSAMidiDriver.*")
-
-# Stub implementations for disabled features
+# Disasm/compile processes are standalone tools. ConApp only needs the stubs.
 set(STUB_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/JoystickStubs.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/kernel/ToolStubs.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/audio/XMidiStubs.cpp
 )
 
 # Collect all sources
@@ -104,11 +107,22 @@ target_include_directories(pentagram PRIVATE
     ${FREETYPE_INCLUDE_DIRS}
 )
 
-# Compile definitions
+# Compile definitions. Feature macros must match the sources actually linked.
 target_compile_definitions(pentagram PRIVATE
     HAVE_CONFIG_H
     PENTAGRAM_NEW
 )
+if(PENTAGRAM_USE_TIMIDITY_MIDI)
+    target_compile_definitions(pentagram PRIVATE USE_TIMIDITY_MIDI)
+endif()
+if(PENTAGRAM_USE_FMOPL_MIDI)
+    target_compile_definitions(pentagram PRIVATE USE_FMOPL_MIDI)
+endif()
+if(PENTAGRAM_USE_SDL_TTF)
+    find_package(SDL3_ttf REQUIRED CONFIG)
+    target_compile_definitions(pentagram PRIVATE USE_SDL_TTF)
+    target_link_libraries(pentagram PRIVATE SDL3_ttf::SDL3_ttf)
+endif()
 
 # Link libraries
 target_link_libraries(pentagram PRIVATE

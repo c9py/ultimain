@@ -1,17 +1,34 @@
 #!/bin/sh
 # Pentagram (Ultima VIII) launcher script for CheerpX
+# Pentagram reads @game from $HOME/.pentagram/pentagram.ini, not from cwd.
 
 export HOME=/root
 export PATH=/usr/bin:/bin
 export LD_LIBRARY_PATH=/lib:/usr/lib
 export SDL_VIDEODRIVER=x11
 
-# Set game data path if provided
 if [ -n "$PENTAGRAM_GAME_PATH" ]; then
-    cd "$PENTAGRAM_GAME_PATH"
+    GAME_ROOT="$PENTAGRAM_GAME_PATH"
 else
-    cd /game
+    GAME_ROOT=/game
 fi
 
-# Run Pentagram with any passed arguments
-exec /usr/bin/pentagram "$@"
+mkdir -p "$HOME/.pentagram"
+cat > "$HOME/.pentagram/pentagram.ini" <<EOF
+[pentagram]
+defaultgame=u8
+fullscreen=no
+scaler=bilinear
+width=640
+height=480
+bpp=32
+ttf=no
+midi_driver=timidity
+skipstart=yes
+
+[u8]
+path=$GAME_ROOT
+EOF
+
+cd "$GAME_ROOT"
+exec /usr/bin/pentagram --game u8 "$@"

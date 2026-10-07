@@ -179,6 +179,10 @@ void AudioMixer::MixAudio(sint16 *stream, uint32 bytes)
 
 	memset(stream, 0, bytes * 2);
 
+	/* bytes is the sint16 count. produceSamples takes a byte count. */
+	if (midi_driver && midi_driver->isSampleProducer())
+		midi_driver->produceSamples(stream, bytes * 2);
+
 	for (int i = 0; i < num_channels; i++) {
 		if (channels[i]->isPlaying()) {
 			channels[i]->resampleAndMix(stream, bytes);
@@ -283,6 +287,9 @@ void AudioMixer::openMidiOutput()
 {
 	SettingManager *settingman = SettingManager::get_instance();
 	std::string driver;
+	/* Timidity is the preferred software synth. createInstance falls back to FMOPL
+	   when no timidity.cfg is configured. "disabled" is the explicit null driver. */
+	settingman->setDefault("midi_driver", "Timidity");
 	settingman->get("midi_driver", driver);
 	
 	midi_driver = MidiDriver::createInstance(driver, sample_rate, stereo);

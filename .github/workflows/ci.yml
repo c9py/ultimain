@@ -315,7 +315,7 @@ jobs:
 
     - name: Build SDL3 from source
       run: |
-        git clone --depth 1 --branch release-3.2.0 https://github.com/libsdl-org/SDL.git /tmp/SDL3
+        git clone --depth 1 --branch release-3.2.6 https://github.com/libsdl-org/SDL.git /tmp/SDL3
         cd /tmp/SDL3
         cmake -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
@@ -330,16 +330,28 @@ jobs:
       run: |
         cd engines/ultima8
         cmake -B build -G Ninja \
-          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      continue-on-error: true
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DPENTAGRAM_USE_SDL_TTF=OFF
 
     - name: Build Pentagram
       run: |
         cd engines/ultima8
-        if [ -d build ]; then
-          cmake --build build || echo "Pentagram build requires additional porting work"
+        cmake --build build
+        test -x build/pentagram
+
+    - name: Version banner matches linked features
+      run: |
+        out=$(engines/ultima8/build/pentagram --version)
+        printf '%s\n' "$out"
+        printf '%s\n' "$out" | grep -q "Timidity"
+        printf '%s\n' "$out" | grep -q "FMOPL"
+        if printf '%s\n' "$out" | grep -q "SDL_ttf"; then
+          echo "version banner advertises SDL_ttf, which is not linked" >&2
+          exit 1
         fi
-      continue-on-error: true
+
+    - name: Required Pagan path fixture
+      run: python3 engines/ultima8/tests/test_required_files.py
 
   lint-and-format:
     name: Lint and Format Check

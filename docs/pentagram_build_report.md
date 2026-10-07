@@ -14,9 +14,9 @@
 | Audio Mixer | ✅ Working |
 | Graphics Renderer | ✅ Working |
 | Input Handling | ✅ Working |
-| MIDI Support | ⚠️ Stubbed |
-| Joystick Support | ⚠️ Stubbed |
-| TTF Fonts | ⚠️ Disabled |
+| MIDI Support | ✅ Timidity and FMOPL linked into the SDL3 mixer |
+| Joystick Support | ✅ SDL3 joystick API; keyboard and mouse still work with no device |
+| TTF Fonts | ⚠️ Disabled (`PENTAGRAM_USE_SDL_TTF=OFF`; bitmap fonts from `u8fonts.flx`) |
 
 ## SDL3 Migration Summary
 
@@ -27,7 +27,7 @@ The original Pentagram codebase was designed for SDL 1.2/2.0. This port required
 1. **Audio API Migration**
    - SDL3 completely redesigned the audio API
    - Created `AudioMixer.cpp` with SDL3 audio stream support
-   - Stubbed MIDI drivers (require separate porting effort)
+   - Timidity and FMOPL produce samples into `AudioMixer`; platform MIDI drivers stay unlinked
 
 2. **Event System Migration**
    - Event types renamed: `SDL_KEYDOWN` → `SDL_EVENT_KEY_DOWN`
@@ -62,9 +62,9 @@ The original Pentagram codebase was designed for SDL 1.2/2.0. This port required
 
 | File | Purpose |
 |------|---------|
-| `kernel/JoystickStubs.cpp` | Joystick support placeholder |
+| `kernel/JoystickStubs.cpp` | Removed. `kernel/Joystick.cpp` uses the SDL3 joystick API |
 | `kernel/ToolStubs.cpp` | Disasm/Compile process stubs |
-| `audio/XMidiStubs.cpp` | MIDI support placeholder |
+| `audio/XMidiStubs.cpp` | Removed. Software MIDI sources are compiled |
 
 ## Build Validation
 
@@ -81,6 +81,8 @@ Creating SettingManager...
 Creating Kernel...
 ```
 
+That January log is historical. It continued into SDL after `--version`, and the feature banner listed Timidity and FMOPL while those drivers were stubbed. Current `--version` exits before SDL and prints only macros that CMake defined for linked sources.
+
 ## Dependencies
 
 - SDL3 3.5.0
@@ -90,18 +92,16 @@ Creating Kernel...
 
 ## Known Limitations
 
-1. **MIDI Music** - Not functional (stubbed)
-2. **Joystick Input** - Not functional (stubbed)
-3. **TTF Fonts** - Disabled (requires SDL3_ttf)
-4. **Headless Mode** - Requires display for full testing
+1. **TTF Fonts** - Still off. Bitmap fonts are the play path.
+2. **Play session** - Not recorded. This tree has no `sound/` archives and no `savegame/u8save.000`. See `docs/pentagram_install.md`. Do not treat `reference/` as a substitute install.
+3. **Headless boot** - `--version` exits before SDL. A menu or new-game boot still needs a display and a local Pagan tree.
 
 ## Next Steps
 
-1. Port MIDI drivers to SDL3 audio API
-2. Implement SDL3 joystick support
-3. Build SDL3_ttf for TTF font support
-4. Create unified launcher integration
-5. Test with actual Ultima 8 game data
+1. Point `[u8] path` at a real Pagan install (`engines/ultima8/gamedata` or `PENTAGRAM_GAME_PATH`).
+2. Boot with `skipstart=yes`, then with the intro.
+3. Record palette, GameData, new game, map switch, and a clean quit only after that log exists.
+4. Enable `PENTAGRAM_USE_SDL_TTF` only after the job is on SDL `>= 3.2.6` and SDL_ttf `release-3.2.2` is installed.
 
 ## File Structure
 
@@ -112,13 +112,13 @@ engines/ultima8/
 ├── pentagram.cpp           # Main entry point
 ├── audio/                  # Audio subsystem
 │   ├── AudioMixer.cpp      # SDL3 audio mixer
-│   └── XMidiStubs.cpp      # MIDI stubs
+│   ├── midi/               # XMIDI, Timidity, FMOPL
 ├── graphics/               # Graphics subsystem
 │   ├── RenderSurface.cpp   # SDL3 renderer
 │   └── BaseSoftRenderSurface.cpp
 ├── kernel/                 # Core engine
 │   ├── GUIApp.cpp          # Main application
-│   ├── JoystickStubs.cpp   # Joystick stubs
+│   ├── Joystick.cpp        # SDL3 joystick
 │   └── ToolStubs.cpp       # Tool stubs
 ├── misc/
 │   ├── pent_include.h      # Common includes

@@ -31,14 +31,14 @@
 #define HAVE_PNG_H 1
 #define USE_PNG 1
 
-/* Freetype support */
+/* Freetype support. SDL_ttf is a CMake option (PENTAGRAM_USE_SDL_TTF), off by default. */
 #define HAVE_FREETYPE2 1
 #define USE_FREETYPE2 1
-#define USE_SDL_TTF 1
 
-/* MIDI support */
-#define USE_TIMIDITY_MIDI 1
-#define USE_FMOPL_MIDI 1
+/* Home directory for pentagram.ini ($HOME/.pentagram). */
+#define HAVE_HOME 1
+
+/* MIDI support is selected by CMake (USE_TIMIDITY_MIDI / USE_FMOPL_MIDI). */
 
 /* Zip support */
 #define HAVE_ZIP_SUPPORT 1

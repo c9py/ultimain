@@ -427,7 +427,7 @@ int LowLevelMidiDriver::initThreadedSynth()
 	ComMessage message(LLMD_MSG_THREAD_INIT);
 	sendComMessage(message);
 
-	thread = SDL_CreateThread (threadMain_Static, static_cast<void*>(this));
+	thread = SDL_CreateThread(threadMain_Static, "LowLevelMidi", static_cast<void*>(this));
 
 	while (peekComMessageType() == LLMD_MSG_THREAD_INIT) 
 		yield ();

@@ -27,8 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "FMOplMidiDriver.h"
 #include "TimidityMidiDriver.h"
 #include "ALSAMidiDriver.h"
-#include "UnixSeqMidiDriver.h"
 #include "FluidSynthMidiDriver.h"
+/* UnixSeqMidiDriver.h defines USE_UNIX_SEQ_MIDI on Unix. Do not include it
+   unless that driver is actually linked. Software MIDI does not need it. */
 
 // Legacy Exult Midi Drivers
 #ifdef PENTAGRAM_IN_EXULT

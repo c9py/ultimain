@@ -1,0 +1,20 @@
+# Checked-in first-run template. Copy to $HOME/.pentagram/pentagram.ini
+# and replace the path. Do not point this at reference/. reference/ is format
+# evidence, not a playable Pagan install.
+#
+# Leave type and language unset so GameDetector identifies the install.
+# It reads lowercase virtual paths and also tries the uppercase basename.
+
+[pentagram]
+defaultgame=u8
+fullscreen=no
+scaler=bilinear
+width=640
+height=480
+bpp=32
+ttf=no
+midi_driver=timidity
+skipstart=yes
+
+[u8]
+path=__PENTAGRAM_GAME_PATH__
