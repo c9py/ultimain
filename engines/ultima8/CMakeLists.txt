@@ -124,9 +124,20 @@ if(PENTAGRAM_USE_SDL_TTF)
     target_link_libraries(pentagram PRIVATE SDL3_ttf::SDL3_ttf)
 endif()
 
+# pentagram.cpp defines WinMain on Windows and undefines SDL's main macro.
+# SDL3::SDL3 also pulls SDL3main, which defines WinMain again. Link the
+# shared or static SDL3 target directly so the engine entry point is used.
+if(WIN32 AND TARGET SDL3::SDL3-shared)
+    set(PENTAGRAM_SDL3_TARGET SDL3::SDL3-shared)
+elseif(WIN32 AND TARGET SDL3::SDL3-static)
+    set(PENTAGRAM_SDL3_TARGET SDL3::SDL3-static)
+else()
+    set(PENTAGRAM_SDL3_TARGET SDL3::SDL3)
+endif()
+
 # Link libraries
 target_link_libraries(pentagram PRIVATE
-    SDL3::SDL3
+    ${PENTAGRAM_SDL3_TARGET}
     ZLIB::ZLIB
     PNG::PNG
     ${FREETYPE_LIBRARIES}

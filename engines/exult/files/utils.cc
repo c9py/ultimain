@@ -521,7 +521,9 @@ int U7mkdir(
 	return CreateDirectory(lpszT, nullptr);
 #elif defined(_WIN32)
 	ignore_unused_variable_warning(mode);
-	return mkdir(name.c_str());
+	// MinGW also declares POSIX mkdir(path, mode) via unistd.h. _mkdir is the
+	// one-argument Win32 call on both MSVC and MinGW.
+	return _mkdir(name.c_str());
 #else
 	return mkdir(name.c_str(), mode);    // Create dir. if not already there.
 #endif

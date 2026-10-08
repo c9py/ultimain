@@ -21,12 +21,18 @@ The workflow includes the following build jobs:
    - Unified launcher
    - NPC AI module
 
-2. **build-web-launcher**: Packages the web launcher
+2. **build-windows**: Builds the same components for Windows x64
+   - Runner: `windows-latest` with MSYS2 MinGW-w64 UCRT64
+   - Shared library, Exult, Pentagram, unified launcher, and NPC AI module
+   - SDL3 and SDL3_ttf built from the same release tags as the Linux job
+   - Runtime DLLs bundled next to the executables
+
+3. **build-web-launcher**: Packages the web launcher
    - Web interface files
    - CheerpX integration
    - Disk images
 
-3. **create-release**: Creates the GitHub release
+4. **create-release**: Creates the GitHub release
    - Generates release notes
    - Uploads all build artifacts
    - Publishes the release
@@ -62,7 +68,8 @@ git push origin v1.2.3
 1. Go to the Releases page on GitHub
 2. Verify the new release is published
 3. Check that all artifacts are attached:
-   - `ultimain-v*.*.* -linux-x86_64.tar.gz`
+   - `ultimain-v*.*.*-linux-x86_64.tar.gz`
+   - `ultimain-v*.*.*-windows-x86_64.zip`
    - `ultimain-v*.*.*-web-launcher.zip`
 
 ## Release Artifacts
@@ -86,6 +93,28 @@ linux-x86_64/
     └── ...                # Documentation
 ```
 
+### Windows Binaries (windows-x86_64)
+
+The Windows release is a MinGW-w64 UCRT64 build. Executables are in `bin/` with the DLLs they need (SDL3, SDL3_ttf, and the MinGW runtime).
+
+```
+windows-x86_64/
+├── bin/
+│   ├── exult.exe            # Exult engine (Ultima VII)
+│   ├── pentagram.exe        # Pentagram engine (Ultima VIII)
+│   ├── ultima-launcher.exe  # Unified launcher
+│   └── *.dll                # Bundled runtime libraries
+├── lib/
+│   ├── libultima_shared.a   # Shared library
+│   └── libultima_npc_ai.a   # NPC AI module
+├── tools/
+│   └── osm2ultima/          # Map conversion tool
+└── docs/
+    └── ...                  # Documentation
+```
+
+Extract `ultimain-v*.*.*-windows-x86_64.zip` and run the executables from `windows-x86_64/bin`. No separate SDL install is required.
+
 ### Web Launcher
 
 The web launcher package includes:
@@ -102,10 +131,15 @@ web-launcher/
 ## Dependencies
 
 The Linux binaries are built with:
-- SDL3 3.2.0 (statically linked)
+- SDL3 `release-3.2.6` and SDL3_ttf `release-3.2.2`
 - libvorbis, libogg
 - zlib, libpng
 - System libraries (dynamically linked)
+
+The Windows binaries are built with MSYS2 MinGW-w64 UCRT64 and:
+- SDL3 `release-3.2.6` and SDL3_ttf `release-3.2.2` (DLLs bundled in the zip)
+- libvorbis, libogg, zlib, libpng, and freetype from the UCRT64 packages
+- The MinGW runtime DLLs required by those executables
 
 Users will need:
 - Original Ultima VII/VIII game data files
@@ -171,7 +205,7 @@ If automated release fails, you can create a manual release:
 Potential enhancements to the release process:
 
 - [ ] Add macOS builds
-- [ ] Add Windows builds
+- [x] Add Windows builds
 - [ ] Add AppImage or Flatpak packaging
 - [ ] Automated changelog generation
 - [ ] Draft release option for testing

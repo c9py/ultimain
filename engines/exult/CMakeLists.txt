@@ -302,6 +302,13 @@ if(VORBIS_FOUND)
     target_link_libraries(exult PRIVATE ${VORBIS_LIBRARIES} ${OGG_LIBRARIES})
 endif()
 
+# exult.cc calls WindowsInstallCrashHandler() on WIN32. The handler lives
+# outside the main source list and needs dbghelp for MiniDumpWriteDump.
+if(WIN32)
+    target_sources(exult PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/win32/crash.cc)
+    target_link_libraries(exult PRIVATE dbghelp)
+endif()
+
 if(SDL3_IMAGE_FOUND)
     target_link_libraries(exult PRIVATE ${SDL3_IMAGE_LIBRARIES})
 endif()

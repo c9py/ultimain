@@ -31,6 +31,7 @@ This repository contains an integrated codebase for the ScummVM Ultima VIII (Pag
 Pre-built releases are available on the [GitHub Releases](https://github.com/c9py/ultimain/releases) page. Each release includes:
 
 - **Linux binaries** (x86_64) - All engines, launcher, and libraries
+- **Windows binaries** (x86_64) - MinGW-w64 UCRT64 build with bundled DLLs
 - **Web launcher package** - Browser-based version with CheerpX
 - **Documentation** - Complete build and usage guides
 

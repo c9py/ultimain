@@ -163,9 +163,181 @@ jobs:
         name: web-launcher
         path: release/ultimain-${{ github.ref_name }}-web-launcher.zip
 
+  build-windows:
+    name: Build Windows Release
+    runs-on: windows-latest
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: msys2 {0}
+    env:
+      PKG_CONFIG_PATH: /ucrt64/lib/pkgconfig
+      CMAKE_PREFIX_PATH: /ucrt64
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # MinGW-w64 UCRT64 matches the Linux CMake/pkg-config flow and produces
+    # native Windows x64 binaries. MSVC is not used: several engines require
+    # pkg-config and link pthread.
+    - name: Install MSYS2 build tools
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: UCRT64
+        update: true
+        cache: true
+        install: >-
+          git
+          zip
+          mingw-w64-ucrt-x86_64-toolchain
+          mingw-w64-ucrt-x86_64-cmake
+          mingw-w64-ucrt-x86_64-ninja
+          mingw-w64-ucrt-x86_64-pkgconf
+          mingw-w64-ucrt-x86_64-zlib
+          mingw-w64-ucrt-x86_64-libpng
+          mingw-w64-ucrt-x86_64-freetype
+          mingw-w64-ucrt-x86_64-harfbuzz
+          mingw-w64-ucrt-x86_64-libvorbis
+          mingw-w64-ucrt-x86_64-libogg
+          mingw-w64-ucrt-x86_64-ntldd
+
+    - name: Build SDL3 from source
+      run: |
+        git clone --depth 1 --branch release-3.2.6 https://github.com/libsdl-org/SDL.git /tmp/SDL3
+        cd /tmp/SDL3
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=/ucrt64 \
+          -DSDL_SHARED=ON \
+          -DSDL_STATIC=ON
+        cmake --build build
+        cmake --install build
+
+    - name: Build SDL3_ttf from source
+      run: |
+        git clone --depth 1 --branch release-3.2.2 https://github.com/libsdl-org/SDL_ttf.git /tmp/SDL_ttf
+        cd /tmp/SDL_ttf
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=/ucrt64 \
+          -DSDLTTF_VENDORED=OFF
+        cmake --build build
+        cmake --install build
+        pkg-config --modversion sdl3
+        pkg-config --modversion sdl3-ttf
+
+    - name: Build Shared Library
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DBUILD_TESTING=OFF
+        cmake --build build
+
+    - name: Build NPC AI Module
+      run: |
+        cd engines/npc
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DNPC_BUILD_TESTS=OFF \
+          -DNPC_USE_GNEURAL=OFF
+        cmake --build build
+        cmake --install build --prefix /ucrt64
+
+    - name: Build Exult Engine
+      run: |
+        cd engines/exult
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake --build build
+        strip --strip-unneeded build/exult.exe
+
+    - name: Build Pentagram Engine
+      run: |
+        cd engines/ultima8
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake --build build
+        strip --strip-unneeded build/pentagram.exe
+
+    - name: Build Launcher
+      run: |
+        cd launcher
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake --build build
+        strip --strip-unneeded build/ultima-launcher.exe
+
+    - name: Package Windows Release
+      run: |
+        test -f engines/exult/build/exult.exe
+        test -f engines/ultima8/build/pentagram.exe
+        test -f launcher/build/ultima-launcher.exe
+
+        mkdir -p release/windows-x86_64/bin
+        mkdir -p release/windows-x86_64/lib
+        mkdir -p release/windows-x86_64/tools
+        mkdir -p release/windows-x86_64/docs
+
+        cp engines/exult/build/exult.exe release/windows-x86_64/bin/
+        cp launcher/build/ultima-launcher.exe release/windows-x86_64/bin/
+        cp engines/ultima8/build/pentagram.exe release/windows-x86_64/bin/
+
+        copy_runtime_dlls() {
+          dest="$1"
+          shift
+          for bin in "$@"; do
+            ntldd -R "$bin" | while read -r line; do
+              dep=$(printf '%s\n' "$line" | awk '{print $3}')
+              [ -n "$dep" ] || continue
+              case "$dep" in
+                *\\*|*[A-Za-z]:*) unix_dep=$(cygpath -u "$dep") ;;
+                *) unix_dep="$dep" ;;
+              esac
+              case "$unix_dep" in
+                /ucrt64/bin/*.dll|/mingw64/bin/*.dll|*/ucrt64/bin/*.dll|*/mingw64/bin/*.dll)
+                  base=$(basename "$unix_dep")
+                  if [ ! -f "$dest/$base" ]; then
+                    cp "$unix_dep" "$dest/$base"
+                  fi
+                  ;;
+              esac
+            done
+          done
+        }
+
+        copy_runtime_dlls release/windows-x86_64/bin \
+          release/windows-x86_64/bin/exult.exe \
+          release/windows-x86_64/bin/pentagram.exe \
+          release/windows-x86_64/bin/ultima-launcher.exe
+
+        # Shared SDL is linked into the engines and launcher. A zip without
+        # these DLLs will not start on a machine that does not have MSYS2.
+        test -f release/windows-x86_64/bin/SDL3.dll
+        test -f release/windows-x86_64/bin/SDL3_ttf.dll
+
+        cp build/libultima_shared.a release/windows-x86_64/lib/
+        if [ -f engines/npc/build/libultima_npc_ai.a ]; then
+          cp engines/npc/build/libultima_npc_ai.a release/windows-x86_64/lib/
+        fi
+
+        cp -r tools/osm2ultima release/windows-x86_64/tools/
+
+        cp README.md release/windows-x86_64/docs/
+        cp CLAUDE.md release/windows-x86_64/docs/
+        cp -r docs release/windows-x86_64/
+
+        cd release
+        zip -r ultimain-${{ github.ref_name }}-windows-x86_64.zip windows-x86_64
+
+    - name: Upload Windows Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-x86_64
+        path: release/ultimain-${{ github.ref_name }}-windows-x86_64.zip
+
   create-release:
     name: Create GitHub Release
-    needs: [build-linux, build-web-launcher]
+    needs: [build-linux, build-windows, build-web-launcher]
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -197,10 +369,11 @@ jobs:
         
         ### Downloads
         - **linux-x86_64**: Linux binaries and libraries
+        - **windows-x86_64**: Windows x64 binaries (MinGW-w64 UCRT64) and bundled DLLs
         - **web-launcher**: Browser-based launcher (requires game data files)
         
         ### Requirements
-        - SDL3 3.5.0+ (included in Linux build)
+        - SDL3 3.5.0+ (included in the Linux build; Windows package bundles the SDL3 DLLs it was built with)
         - Original Ultima VII/VIII game data files
         - Python 3.x for OSM2Ultima tool
         
@@ -215,6 +388,11 @@ jobs:
         ./ultima-launcher   # Unified launcher
         ```
         
+        Extract the Windows zip and run the executables in `windows-x86_64/bin`:
+        - `exult.exe` for Ultima VII
+        - `pentagram.exe` for Ultima VIII
+        - `ultima-launcher.exe` for the unified launcher
+        
         For web launcher, see web-launcher/README.md
         EOF
         echo "notes_file=release_notes.md" >> $GITHUB_OUTPUT
@@ -225,6 +403,7 @@ jobs:
         body_path: release_notes.md
         files: |
           artifacts/linux-x86_64/*
+          artifacts/windows-x86_64/*
           artifacts/web-launcher/*
         draft: false
         prerelease: false
