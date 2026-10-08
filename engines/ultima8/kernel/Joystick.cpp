@@ -30,9 +30,20 @@ static SDL_Joystick * joy[JOY_LAST] = {0};
 void InitJoystick()
 {
 	int i, buttons, axes, balls, hats;
-	int joys = SDL_NumJoysticks();
+	int count = 0;
 
-	for (i = 0; i < joys; ++i)
+	if (!SDL_InitSubSystem(SDL_INIT_JOYSTICK)) {
+		perr << "SDL joystick subsystem unavailable: " << SDL_GetError() << std::endl;
+		return;
+	}
+
+	SDL_JoystickID *ids = SDL_GetJoysticks(&count);
+	if (!ids || count <= 0) {
+		SDL_free(ids);
+		return;
+	}
+
+	for (i = 0; i < count; ++i)
 	{
 		if (i >= JOY_LAST)
 		{
@@ -41,31 +52,27 @@ void InitJoystick()
 			break;
 		}
 
-		joy[i] = 0;
-
-		if(! SDL_JoystickOpened(i))
+		joy[i] = SDL_OpenJoystick(ids[i]);
+		if (joy[i])
 		{
-			joy[i] = SDL_JoystickOpen(i);
-			if (joy[i])
-			{
-				buttons = SDL_JoystickNumButtons(joy[i]);
-				axes = SDL_JoystickNumAxes(joy[i]);
-				balls = SDL_JoystickNumBalls(joy[i]);
-				hats = SDL_JoystickNumHats(joy[i]);
+			buttons = SDL_GetNumJoystickButtons(joy[i]);
+			axes = SDL_GetNumJoystickAxes(joy[i]);
+			balls = SDL_GetNumJoystickBalls(joy[i]);
+			hats = SDL_GetNumJoystickHats(joy[i]);
 
-				pout << "Initialized joystick " << i + 1 << "." << std::endl;
-				pout << "\tButtons: " << buttons << std::endl;
-				pout << "\tAxes: " << axes << std::endl;
-				pout << "\tBalls: " << balls << std::endl;
-				pout << "\tHats: " << hats << std::endl;
-			}
-			else
-			{
-				perr << "Error while initializing joystick " << i + 1 << "."
-					<< std::endl;
-			}
+			pout << "Initialized joystick " << i + 1 << "." << std::endl;
+			pout << "\tButtons: " << buttons << std::endl;
+			pout << "\tAxes: " << axes << std::endl;
+			pout << "\tBalls: " << balls << std::endl;
+			pout << "\tHats: " << hats << std::endl;
+		}
+		else
+		{
+			perr << "Error while initializing joystick " << i + 1 << ": "
+				<< SDL_GetError() << std::endl;
 		}
 	}
+	SDL_free(ids);
 }
 
 void ShutdownJoystick()
@@ -73,9 +80,9 @@ void ShutdownJoystick()
 	int i;
 	for (i = 0; i < JOY_LAST; ++i)
 	{
-		if(joy[i] && SDL_JoystickOpened(i))
+		if (joy[i])
 		{
-			SDL_JoystickClose(joy[i]);
+			SDL_CloseJoystick(joy[i]);
 		}
 		joy[i] = 0;
 	}
@@ -96,7 +103,7 @@ JoystickCursorProcess::JoystickCursorProcess(Joystick js_, int x_axis_, int y_ax
 
 	if(joy[js] && js < JOY_LAST)
 	{
-		int axes = SDL_JoystickNumAxes(joy[js]);
+		int axes = SDL_GetNumJoystickAxes(joy[js]);
 		if (x_axis >= axes && y_axis >= axes)
 		{
 			perr << "Failed to start JoystickCursorProcess: illegal axis for x (" << x_axis << ") or y (" << y_axis << ")" << std::endl;
@@ -120,14 +127,15 @@ JoystickCursorProcess::~JoystickCursorProcess()
 void JoystickCursorProcess::run()
 {
 	int dx = 0, dy = 0;
-	int now = SDL_GetTicks();
+	int now = (int)SDL_GetTicks();
 
 	if(joy[js] && ticks)
 	{
+		SDL_UpdateJoysticks();
 		int tx = now - ticks;
 		int r = 350 - accel * 30;
-		sint16 jx = SDL_JoystickGetAxis(joy[js], x_axis);
-		sint16 jy = SDL_JoystickGetAxis(joy[js], y_axis);
+		sint16 jx = SDL_GetJoystickAxis(joy[js], x_axis);
+		sint16 jy = SDL_GetJoystickAxis(joy[js], y_axis);
 		if (jx > AXIS_TOLERANCE || jx < -AXIS_TOLERANCE)
 			dx = ((jx / 1000) * tx) / r;
 		if (jy > AXIS_TOLERANCE || jy < -AXIS_TOLERANCE)

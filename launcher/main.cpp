@@ -22,6 +22,10 @@
 #include <filesystem>
 #include <algorithm>
 #include <cstdlib>
+#include <fstream>
+#include <sstream>
+#include <cctype>
+#include <cstdio>
 
 namespace fs = std::filesystem;
 
@@ -95,6 +99,10 @@ private:
     void showMessage(const std::string& title, const std::string& text);
     void showPathInput();
     void applyPathInput();
+    std::string findPentagramBinary() const;
+    std::string findPaganData(const std::string& configured) const;
+    bool paganLayout(const fs::path& root) const;
+    void writePentagramIni(const std::string& dataRoot) const;
     
     std::string findFontPath() const;
     std::vector<std::string> getSearchPaths() const;
@@ -157,6 +165,201 @@ UltimaLauncher::UltimaLauncher() {
 
 UltimaLauncher::~UltimaLauncher() {
     shutdown();
+}
+
+bool UltimaLauncher::paganLayout(const fs::path& root) const {
+    if (!fs::is_directory(root)) {
+        return false;
+    }
+    bool usecode = false;
+    bool gumps = false;
+    std::error_code ec;
+    fs::path usecodeDir = root / "usecode";
+    if (fs::is_directory(usecodeDir, ec)) {
+        for (const auto& entry : fs::directory_iterator(usecodeDir, ec)) {
+            std::string name = entry.path().filename().string();
+            std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) {
+                return static_cast<char>(std::tolower(c));
+            });
+            if (name == "eusecode.flx" || name == "fusecode.flx" ||
+                name == "gusecode.flx" || name == "jusecode.flx") {
+                usecode = true;
+            }
+        }
+    }
+    fs::path staticDir = root / "static";
+    if (fs::is_directory(staticDir, ec)) {
+        for (const auto& entry : fs::directory_iterator(staticDir, ec)) {
+            std::string name = entry.path().filename().string();
+            std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) {
+                return static_cast<char>(std::tolower(c));
+            });
+            if (name == "u8gumps.flx") {
+                gumps = true;
+            }
+        }
+    }
+    /* Same relative names GameDetector reads through lowercase virtual paths. */
+    return usecode && gumps;
+}
+
+std::string UltimaLauncher::findPentagramBinary() const {
+    std::vector<std::string> candidates;
+    if (const char* env = std::getenv("PENTAGRAM_BIN")) {
+        candidates.push_back(env);
+    }
+    candidates.push_back(std::string(LAUNCHER_SOURCE_DIR) + "/../engines/ultima8/build/pentagram");
+    candidates.push_back("engines/ultima8/build/pentagram");
+    candidates.push_back("/usr/local/bin/pentagram");
+    candidates.push_back("/usr/bin/pentagram");
+    for (const auto& candidate : candidates) {
+        std::error_code ec;
+        if (!candidate.empty() && fs::is_regular_file(candidate, ec)) {
+            return fs::absolute(candidate).string();
+        }
+    }
+    if (system("which pentagram > /dev/null 2>&1") == 0) {
+        FILE* pipe = popen("which pentagram", "r");
+        if (pipe) {
+            char buf[512];
+            if (fgets(buf, sizeof(buf), pipe)) {
+                std::string path(buf);
+                while (!path.empty() && (path.back() == '\n' || path.back() == '\r')) {
+                    path.pop_back();
+                }
+                pclose(pipe);
+                if (!path.empty()) {
+                    return path;
+                }
+            } else {
+                pclose(pipe);
+            }
+        }
+    }
+    return "";
+}
+
+std::string UltimaLauncher::findPaganData(const std::string& configured) const {
+    std::vector<std::string> candidates;
+    if (!configured.empty()) {
+        candidates.push_back(configured);
+    }
+    if (const char* env = std::getenv("PENTAGRAM_GAME_PATH")) {
+        candidates.push_back(env);
+    }
+    candidates.push_back(std::string(LAUNCHER_SOURCE_DIR) + "/../engines/ultima8/gamedata");
+    candidates.push_back("engines/ultima8/gamedata");
+    for (const auto& base : getSearchPaths()) {
+        candidates.push_back((fs::path(base) / "ultima8").string());
+        candidates.push_back((fs::path(base) / "Ultima8").string());
+        candidates.push_back((fs::path(base) / "Ultima VIII").string());
+    }
+    for (const auto& candidate : candidates) {
+        if (paganLayout(candidate)) {
+            return fs::absolute(candidate).string();
+        }
+    }
+    return "";
+}
+
+void UltimaLauncher::writePentagramIni(const std::string& dataRoot) const {
+    const char* homeEnv = std::getenv("HOME");
+    fs::path home = homeEnv ? fs::path(homeEnv) / ".pentagram" : fs::path(".pentagram");
+    std::error_code ec;
+    fs::create_directories(home, ec);
+    fs::path iniPath = home / "pentagram.ini";
+
+    std::string existing;
+    {
+        std::ifstream in(iniPath);
+        if (in) {
+            existing.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+        }
+    }
+    if (existing.empty()) {
+        std::ofstream out(iniPath);
+        out << "[pentagram]\n";
+        out << "defaultgame=u8\n";
+        out << "fullscreen=no\n";
+        out << "scaler=bilinear\n";
+        out << "width=640\n";
+        out << "height=480\n";
+        out << "bpp=32\n";
+        out << "ttf=no\n";
+        out << "midi_driver=timidity\n";
+        out << "skipstart=yes\n";
+        out << "\n[u8]\n";
+        out << "path=" << dataRoot << "\n";
+        return;
+    }
+
+    std::string outText;
+    std::string section;
+    bool sawU8 = false;
+    bool wrotePath = false;
+    bool sawPentagram = false;
+    bool sawMidi = false;
+    bool sawScaler = false;
+    bool sawTtf = false;
+    bool sawSkip = false;
+    bool sawDefault = false;
+    std::string line;
+    std::istringstream input(existing);
+    while (std::getline(input, line)) {
+        if (!line.empty() && line[0] == '[') {
+            if (section == "pentagram") {
+                if (!sawDefault) outText += "defaultgame=u8\n";
+                if (!sawScaler) outText += "scaler=bilinear\n";
+                if (!sawTtf) outText += "ttf=no\n";
+                if (!sawMidi) outText += "midi_driver=timidity\n";
+                if (!sawSkip) outText += "skipstart=yes\n";
+            }
+            if (section == "u8" && !wrotePath) {
+                outText += "path=" + dataRoot + "\n";
+                wrotePath = true;
+            }
+            section = line.substr(1, line.find(']') - 1);
+            std::transform(section.begin(), section.end(), section.begin(), [](unsigned char c) {
+                return static_cast<char>(std::tolower(c));
+            });
+            if (section == "u8") sawU8 = true;
+            if (section == "pentagram") sawPentagram = true;
+            outText += line + "\n";
+            continue;
+        }
+        if (section == "u8" && line.rfind("path=", 0) == 0) {
+            outText += "path=" + dataRoot + "\n";
+            wrotePath = true;
+            continue;
+        }
+        if (section == "pentagram") {
+            if (line.rfind("midi_driver=", 0) == 0) sawMidi = true;
+            if (line.rfind("scaler=", 0) == 0) sawScaler = true;
+            if (line.rfind("ttf=", 0) == 0) sawTtf = true;
+            if (line.rfind("skipstart=", 0) == 0) sawSkip = true;
+            if (line.rfind("defaultgame=", 0) == 0) sawDefault = true;
+        }
+        outText += line + "\n";
+    }
+    if (section == "u8" && !wrotePath) {
+        outText += "path=" + dataRoot + "\n";
+        wrotePath = true;
+    }
+    if (section == "pentagram") {
+        if (!sawDefault) outText += "defaultgame=u8\n";
+        if (!sawScaler) outText += "scaler=bilinear\n";
+        if (!sawTtf) outText += "ttf=no\n";
+        if (!sawMidi) outText += "midi_driver=timidity\n";
+        if (!sawSkip) outText += "skipstart=yes\n";
+    }
+    if (!sawPentagram) {
+        outText += "\n[pentagram]\ndefaultgame=u8\nscaler=bilinear\nttf=no\nmidi_driver=timidity\nskipstart=yes\n";
+    }
+    if (!sawU8) {
+        outText += "\n[u8]\npath=" + dataRoot + "\n";
+    }
+    std::ofstream out(iniPath);
+    out << outText;
 }
 
 std::string UltimaLauncher::findFontPath() const {
@@ -282,13 +485,29 @@ std::vector<std::string> UltimaLauncher::getSearchPaths() const {
 void UltimaLauncher::checkGameAvailability(GameInfo& game) {
     game.available = false;
     
+    if (game.id == "pentagram") {
+        game.available = false;
+        std::string binary = findPentagramBinary();
+        if (binary.empty()) {
+            return;
+        }
+        game.executable = binary;
+        std::string data = findPaganData(game.configuredPath);
+        if (data.empty()) {
+            return;
+        }
+        game.dataPath = data;
+        game.available = true;
+        return;
+    }
+
     if (!game.configuredPath.empty() && fs::exists(game.configuredPath) && fs::is_directory(game.configuredPath)) {
         game.available = true;
         game.dataPath = game.configuredPath;
         return;
     }
     
-    if (game.id == "exult_studio" || game.id == "pentagram") {
+    if (game.id == "exult_studio") {
         std::string command = "which " + game.executable + " > /dev/null 2>&1";
 #ifdef _WIN32
         command = "where " + game.executable + " > nul 2>&1";
@@ -677,7 +896,12 @@ void UltimaLauncher::launchGame(const GameInfo& game) {
     } else if (game.engine == "exult_studio") {
         command = "exult_studio";
     } else if (game.engine == "pentagram") {
-        command = "pentagram";
+        if (game.executable.empty() || game.dataPath.empty()) {
+            showMessage("Launch Failed", "Pentagram binary or Pagan data path is missing.");
+            return;
+        }
+        writePentagramIni(game.dataPath);
+        command = "\"" + game.executable + "\" --game u8";
     }
     
     std::cout << "Launching: " << command << std::endl;

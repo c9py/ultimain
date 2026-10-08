@@ -29,6 +29,7 @@ Thumbs.db
 # and checkout was overwriting the SDL3_ttf-linked binary after install.
 engines/exult/build/
 engines/ultima8/build/
+engines/ultima8/gamedata/
 launcher/build/
 
 # Downloaded archives

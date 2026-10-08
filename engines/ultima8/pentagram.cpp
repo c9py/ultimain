@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "pent_include.h"
 
+#include <cstdio>
+#include <cstring>
 #include <SDL3/SDL.h>
 #include "misc/sdl2_compat.h"
 #include "GUIApp.h"
@@ -33,8 +35,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #endif
 
+static bool argvHas(int argc, char* argv[], const char* flag)
+{
+	for (int i = 1; i < argc; ++i) {
+		if (std::strcmp(argv[i], flag) == 0)
+			return true;
+	}
+	return false;
+}
+
 int main(int argc, char* argv[])
 {
+	if (argvHas(argc, argv, "--version")) {
+		std::printf("Pentagram version %s\n", PentagramVersion::version);
+		std::printf("Built: %s\n", PentagramVersion::buildtime);
+		std::printf("Optional features: %s\n", PentagramVersion::features);
+		return 0;
+	}
+
 	const std::string &home = FileSystem::getHomePath();
 
 	OutputLogger	stdoutLogger(stdout,home + "/pstdout.txt");

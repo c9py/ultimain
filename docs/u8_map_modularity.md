@@ -20,4 +20,4 @@ Ultima VIII stores items in world coordinates, not a terrain grid. Screen positi
 
 ## Pentagram load blockers
 
-Pentagram was not executed, and this evaluation does not show that Pentagram loaded a generated map. A load still needs real `fixed.dat`, `typeflag.dat`, and `u8shapes.flx`, which are not in this tree. Placeholder shape ids have not been checked against `typeflag.dat`. U8 globs are not emitted. Object flags are not collision. OSM building and road geometry is not resampled onto the 128-unit squares the walker uses.
+Pentagram was not executed, and this evaluation does not show that Pentagram loaded a generated map. `reference/u8_static` already has `FIXED.DAT`, `TYPEFLAG.DAT`, and `U8SHAPES.FLX`. Those archives are format evidence, not a playable install: a generated map still needs shape checks against a real `typeflag.dat`, globs, and a savegame-compatible `NONFIXED.DAT`. Placeholder shape ids have not been checked against `typeflag.dat`. U8 globs are not emitted. Object flags are not collision. OSM building and road geometry is not resampled onto the 128-unit squares the walker uses.

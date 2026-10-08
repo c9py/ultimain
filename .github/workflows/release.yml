@@ -97,10 +97,8 @@ jobs:
         cd engines/ultima8
         cmake -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-        cmake --build build || echo "Pentagram build incomplete - continuing"
-        if [ -f build/pentagram ]; then
-          strip build/pentagram
-        fi
+        cmake --build build
+        strip build/pentagram
 
     - name: Build Launcher
       run: |
@@ -117,9 +115,7 @@ jobs:
         # Copy binaries
         cp engines/exult/build/exult release/linux-x86_64/bin/
         cp launcher/build/ultima-launcher release/linux-x86_64/bin/
-        if [ -f engines/ultima8/build/pentagram ]; then
-          cp engines/ultima8/build/pentagram release/linux-x86_64/bin/
-        fi
+        cp engines/ultima8/build/pentagram release/linux-x86_64/bin/
         
         # Copy libraries
         cp build/libultima_shared.a release/linux-x86_64/lib/
