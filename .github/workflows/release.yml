@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: read
+
 env:
   BUILD_TYPE: Release
 
