@@ -46,11 +46,20 @@
 /* Endianness */
 #define WORDS_BIGENDIAN 0
 
-/* Size of types */
+/* Size of types. Windows is LLP64 (long is 4); Unix x86_64 is LP64 (long is 8). */
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
+#define SIZEOF_LONG_LONG 8
+#if defined(_WIN64)
+#define SIZEOF_LONG 4
+#define SIZEOF_INTP 8
+#elif defined(_WIN32)
+#define SIZEOF_LONG 4
+#define SIZEOF_INTP 4
+#else
 #define SIZEOF_LONG 8
 #define SIZEOF_INTP 8
+#endif
 
 /* Console streams */
 #define SAFE_CONSOLE_STREAMS 1
