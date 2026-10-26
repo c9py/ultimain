@@ -325,7 +325,8 @@ static inline Uint32 SDL2_GetTicks(void) {
  * ============================================ */
 
 #define SDL2_SURFACE_FORMAT(surf) SDL_GetPixelFormatDetails((surf)->format)
-#define SDL2_SURFACE_BPP(surf) SDL_BITSPERPIXEL((surf)->format)
+/* Storage width. SDL_BITSPERPIXEL(XRGB8888) is 24, but the surface is 4 bytes. */
+#define SDL2_SURFACE_BPP(surf) (SDL_BYTESPERPIXEL((surf)->format) * 8)
 #define SDL2_SURFACE_BYTESPERPIXEL(surf) SDL_BYTESPERPIXEL((surf)->format)
 
 #define SDL3_FMT(surf) SDL_GetPixelFormatDetails((surf)->format)
