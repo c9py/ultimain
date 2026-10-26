@@ -96,6 +96,10 @@ That January log is historical. It continued into SDL after `--version`, and the
 2. **Play session** - Not recorded. This tree has no `sound/` archives and no `savegame/u8save.000`. See `docs/pentagram_install.md`. Do not treat `reference/` as a substitute install.
 3. **Headless boot** - `--version` exits before SDL. A menu or new-game boot still needs a display and a local Pagan tree.
 
+## Framebuffer
+
+SDL3 window surfaces use `SDL_PIXELFORMAT_XRGB8888`. `SDL_BITSPERPIXEL` reports 24 significant bits and the surface stores 4 bytes per pixel. Pentagram's software buffer takes its width from that byte depth, so the default 320 by 200 point and bilinear scales match the window stride.
+
 ## Next Steps
 
 1. Point `[u8] path` at a real Pagan install (`engines/ultima8/gamedata` or `PENTAGRAM_GAME_PATH`).

@@ -49,8 +49,10 @@ BaseSoftRenderSurface::BaseSoftRenderSurface(SDL_Surface *s) :
 {
 	clip_window.ResizeAbs(width = sdl_surf->w, height = sdl_surf->h);
 	pitch = sdl_surf->pitch;
-	bits_per_pixel = SDL_BITSPERPIXEL(sdl_surf->format);
+	/* SDL_BITSPERPIXEL(XRGB8888) is 24. Pentagram's s_bpp is the storage
+	   width used for pitch and for choosing the 16/32 renderer. */
 	bytes_per_pixel = SDL_BYTESPERPIXEL(sdl_surf->format);
+	bits_per_pixel = bytes_per_pixel * 8;
 
 	RenderSurface::format.s_bpp = bits_per_pixel;
 	RenderSurface::format.s_bytes_per_pixel = bytes_per_pixel;
