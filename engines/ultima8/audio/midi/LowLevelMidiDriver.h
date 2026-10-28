@@ -27,9 +27,6 @@ class XMidiSequence;
 
 #include <queue>
 #include <SDL3/SDL.h>
-#include "misc/sdl2_compat.h"
-#include <SDL3/SDL.h>
-#include "misc/sdl2_compat.h"
 
 //! Specifies the max number of simultaneous playing sequences supported 
 //! \note Only 2 simultaneous playing sequences required for Ultima 8
@@ -157,9 +154,9 @@ private:
 
 	// Communications
 	std::queue<ComMessage>	messages;
-	SDL_mutex				*mutex;
-	SDL_mutex				*cbmutex;
-	SDL_cond                *cond;
+	SDL_Mutex				*mutex;
+	SDL_Mutex				*cbmutex;
+	SDL_Condition			*cond;
 	sint32					peekComMessageType();
 	void					sendComMessage(ComMessage& message);
 	void					waitTillNoComMessages();
