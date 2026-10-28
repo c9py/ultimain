@@ -261,8 +261,9 @@ bool AnimationTracker::step()
 	ty = y+dy;
 	tz = z+dz;
 
-	// Only for particularly large steps we do a full sweepTest
-	if (abs(dx) >= xd - 8 || abs(dy) >= yd - 8 || abs(dz) >= zd - 8) {
+	// Sweep every moving step. An endpoint test jumps a fence or tree
+	// when the step is longer than the obstacle is thick.
+	if (dx != 0 || dy != 0 || dz != 0) {
 
 		sint32 start[3] = { x, y, z };
 		sint32 end[3] = { tx, ty, tz };

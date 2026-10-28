@@ -254,6 +254,12 @@ void GravityProcess::run()
 		}
 		if(terminate) {
 			item->clearFlag(Item::FLG_BOUNCING);
+			if (item_num == 1) {
+				sint32 lx, ly, lz;
+				item->getLocation(lx, ly, lz);
+				pout << "Avatar landed at (" << lx << "," << ly << ","
+				     << lz << ")" << std::endl;
+			}
 			terminateDeferred();
 		}
 		else {
