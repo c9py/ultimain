@@ -36,8 +36,26 @@ target_link_libraries(test_avatar_pipeline PRIVATE ultima_npc_ai npc_test_framew
 target_include_directories(test_avatar_pipeline PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 add_test(NAME AvatarPipelineTests COMMAND test_avatar_pipeline)
 
+set(NPC_TEST_TARGETS
+    test_neural_network
+    test_memory_system
+    test_persona
+    test_tensor_logic
+    test_avatar_pipeline
+)
+
+if(NPC_HAS_GNEURAL)
+    add_executable(test_avatar_nav test_avatar_nav.cpp)
+    target_link_libraries(test_avatar_nav PRIVATE ultima_npc_ai npc_test_framework)
+    target_include_directories(test_avatar_nav PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+    target_compile_definitions(test_avatar_nav PRIVATE
+        NAV_MAP_PATH="${CMAKE_CURRENT_SOURCE_DIR}/../data/dock_nav.map")
+    add_test(NAME AvatarNavTests COMMAND test_avatar_nav)
+    list(APPEND NPC_TEST_TARGETS test_avatar_nav)
+endif()
+
 # All tests target
 add_custom_target(npc_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    DEPENDS test_neural_network test_memory_system test_persona test_tensor_logic test_avatar_pipeline
+    DEPENDS ${NPC_TEST_TARGETS}
 )

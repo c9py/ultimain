@@ -289,8 +289,7 @@ void network_print(network *nn)
 
 void network_run_algorithm(network *nn, network_config *config)
 {
-  static const
-  void (*supported_optimization_methods[])(network *, network_config *) = {
+  static void (*const supported_optimization_methods[])(network *, network_config *) = {
 	[SIMULATED_ANNEALING]	= simulated_annealing,
 	[RANDOM_SEARCH]		= random_search,
 	[GRADIENT_DESCENT]	= gradient_descent,

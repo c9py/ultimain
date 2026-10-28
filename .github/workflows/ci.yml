@@ -99,7 +99,7 @@ jobs:
         cmake -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
           -DNPC_BUILD_TESTS=ON \
-          -DNPC_USE_GNEURAL=OFF
+          -DNPC_USE_GNEURAL=ON
 
     - name: Build NPC module
       run: |
