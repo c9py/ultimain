@@ -62,6 +62,14 @@ set(NPC_SOURCES
     ${PHASE6_SOURCES}
 )
 
+# Avatar navigation trains gneural-net on player controls over a reference map.
+set(NPC_HAS_GNEURAL FALSE)
+if(NPC_USE_GNEURAL AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../cognitive/gneural-net/CMakeLists.txt")
+    list(APPEND NPC_SOURCES src/AvatarNavController.cpp)
+    list(APPEND NPC_HEADERS include/navigation/AvatarNavController.h)
+    set(NPC_HAS_GNEURAL TRUE)
+endif()
+
 # Header files
 set(NPC_HEADERS
     # Phase 1
@@ -105,14 +113,13 @@ if(NPC_USE_AVATAR AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../avatar/CMakeLists.t
     target_compile_definitions(ultima_npc_ai PUBLIC ULTIMA_NPC_HAS_AVATAR=1)
 endif()
 
-# Link GNeural-Net if available
-if(NPC_USE_GNEURAL)
-    # Add GNeural-Net as subdirectory if needed
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../cognitive/gneural-net/CMakeLists.txt")
-        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../cognitive/gneural-net
-                         ${CMAKE_CURRENT_BINARY_DIR}/gneural-net)
-        target_link_libraries(ultima_npc_ai PUBLIC gneural)
-    endif()
+# Link GNeural-Net when the navigation controller is part of the library.
+if(NPC_HAS_GNEURAL)
+    enable_language(C)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../cognitive/gneural-net
+                     ${CMAKE_CURRENT_BINARY_DIR}/gneural-net)
+    target_link_libraries(ultima_npc_ai PUBLIC gneural)
+    target_compile_definitions(ultima_npc_ai PUBLIC ULTIMA_NPC_HAS_GNEURAL=1)
 endif()
 
 # Compiler warnings
@@ -132,6 +139,22 @@ endif()
 # Examples
 if(NPC_BUILD_EXAMPLES)
     add_subdirectory(examples)
+endif()
+
+# SDL3 view of the trained route. Built whenever SDL3 and gneural are present
+# so the navigation controller can be exercised without the other demos.
+if(NPC_HAS_GNEURAL)
+    find_package(PkgConfig QUIET)
+    if(PkgConfig_FOUND)
+        pkg_check_modules(SDL3 IMPORTED_TARGET QUIET sdl3>=3.2.0)
+        if(SDL3_FOUND)
+            add_executable(avatar_nav_sdl examples/avatar_nav_sdl.cpp)
+            target_link_libraries(avatar_nav_sdl PRIVATE ultima_npc_ai PkgConfig::SDL3)
+            target_include_directories(avatar_nav_sdl PRIVATE ${NPC_INCLUDE_DIR})
+            target_compile_definitions(avatar_nav_sdl PRIVATE
+                NAV_MAP_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data/dock_nav.map")
+        endif()
+    endif()
 endif()
 
 # Install rules

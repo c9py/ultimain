@@ -26,7 +26,9 @@
 #define array_size(foo) (sizeof(foo)/sizeof(foo[0]))
 
 // maximum number of training point
-#define MAX_TRAINING_POINTS 8
+// Navigation records one player control per dock cell, so the cap has to
+// hold a reference-map demonstration plus a few live SDL samples.
+#define MAX_TRAINING_POINTS 128
 
 // maximum allowed number of input connections per neuron
 #define MAX_IN 16
