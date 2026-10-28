@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XFormBlend.h"
 #include "U8SaveFile.h"
 #include "World.h"
+#include "CurrentMap.h"
 #include "MainActor.h"
 #include "ItemFactory.h"
 #include "ObjectManager.h"
@@ -141,6 +142,26 @@ bool U8Game::startGame()
 	backpack->moveToContainer(av);
 
 	World::get_instance()->switchMap(av->getMapNum());
+
+	// The opening stands on the Tenebrae docks. A new-game coordinate can
+	// sit in the air above that ground (the drop onto the pier). Nothing
+	// else starts gravity, so an unsupported Avatar stays frozen. Fall
+	// when the footpad has no solid directly under it.
+	{
+		sint32 ax, ay, az;
+		av->getLocation(ax, ay, az);
+		Item* support = 0;
+		World::get_instance()->getCurrentMap()->isValidPosition(
+			ax, ay, az, av->getShape(), av->getObjId(), &support, 0);
+		pout << "Avatar start (" << ax << "," << ay << "," << az
+		     << ") map " << av->getMapNum();
+		if (support) {
+			pout << " on shape " << support->getShape() << std::endl;
+		} else {
+			pout << " unsupported, falling" << std::endl;
+			av->fall();
+		}
+	}
 
 	GUIApp::get_instance()->setAvatarInStasis(true);
 

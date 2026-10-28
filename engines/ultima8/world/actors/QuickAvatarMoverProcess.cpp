@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFINE_RUNTIME_CLASSTYPE_CODE(QuickAvatarMoverProcess,Process);
 
 ProcId QuickAvatarMoverProcess::amp[6] = { 0, 0, 0, 0, 0, 0 };
-bool QuickAvatarMoverProcess::clipping = false;
+bool QuickAvatarMoverProcess::clipping = true;
 bool QuickAvatarMoverProcess::quarter = false;
 
 QuickAvatarMoverProcess::QuickAvatarMoverProcess() : Process(1), dx(0), dy(0), dz(0), dir(0)
@@ -135,8 +135,9 @@ void QuickAvatarMoverProcess::run()
 		if (ok) break;
 	}
 
-	// Yes, i know, not entirely correct
-	avatar->collideMove(x+dx,y+dy,z+dz, false, true);
+	// Clipping stops on the sweep. Forcing the move lands past a thin fence
+	// or inside a tree when only the destination was tested.
+	avatar->collideMove(x+dx, y+dy, z+dz, false, !clipping, 0, 0);
 
 
 	// Prevent avatar from running an idle animation while moving around
