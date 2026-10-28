@@ -151,7 +151,7 @@ LowLevelMidiDriver::~LowLevelMidiDriver()
 	{
 		perr <<	"Warning: Destructing LowLevelMidiDriver and destroyMidiDriver() wasn't called!" << std::endl;
 		//destroyMidiDriver();
-		if (thread) SDL_KillThread(thread);
+		if (thread) SDL_WaitThread(thread, nullptr);
 	}
 	thread = 0;
 }
@@ -178,7 +178,7 @@ int LowLevelMidiDriver::initMidiDriver(uint32 samp_rate, bool is_stereo)
 
 	mutex = SDL_CreateMutex();
 	cbmutex = SDL_CreateMutex();
-	cond = SDL_CreateCond();
+	cond = SDL_CreateCondition();
 	thread = 0;
 	sample_rate = samp_rate;
 	stereo = is_stereo;
@@ -203,7 +203,7 @@ int LowLevelMidiDriver::initMidiDriver(uint32 samp_rate, bool is_stereo)
 		perr << "Failed to initialize midi player (code: " << code << ")" << endl;
 		SDL_DestroyMutex(mutex);
 		SDL_DestroyMutex(cbmutex);
-		SDL_DestroyCond(cond);
+		SDL_DestroyCondition(cond);
 		thread = 0;
 		mutex = 0;
 		cbmutex = 0;
@@ -228,7 +228,7 @@ void LowLevelMidiDriver::destroyMidiDriver()
 
 	SDL_DestroyMutex(mutex);
 	SDL_DestroyMutex(cbmutex);
-	SDL_DestroyCond(cond);
+	SDL_DestroyCondition(cond);
 	cbmutex = 0;
 	mutex = 0;
 	thread = 0;
@@ -372,9 +372,9 @@ uint32 LowLevelMidiDriver::getSequenceCallbackData(int seq_num)
 {
 	if (seq_num >= LLMD_NUM_SEQ || seq_num < 0) return 0;
 
-	SDL_mutexP(cbmutex);
+	SDL_LockMutex(cbmutex);
 	uint32 ret = callback_data[seq_num];
-	SDL_mutexV(cbmutex);
+	SDL_UnlockMutex(cbmutex);
 
 	return ret;
 }
@@ -396,7 +396,7 @@ void LowLevelMidiDriver::sendComMessage(ComMessage& message)
 {
 	lockComMessage();
 	messages.push(message);
-	SDL_CondSignal(cond);
+	SDL_SignalCondition(cond);
 	unlockComMessage();
 }
 
@@ -407,12 +407,12 @@ void LowLevelMidiDriver::waitTillNoComMessages()
 
 void LowLevelMidiDriver::lockComMessage()
 {
-	SDL_mutexP(mutex);
+	SDL_LockMutex(mutex);
 }
 
 void LowLevelMidiDriver::unlockComMessage()
 {
-	SDL_mutexV(mutex);
+	SDL_UnlockMutex(mutex);
 }
 
 //
@@ -469,10 +469,10 @@ void LowLevelMidiDriver::destroyThreadedSynth()
 		count++;
 	}
 
-	// We waited a while and it still didn't terminate
+	// Wait for the thread if it did not process the exit message in time.
 	if (count == 400 && peekComMessageType() != 0) {
-		perr << "MidiPlayer Thread failed to stop in time. Killing it." << std::endl;
-		SDL_KillThread (thread);
+		perr << "MidiPlayer Thread failed to stop in time. Waiting for it." << std::endl;
+		SDL_WaitThread(thread, nullptr);
 	}
 
 	lockComMessage();
@@ -562,7 +562,7 @@ int LowLevelMidiDriver::threadMain()
 				if (messages.empty())
 				{
 					//printf("Waiting %i ms\n", time_till_next-2);
-					SDL_CondWaitTimeout(cond, mutex,time_till_next-2);
+					SDL_WaitConditionTimeout(cond, mutex, time_till_next - 2);
 					//printf("Finished Waiting\n");
 				}
 				else
@@ -999,9 +999,9 @@ uint32 LowLevelMidiDriver::getTickCount(uint16 sequence_id)
 
 void LowLevelMidiDriver::handleCallbackTrigger(uint16 sequence_id, uint8 data)
 {
-	SDL_mutexP(cbmutex);
+	SDL_LockMutex(cbmutex);
 	callback_data[sequence_id] = data;
-	SDL_mutexV(cbmutex);
+	SDL_UnlockMutex(cbmutex);
 }
 
 int LowLevelMidiDriver::protectChannel(uint16 sequence_id, int chan, bool protect)
