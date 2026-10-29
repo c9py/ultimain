@@ -419,6 +419,24 @@ bool AvatarNavController::trainOptimal(int targetX, int targetY) {
     return report_.reached;
 }
 
+bool AvatarNavController::aimAt(int x, int y) {
+    const NavCell* cell = cellAt(x, y);
+    if (!cell || !cell->walkable) return false;
+    if (net_ && report_.reached && x == targetX_ && y == targetY_) return true;
+
+    const int previousX = targetX_;
+    const int previousY = targetY_;
+    std::vector<Sample> previous = samples_;
+    demonstratePlayerRoute(x, y);
+    if (trainOptimal(x, y)) return true;
+
+    samples_ = std::move(previous);
+    if (!samples_.empty() && (previousX != x || previousY != y)) {
+        trainOptimal(previousX, previousY);
+    }
+    return false;
+}
+
 }  // namespace Navigation
 }  // namespace NPC
 }  // namespace Ultima
