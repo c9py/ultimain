@@ -25,11 +25,11 @@ target_include_directories(gneural PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-# GNU89 inline emits the activation and rnd symbols other files call.
 # includes.h pulls in string.h when this is set, and omp.h with the rest.
 target_compile_definitions(gneural PRIVATE HAVE_STRING_H=1)
-# The C sources use GNU89 inline and implicit declarations.
-target_compile_options(gneural PRIVATE -std=gnu89 -fgnu89-inline)
+# gnu99 accepts the C99 for-loop in simulated_annealing.c.
+# -fgnu89-inline still emits the GNU inline symbols other files call.
+target_compile_options(gneural PRIVATE -std=gnu99 -fgnu89-inline)
 target_link_libraries(gneural PUBLIC m)
 
 find_package(OpenMP COMPONENTS C)
