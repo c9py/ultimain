@@ -41,6 +41,7 @@ void simulated_annealing(network *nn, network_config *config) {
  double eps = config->accuracy;
  int m,n;
  int i;
+ int j;
  double err;
  double e0;
  double de;
@@ -67,8 +68,9 @@ void simulated_annealing(network *nn, network_config *config) {
 	wbest[i]   = malloc(size_);
 	if (!wbackup[i] || !wbest[i]) {
 		printf("SA: Not enough memory to allocate\ndouble *wbackup/*wbest #%d\n", i);
-		/* Free previously allocated memory before exit */
-		for (int j = 0; j <= i; j++) {
+		/* Free previously allocated memory before exit.
+		   GNU89 CMake builds reject C99 for-init; keep j in function scope. */
+		for (j = 0; j <= i; j++) {
 			free(wbackup[j]);
 			free(wbest[j]);
 		}

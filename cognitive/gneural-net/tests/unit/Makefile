@@ -2,6 +2,8 @@
 
 CC = gcc
 CFLAGS = -Wall -Wextra -g -I../../include
+# Match CMake gneural: Shared Library / NPC AI compile this as GNU89.
+LIB_CFLAGS = $(CFLAGS) -std=gnu89 -fgnu89-inline
 LDFLAGS = -lm
 
 # Source directories
@@ -46,45 +48,45 @@ $(TEST_BIN): $(TEST_OBJS) $(LIB_OBJS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Compile library files from src/
+# Compile library files from src/ under the same GNU89 contract as CMake.
 fact.o: $(SRC_DIR)/fact.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 binom.o: $(SRC_DIR)/binom.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 rnd.o: $(SRC_DIR)/rnd.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 activation.o: $(SRC_DIR)/activation.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 network.o: $(SRC_DIR)/network.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 feedforward.o: $(SRC_DIR)/feedforward.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 simulated_annealing.o: $(SRC_DIR)/simulated_annealing.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 random_search.o: $(SRC_DIR)/random_search.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 gradient_descent.o: $(SRC_DIR)/gradient_descent.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 genetic_algorithm.o: $(SRC_DIR)/genetic_algorithm.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 msmco.o: $(SRC_DIR)/msmco.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 randomize.o: $(SRC_DIR)/randomize.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 error.o: $(SRC_DIR)/error.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(LIB_CFLAGS) -c $< -o $@
 
 run: $(TEST_BIN)
 	./$(TEST_BIN)

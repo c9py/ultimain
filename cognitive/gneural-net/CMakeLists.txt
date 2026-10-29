@@ -29,6 +29,8 @@ target_include_directories(gneural PUBLIC
 # includes.h pulls in string.h when this is set, and omp.h with the rest.
 target_compile_definitions(gneural PRIVATE HAVE_STRING_H=1)
 # The C sources use GNU89 inline and implicit declarations.
+# Shared Library and NPC AI CMake jobs compile this library; C99 for-init
+# in simulated_annealing.c is a hard error under this flag.
 target_compile_options(gneural PRIVATE -std=gnu89 -fgnu89-inline)
 target_link_libraries(gneural PUBLIC m)
 
