@@ -23,6 +23,7 @@
 // returns the binomial coefficient of two numbers (n over k)
 
 #include <binom.h>
+#include <math.h>
 
 // originally programmed by : Jean Michel Sellier
 // improved by              : Gergo Barany

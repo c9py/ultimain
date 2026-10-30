@@ -4,6 +4,7 @@
  * Loads the reference map (coordinates and shape types), trains gneural-net
  * on player controls, and walks the avatar to the target. Arrow keys are the
  * same four diagonals the game uses. Space steps the trained network.
+ * Click a walkable cell to aim there and play that route.
  * --auto plays the trained route and leaves the avatar on the target.
  */
 
@@ -88,6 +89,19 @@ void fillRect(SDL_Renderer* renderer, const SDL_FRect& rect, Rgb color) {
 void drawText(SDL_Renderer* renderer, float x, float y, const std::string& text) {
     SDL_SetRenderDrawColor(renderer, 232, 224, 208, 255);
     SDL_RenderDebugText(renderer, x, y, text.c_str());
+}
+
+const NavCell* cellAtPoint(const AvatarNavController& nav, const View& view,
+                           float px, float py) {
+    const NavCell* best = nullptr;
+    for (const NavCell& cell : nav.cells()) {
+        const SDL_FRect rect = cellRect(view, cell.x, cell.y);
+        if (px < rect.x || py < rect.y || px > rect.x + rect.w || py > rect.y + rect.h) {
+            continue;
+        }
+        best = &cell;
+    }
+    return best;
 }
 
 bool applyControl(AvatarNavController& nav, int& x, int& y, PlayerControl control,
@@ -193,6 +207,26 @@ int main(int argc, char** argv) {
                     applyControl(nav, avatarX, avatarY, control, &trail, event.key.key != SDLK_SPACE);
                 }
             }
+            if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN &&
+                event.button.button == SDL_BUTTON_LEFT) {
+                const NavCell* hit = cellAtPoint(nav, view, event.button.x, event.button.y);
+                if (hit && hit->walkable && (hit->x != avatarX || hit->y != avatarY)) {
+                    drawText(renderer, 820.f, 300.f, "training");
+                    SDL_RenderPresent(renderer);
+                    if (nav.aimAt(hit->x, hit->y)) {
+                        trail.clear();
+                        if (const NavCell* here = nav.cellAt(avatarX, avatarY)) {
+                            trail.push_back(*here);
+                        }
+                        automatic = true;
+                        tick = 320;
+                        hold = 0;
+                    } else {
+                        std::cerr << "AvatarNav SDL could not aim at ("
+                                  << hit->x << "," << hit->y << ")" << std::endl;
+                    }
+                }
+            }
         }
 
         // Hold the start cell long enough for the window to appear, then step.
@@ -253,7 +287,8 @@ int main(int argc, char** argv) {
         drawText(renderer, 820.f, 220.f, "arrows  player step");
         drawText(renderer, 820.f, 236.f, "space   trained step");
         drawText(renderer, 820.f, 252.f, "a       play route");
-        drawText(renderer, 820.f, 268.f, "enter   retrain");
+        drawText(renderer, 820.f, 268.f, "click   aim cell");
+        drawText(renderer, 820.f, 284.f, "enter   retrain");
 
         SDL_RenderPresent(renderer);
         SDL_Delay(16);

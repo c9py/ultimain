@@ -67,6 +67,10 @@ public:
     // the one that reaches the target.
     bool trainOptimal(int targetX, int targetY);
 
+    // Record the player route to a walkable cell and train for that target.
+    // A failed training leaves the previous route in place.
+    bool aimAt(int x, int y);
+
     PlayerControl predict(int x, int y, int targetX, int targetY);
 
     // Follow the trained net from start until the target, or maxSteps.

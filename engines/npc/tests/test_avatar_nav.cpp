@@ -97,12 +97,55 @@ bool test_trained_controls_reach_target() {
     return true;
 }
 
+bool test_aim_rejects_blocked_and_reaches_another_cell() {
+    AvatarNavController nav;
+    TEST_ASSERT(nav.loadReferenceMap(NAV_MAP_PATH));
+    TEST_ASSERT(!nav.aimAt(11552, 5520));
+
+    const int tx = 11616;
+    const int ty = 4816;
+    const NavCell* far = nav.cellAt(tx, ty);
+    TEST_ASSERT_NOT_NULL(far);
+    TEST_ASSERT(far->walkable);
+    TEST_ASSERT_EQUAL(164, far->shape);
+
+    const bool trained = nav.aimAt(tx, ty);
+    std::cout << "\n    kept " << nav.report().method
+              << " hidden=" << nav.report().hidden
+              << " error=" << nav.report().error
+              << " samples=" << nav.report().samples << std::endl;
+    TEST_ASSERT(trained);
+    TEST_ASSERT_EQUAL(tx, nav.targetX());
+    TEST_ASSERT_EQUAL(ty, nav.targetY());
+
+    std::vector<NavCell> path;
+    const bool arrived = nav.moveToTarget(nav.startX(), nav.startY(), tx, ty, &path, 40);
+    if (!path.empty()) {
+        std::cout << "    path";
+        for (const NavCell& cell : path) {
+            std::cout << " (" << cell.x << "," << cell.y << ")";
+        }
+        std::cout << std::endl;
+    }
+    TEST_ASSERT(arrived);
+    TEST_ASSERT_EQUAL(nav.startX(), path.front().x);
+    TEST_ASSERT_EQUAL(nav.startY(), path.front().y);
+    TEST_ASSERT_EQUAL(tx, path.back().x);
+    TEST_ASSERT_EQUAL(ty, path.back().y);
+    for (const NavCell& cell : path) {
+        TEST_ASSERT(cell.walkable);
+        TEST_ASSERT_EQUAL(164, cell.shape);
+    }
+    return true;
+}
+
 int main() {
     TEST_SUITE("Avatar navigation");
 
     RUN_TEST("Reference map coordinates and shapes", test_reference_map_coordinates_and_shapes);
     RUN_TEST("Player controls are recorded", test_player_controls_are_recorded);
     RUN_TEST("Trained controls reach the target", test_trained_controls_reach_target);
+    RUN_TEST("Aim reaches another dock cell", test_aim_rejects_blocked_and_reaches_another_cell);
 
     TEST_SUMMARY();
 }
